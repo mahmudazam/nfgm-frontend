@@ -1,0 +1,26 @@
+
+.myCarousel{
+    height: 50%;
+    overflow: hidden;
+    margin-left: 5%;
+    margin-right: 5%;
+}
+
+.carousel-img{
+    margin-right: auto;
+    margin-left: auto;
+    margin-top: -2%;
+    max-width: 60%;
+    max-height: 100%;
+}
+
+.home{
+    margin-top: 2%;
+}
+
+.carouselWrapper{
+}
+
+.run{
+    height: 50px;
+}

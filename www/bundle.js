@@ -21616,7 +21616,7 @@ var translateToKey = {
   33: 'PageUp',
   34: 'PageDown',
   35: 'End',
-  36: 'Home',
+  36: 'HomeLocation',
   37: 'ArrowLeft',
   38: 'ArrowUp',
   39: 'ArrowRight',
