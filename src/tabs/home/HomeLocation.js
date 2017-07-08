@@ -4,8 +4,8 @@ import Panel from 'react-bootstrap/lib/Panel';
 class HomeLocation extends React.Component {
     constructor() {
         super();
+        this.state = { messages: [] };
     }
-
     render() {
         return(
             <div className="col-lg-12">
