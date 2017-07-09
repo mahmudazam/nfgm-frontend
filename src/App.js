@@ -14,16 +14,16 @@ class App extends React.Component {
 
   render() {
     return (
-    <div className="col-lg-12">
-      <div className="col-lg-1"></div>
-      <div className="col-lg-10">
-        <Well>Brand</Well>
-        <TabBar/>
-
-      </div>
-      <div className="col-lg-1"></div>
-    </div>
-
+		<div>
+	    <Well>Brand</Well>
+	    <div className="col-lg-12">
+    	  <div className="col-lg-1"></div>
+	      <div className="col-lg-10">
+	        <TabBar/>
+	      </div>
+	      <div className="col-lg-1"></div>
+	    </div>
+	    </div>
     );
   }
 }
