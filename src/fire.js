@@ -1,5 +1,18 @@
-import firebase from 'firebase';
+"use strict";
 
+var path = require('path');
+
+// Firebase App:
+
+Object.defineProperty(exports, "__esModule", {
+    value: true
+});
+
+var _firebase = require("firebase");
+
+var _firebase2 = _interopRequireDefault(_firebase);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 var config = {
     apiKey: "AIzaSyDib8fiktUwM4h_yPTmNtYA5aC-Zrzufeg",
@@ -10,6 +23,11 @@ var config = {
     messagingSenderId: "769795342410"
 };
 
-var fire = firebase.initializeApp(config);
+const firebase = _firebase2.default.initializeApp(config)
 
-export default fire;
+var fire = {
+	database: function () { return firebase.database(); },
+	storage: function () { return }
+};
+
+exports.default = fire;
