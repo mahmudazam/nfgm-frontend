@@ -9,27 +9,37 @@ var path = require('path');
 	* refPath ::= string specifying the storage directory to write to
 */
 function pushAssetIndex(readPath , refPath, storage_url) {
-	fs.readFile(readPath , 'binary' , (err, data) => {
-		// Create path names:
-		readPath = path.normalize(readPath);
-		filename = path.basename(readPath);
-		if(refPath !== "") {
-			refPath = path.normalize(refPath);
-		}
+	// Create path names:
+	readPath = path.normalize(readPath);
+	filename = path.basename(readPath);
+	if(refPath !== "") {
+		refPath = path.normalize(refPath);
+	}
+	
+	// Create database node for file :
+	dbPath = path.normalize('assets/' + refPath + '/' + filename.replace('.' , '_'));
+	dbRef = fire.database().ref(dbPath);
+	dbRef.child('name').set(filename);
+	dbRef.child('URL').set(storage_url);
 		
-		// Create database node for file :
-		dbPath = 'assets/' + refPath + '/' + filename.replace('.' , '_');
-		console.log(dbPath);
-		dbRef = fire.database().ref(dbPath);
-		dbRef.child('name').set(filename);
-		dbRef.child('URL').set(storage_url);
-		
-	});
 }
 
-/**
-	* Pushes a specified file to a specified Firebase storage location:
-*/
+function pushAsset(readPath , refPath) {
+	// Get a stream to a the specified file :
+	readStream = fs.createReadStream(readPath);
+	
+	// Get a reference to a bucket node:
+	bucket = fire.str_bucket();
+	bucketRef = bucket.file(refPath + '/' + path.basename(readPath));
+	
+	// Write the file to the bucket:
+	writeStream = bucketRef.createWriteStream();
+	readStream.pipe(writeStream)
+		.on('error', function (err) { console.log(err); })
+		.on('finish' , function () {
+			pushAssetIndex(readPath , refPath , "");
+		})
+}
 
 // Entry point for testing :
-pushAssetIndex('test.txt', 'text_files', '');
+pushAsset("./test.txt", "/text_files");

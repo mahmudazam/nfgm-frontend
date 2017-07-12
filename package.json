@@ -23,6 +23,7 @@
     "url": "git://github.com/ahfarmer/minimal-react-starter.git"
   },
   "dependencies": {
+    "@google-cloud/storage": "^1.2.0",
     "babel-core": "^6.25.0",
     "babel-loader": "^7.1.1",
     "babel-preset-env": "^1.5.2",
