@@ -2,19 +2,6 @@
 
 var path = require('path');
 
-// Google Cloud Storage Setup :
-const keyFilename = './exim-food-firebase-adminsdk-nsw0f-b78e25c82b.json';
-const projectId = 'exim-food';
-const bucketName = 'exim-food.appspot.com';
-
-const gcs = require('@google-cloud/storage')(
-{
-	projectId,
-	keyFilename		
-});
-
-const bucket = gcs.bucket(bucketName);
-
 // Firebase App:
 
 Object.defineProperty(exports, "__esModule", {
@@ -36,11 +23,6 @@ var config = {
     messagingSenderId: "769795342410"
 };
 
-const firebase = _firebase2.default.initializeApp(config)
-
-var fire = {
-	database: function () { return firebase.database(); },
-	str_bucket: function () { return bucket; }
-};
+const fire = _firebase2.default.initializeApp(config)
 
 exports.default = fire;
