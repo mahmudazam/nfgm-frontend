@@ -49,7 +49,8 @@ function pushAssetIndex(readPath , refPath, storage_url) {
  * @param {String} storageName - the storage location in Firebase storage
 */
 function createPublicFileURL(storageName) {
-	return path.normalize('http://storage.googleapis.com/' + bucketName + '/' + storageName);
+	return ('https://storage.googleapis.com/')
+		+ path.normalize(bucketName + '/' + storageName);
 }
 
 /**
