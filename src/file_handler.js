@@ -38,8 +38,9 @@ function pushAssetIndex(readPath , refPath, storage_url) {
 	dbPath = path.normalize('assets/' + refPath + '/' 
 			+ filename.replace('.' , '_'));
 	dbRef = fire.database().ref(dbPath);
-	dbRef.child('name').set(filename);
+	dbRef.child('Name').set(filename);
 	dbRef.child('URL').set(storage_url);
+	dbRef.child('Upload Time').set(new Date().toString());
 		
 }
 
@@ -84,7 +85,15 @@ function pushAsset(readPath , refPath) {
 }
 
 // Entry point for testing :
+
+// Pushing data:
 pushAsset("./test.txt", "/txt");
+
+// Pushing images to database:
+pushAsset("../assets/img/img1.jpg", "/img");
+pushAsset("../assets/img/img2.jpg", "/img");
+pushAsset("../assets/img/img3.jpg", "/img");
+pushAsset("../assets/img/img4.jpg", "/img");
 
 
 
