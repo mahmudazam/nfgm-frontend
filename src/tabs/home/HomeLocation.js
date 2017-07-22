@@ -1,5 +1,6 @@
 import React from 'react';
 import Panel from 'react-bootstrap/lib/Panel';
+import Map from './Map'
 
 class HomeLocation extends React.Component {
     constructor() {
@@ -19,7 +20,7 @@ class HomeLocation extends React.Component {
                 <div className="col-lg-5">
 
                     <Panel header="Location">
-                        Map
+                        <Map/>
                     </Panel>
 
                 </div>
