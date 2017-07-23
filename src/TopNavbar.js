@@ -13,7 +13,7 @@ class TopNavbar extends React.Component {
       <Navbar id="top-navbar">
       <Navbar.Header>
       <Navbar.Brand>
-      <a href="#">Natural Fresh Meat and Grocery</a>
+      <a href="#">Natural Fresh Grocery & Meat</a>
       </Navbar.Brand>
       </Navbar.Header>
       <Nav>
