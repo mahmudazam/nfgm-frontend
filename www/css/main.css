@@ -9,7 +9,7 @@ body {
 
 .myCarousel{
     background-color: black;
-    height: 50%;
+    height: 40%;
     overflow: hidden;
     margin-left: 5%;
     margin-right: 5%;
@@ -18,12 +18,11 @@ body {
 .carousel-img{
     margin-right: auto;
     margin-left: auto;
-    margin-top: -2%;
-    max-width: 60%;
-    max-height: 100%;
+    width: 60%;
+    height: 100%;
 }
 
-#home-map {
+#home-map-panel {
   background-color: black;
 }
 

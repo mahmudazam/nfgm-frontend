@@ -22,8 +22,8 @@ class HomeLocation extends React.Component {
                 </div>
 
                 <div className="col-lg-5">
-                    <Panel id="home-map" header="Location">
-                        <AddressMap className="col-lg-12"/>
+                    <Panel id="home-map-panel" header="Location">
+                        <AddressMap id="home-map" className="col-lg-12"/>
                     </Panel>
                 </div>
 
