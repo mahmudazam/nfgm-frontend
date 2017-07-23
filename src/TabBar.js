@@ -19,7 +19,7 @@ class TabBar extends React.Component {
 
     render() {
         return (
-            <Tabs defaultActiveKey={1} id="uncontrolled-tab-example">
+            <Tabs bsStyle="pills" defaultActiveKey={1} id="uncontrolled-tab-example">
                 <Tab eventKey={1} title="Home"><Home/></Tab>
                 <Tab eventKey={2} title="Products"><Products/></Tab>
                 <Tab eventKey={3} title="Order & Delivery">Order and Del</Tab>

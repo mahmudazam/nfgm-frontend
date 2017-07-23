@@ -1,10 +1,9 @@
 import React from 'react';
 import TabBar from "./TabBar";
-import Well from 'react-bootstrap/lib/Well'
-
-
+import TopNavbar from './TopNavbar';
 
 class App extends React.Component {
+
   constructor() {
     super();
     this.state = {
@@ -15,7 +14,7 @@ class App extends React.Component {
   render() {
     return (
 		<div>
-	    <Well>Brand</Well>
+      <TopNavbar/>
 	    <div className="col-lg-12">
     	  <div className="col-lg-1"></div>
 	      <div className="col-lg-10">

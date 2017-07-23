@@ -1,5 +1,14 @@
 
+body {
+  background-color: #932B14;
+}
+
+#top-navbar {
+  border-radius: 0;
+}
+
 .myCarousel{
+    background-color: black;
     height: 50%;
     overflow: hidden;
     margin-left: 5%;
@@ -12,6 +21,10 @@
     margin-top: -2%;
     max-width: 60%;
     max-height: 100%;
+}
+
+#home-map {
+  background-color: black;
 }
 
 .home{
