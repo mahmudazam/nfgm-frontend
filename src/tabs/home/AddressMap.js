@@ -28,7 +28,7 @@ const PopUpInfoWindowExampleGoogleMap = withGoogleMap(props => (
       Successfully fired.
       */}
       {marker.showInfo && (
-        <InfoWindow>
+        <InfoWindow onCloseClick={() => props.onMarkerClose(marker)}>
           <div>{marker.infoContent}</div>
         </InfoWindow>
       )}
@@ -79,8 +79,7 @@ const PopUpInfoWindowExampleGoogleMap = withGoogleMap(props => (
     handleMarkerClick(targetMarker) {
       this.setState({
         markers: this.state.markers.map(marker => {
-          if (marker === targetMarker) {
-            console.log(marker.showInfo);
+          if (marker.position === targetMarker.position) {
             return {
               position : marker.position,
               showInfo : true,
@@ -95,8 +94,7 @@ const PopUpInfoWindowExampleGoogleMap = withGoogleMap(props => (
     handleMarkerClose(targetMarker) {
       this.setState({
         markers: this.state.markers.map(marker => {
-          if (marker === targetMarker) {
-            console.log(marker.showInfo);
+          if (marker.position === targetMarker.position) {
             return {
               position : marker.position,
               showInfo : false,
