@@ -1,13 +1,29 @@
 import React from 'react';
 import Button from 'react-bootstrap/lib/Button'
 import Panel from 'react-bootstrap/lib/Panel';
-import AddressMap from './AddressMap'
+import AddressMap from './AddressMap';
+import fire from '../../fire';
 
 class HomeLocation extends React.Component {
     constructor(props) {
         super(props);
-        this.state = {};
+        this.state = {
+          hours : []
+        };
         this.update = function (new_state) {this.setState({new_state})};
+    }
+
+    /**
+    * Loads the hours array with hours stored in Firebase database:
+    */
+    componentWillMount(){
+      // Get the reference to the database index of the image folder:
+      let hoursRef = fire.database().ref('assets/hours').orderByKey().limitToLast(100);
+      // Add every URL available in the index:
+      hoursRef.on('child_added', snapshot => {
+        let day = { dayName : snapshot.key, hours : snapshot.val() }
+        this.setState({ hours: this.state.hours.concat([day]) });
+      })
     }
 
     render() {
@@ -17,7 +33,9 @@ class HomeLocation extends React.Component {
 
                 <div className="col-lg-5">
                     <Panel header="Hours">
-                        Everyday : 09:00 am - 09:00 pm
+                      {this.state.hours.map((day) =>
+                          <p>{day.dayName} : {day.hours}</p>
+                      )}
                     </Panel>
                 </div>
 
