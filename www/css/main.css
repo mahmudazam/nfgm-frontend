@@ -1,16 +1,19 @@
 
 body {
+    font-family: courier;
+    background-image: url("../img/background.jpg");
+    background-attachment: fixed;
 }
 
 #top-navbar {
   border-radius: 0;
-  padding-top: 1.5%;
+  padding-top: 1.2%;
   height: 10%;
   font-size: 20px;
 }
 
 #navbar-brand {
-    margin-left: -30%;
+    margin-left: -25%;
     font-size: 30px;
 }
 
