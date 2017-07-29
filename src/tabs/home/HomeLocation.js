@@ -34,7 +34,7 @@ class HomeLocation extends React.Component {
                 <div className="col-lg-5">
                     <Panel header="Hours">
                       {this.state.hours.map((day) =>
-                          <p>{day.dayName} : {day.hours}</p>
+                          <p key={day.dayName}>{day.dayName} : {day.hours}</p>
                       )}
                     </Panel>
                 </div>

@@ -2,12 +2,9 @@
  * Created by tayabsoomro on 2017-07-07.
  */
 import React from 'react';
-import Tabs from 'react-bootstrap/lib/Tabs'
-import Tab from 'react-bootstrap/lib/Tab'
+import { Tab, Nav, NavItem, Col, Row } from 'react-bootstrap/lib/'
 import Home from './tabs/home/Home'
 import Products from './tabs/products/Products'
-
-
 
 class TabBar extends React.Component {
     constructor() {
@@ -19,12 +16,24 @@ class TabBar extends React.Component {
 
     render() {
         return (
-            <Tabs bsStyle="pills" defaultActiveKey={1} id="uncontrolled-tab-example">
-                <Tab eventKey={1} title="Home"><Home/></Tab>
-                <Tab eventKey={2} title="Products"><Products/></Tab>
-                <Tab eventKey={3} title="Order & Delivery">Order and Del</Tab>
-                <Tab eventKey={4} title="Contact">Contact</Tab>
-            </Tabs>
+          <Tab.Container id="tab-container" defaultActiveKey="home">
+            <Row>
+              <Col sm={12}>
+                <Nav className="tabs" bsStyle="tabs">
+                  <NavItem eventKey="home">Home</NavItem>
+                  <NavItem eventKey="products">Products</NavItem>
+                  <NavItem eventKey="contact">Contact</NavItem>
+                </Nav>
+              </Col>
+              <Col sm={12}>
+                <Tab.Content>
+                    <Tab.Pane eventKey="home"><Home/></Tab.Pane>
+                    <Tab.Pane eventKey="products"><Products/></Tab.Pane>
+                    <Tab.Pane eventKey="contact">Contact</Tab.Pane>
+                </Tab.Content>
+              </Col>
+            </Row>
+          </Tab.Container>
         );
     }
 }

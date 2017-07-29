@@ -1,10 +1,25 @@
 
 body {
-  background-color: #932B14;
 }
 
 #top-navbar {
   border-radius: 0;
+  padding-top: 1.5%;
+  height: 10%;
+  font-size: 20px;
+}
+
+#navbar-brand {
+    margin-left: -30%;
+    font-size: 30px;
+}
+
+#top-right-nav {
+    margin-right: -10%;
+}
+
+.tabs {
+    font-size: 25px;
 }
 
 .myCarousel{
@@ -18,8 +33,10 @@ body {
 .carousel-img{
     margin-right: auto;
     margin-left: auto;
-    width: 60%;
+    margin-top: auto;
+    margin-bottom: auto;
     height: 100%;
+    width: 70%;
 }
 
 #home-map-panel {
