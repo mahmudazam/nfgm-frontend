@@ -2,7 +2,6 @@ import React from 'react';
 import { Button , Col , Row , Panel , FormGroup , ControlLabel , FormControl , HelpBlock }
   from 'react-bootstrap/lib';
 import fire from '../../fire';
-import MessageForm from './MessageForm';
 
 class Contact extends React.Component {
     constructor(props) {
@@ -30,24 +29,30 @@ class Contact extends React.Component {
 
     render() {
         return(
-          <div className="col-sm-12 major-content">
-            <div className="col-sm-6">
-              <Panel header="Contact">
-                <div className="col-sm-12 address-panel">
-                  <a target="_blank" href="https://www.google.ca/maps/place/Natural+Fresh+Meat/@52.1300124,-106.680819,17z/data=!3m1!4b1!4m5!3m4!1s0x5304f726767579f7:0x80a086221c7d8431!8m2!3d52.1300124!4d-106.6786303">
-                    <p>4-606 22nd St West</p>
-                    <p>Saskatoon</p>
-                    <p>SK S7M 5W1</p>
-                  </a>
-                  <p>Phone:</p>
-                  {this.state.ph.map((num) =>
-                    <p><a href={"tel:" + num}>num</a></p>
-                  )}
-                </div>
+            <div className={this.props.size}>
+              <Panel header="Email or Text Us">
+                <form>
+                  <FormGroup controlId="formValidationSuccess1">
+                    <ControlLabel>First Name</ControlLabel>
+                    <FormControl type="text" />
+                  </FormGroup>
+                  <FormGroup controlId="formValidationWarning1">
+                    <ControlLabel>Last Name</ControlLabel>
+                    <FormControl type="text" />
+                  </FormGroup>
+                  <FormGroup controlId="formValidationWarning2">
+                    <ControlLabel>Email Address</ControlLabel>
+                    <FormControl type="text" />
+                  </FormGroup>
+                  <FormGroup controlId="formControlsTextarea">
+                    <ControlLabel>Message</ControlLabel>
+                    <FormControl componentClass="textarea" className="resize-y" rows="10"
+                      placeholder="Type your message here" />
+                  </FormGroup>
+                  <Button type="submit">Submit</Button>
+                </form>
               </Panel>
             </div>
-            <MessageForm size="col-sm-6"/>
-          </div>
         )
     }
 };
