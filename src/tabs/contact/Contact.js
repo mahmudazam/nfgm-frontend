@@ -65,6 +65,7 @@ class Contact extends React.Component {
                     <FormControl componentClass="textarea" className="resize-y" rows="10"
                       placeholder="Type your message here" />
                   </FormGroup>
+                  <Button type="submit">Submit</Button>
                 </form>
               </Panel>
             </div>
