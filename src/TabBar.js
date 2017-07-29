@@ -2,9 +2,10 @@
  * Created by tayabsoomro on 2017-07-07.
  */
 import React from 'react';
-import { Tab, Nav, NavItem, Col, Row } from 'react-bootstrap/lib/'
-import Home from './tabs/home/Home'
-import Products from './tabs/products/Products'
+import { Tab, Nav, NavItem, Col, Row } from 'react-bootstrap/lib/';
+import Home from './tabs/home/Home';
+import Products from './tabs/products/Products';
+import Contact from './tabs/contact/Contact';
 
 class TabBar extends React.Component {
     constructor() {
@@ -29,7 +30,7 @@ class TabBar extends React.Component {
                 <Tab.Content>
                     <Tab.Pane eventKey="home"><Home/></Tab.Pane>
                     <Tab.Pane eventKey="products"><Products/></Tab.Pane>
-                    <Tab.Pane eventKey="contact">Contact</Tab.Pane>
+                    <Tab.Pane eventKey="contact"><Contact/></Tab.Pane>
                 </Tab.Content>
               </Col>
             </Row>

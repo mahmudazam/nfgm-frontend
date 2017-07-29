@@ -22,6 +22,7 @@ body {
 }
 
 .tabs {
+    background-color: #DFDFDE;
     font-size: 25px;
 }
 
@@ -46,7 +47,7 @@ body {
   background-color: black;
 }
 
-.home{
+.major-content {
     margin-top: 2%;
 }
 

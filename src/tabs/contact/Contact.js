@@ -2,7 +2,7 @@ import React from 'react';
 import { Jumbotron, Button , Col , Row } from 'react-bootstrap/lib';
 import fire from '../../fire';
 
-class Products extends React.Component {
+class Contact extends React.Component {
     constructor(props) {
         super(props);
         this.state = { messages: [] };
@@ -31,7 +31,8 @@ class Products extends React.Component {
           <div className="col-sm-12 major-content">
             <Jumbotron className="col-sm-12">
               <h1>Coming Soon</h1>
-              <p>This will be like an online shop</p>
+              <p>This will be a description of contact information
+                  and a form for email/sms to the store</p>
               <p><Button bsStyle="primary">Functionality</Button></p>
             </Jumbotron>
           </div>
@@ -39,4 +40,4 @@ class Products extends React.Component {
     }
 };
 
-export default Products;
+export default Contact;
