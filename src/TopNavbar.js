@@ -13,10 +13,10 @@ class TopNavbar extends React.Component {
       <Navbar id="top-navbar">
         <Navbar.Header>
           <Navbar.Brand>
-            <a id="navbar-brand" href="#">Natural Fresh Grocery & Meat</a>
+            <a href="#" className="navbar-brand" >Natural Fresh Grocery & Meat</a>
           </Navbar.Brand>
         </Navbar.Header>
-        <Nav className="pull-right" id="top-right-nav">
+        <Nav className="pull-right" >
           <NavItem eventKey={1} href="#">Link</NavItem>
           <NavItem eventKey={2} href="#">Link</NavItem>
           <NavDropdown eventKey={3} title="Dropdown" id="basic-nav-dropdown">

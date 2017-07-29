@@ -48,7 +48,6 @@ class HomeCarousel extends React.Component {
   render() {
     return(
       <div className="col-lg-12 carouselWrapper">
-      <Well>NEWS:</Well>
       <Carousel className="myCarousel">
       {
         // Map the array of URLs to Carousel items with img tags
