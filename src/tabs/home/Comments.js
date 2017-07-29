@@ -10,11 +10,13 @@ class Comments extends React.Component {
     render() {
         return(
           <div className="col-lg-12">
-            <div className="col-lg-1"/>
-            <Panel header="Comments" className="col-lg-10">
-              <div className="fb-comments col-lg-12" data-href="https://localhost:3000" data-numposts="5"></div>
-            </Panel>
-            <div className="col-lg-1"/>
+            <div className="col-sm-1"/>
+            <div className="col-sm-10">
+              <Panel header="Comments">
+                <div className="fb-comments col-lg-12" data-href="https://exim-food.firebaseapp.com" data-numposts="5"></div>
+              </Panel>
+            </div>
+            <div className="col-sm-1"/>
           </div>
         )
     }

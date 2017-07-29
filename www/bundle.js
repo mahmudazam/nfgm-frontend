@@ -66300,7 +66300,7 @@ var Comments = function (_React$Component) {
         _react2.default.createElement(
           _Panel2.default,
           { header: 'Comments', className: 'col-lg-10' },
-          _react2.default.createElement('div', { className: 'fb-comments col-lg-12', 'data-href': 'https://localhost:3000', 'data-numposts': '5' })
+          _react2.default.createElement('div', { className: 'fb-comments col-lg-12', 'data-href': 'https://exim-food.firebaseapp.com', 'data-numposts': '5' })
         ),
         _react2.default.createElement('div', { className: 'col-lg-1' })
       );

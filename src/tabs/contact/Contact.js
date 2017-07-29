@@ -1,11 +1,12 @@
 import React from 'react';
-import { Jumbotron, Button , Col , Row } from 'react-bootstrap/lib';
+import { Button , Col , Row , Panel , FormGroup , ControlLabel , FormControl , HelpBlock }
+  from 'react-bootstrap/lib';
 import fire from '../../fire';
 
 class Contact extends React.Component {
     constructor(props) {
         super(props);
-        this.state = { messages: [] };
+        this.state = { address: "", ph: ["num1","num2"] };
     }
 
     componentWillMount(){
@@ -29,12 +30,44 @@ class Contact extends React.Component {
     render() {
         return(
           <div className="col-sm-12 major-content">
-            <Jumbotron className="col-sm-12">
-              <h1>Coming Soon</h1>
-              <p>This will be a description of contact information
-                  and a form for email/sms to the store</p>
-              <p><Button bsStyle="primary">Functionality</Button></p>
-            </Jumbotron>
+            <div className="col-sm-6">
+              <Panel header="Contact">
+                <div className="col-sm-12 address-panel">
+                  <a target="_blank" href="https://www.google.ca/maps/place/Natural+Fresh+Meat/@52.1300124,-106.680819,17z/data=!3m1!4b1!4m5!3m4!1s0x5304f726767579f7:0x80a086221c7d8431!8m2!3d52.1300124!4d-106.6786303">
+                    <p>4-606 22nd St West</p>
+                    <p>Saskatoon</p>
+                    <p>SK S7M 5W1</p>
+                  </a>
+                  <p>Phone:</p>
+                  {this.state.ph.map((num) =>
+                    <p><a href={"tel:" + num}>num</a></p>
+                  )}
+                </div>
+              </Panel>
+            </div>
+            <div className="col-sm-6">
+              <Panel header="Email or Text Us">
+                <form>
+                  <FormGroup controlId="formValidationSuccess1">
+                    <ControlLabel>First Name</ControlLabel>
+                    <FormControl type="text" />
+                  </FormGroup>
+                  <FormGroup controlId="formValidationWarning1">
+                    <ControlLabel>Last Name</ControlLabel>
+                    <FormControl type="text" />
+                  </FormGroup>
+                  <FormGroup controlId="formValidationWarning2">
+                    <ControlLabel>Email Address</ControlLabel>
+                    <FormControl type="text" />
+                  </FormGroup>
+                  <FormGroup controlId="formControlsTextarea">
+                    <ControlLabel>Message</ControlLabel>
+                    <FormControl componentClass="textarea"
+                      placeholder="Type your message here" />
+                  </FormGroup>
+                </form>
+              </Panel>
+            </div>
           </div>
         )
     }
