@@ -26,32 +26,8 @@ body {
     font-size: 25px;
 }
 
-.myCarousel{
-    background-color: black;
-    height: 40%;
-    overflow: hidden;
-    margin-left: 5%;
-    margin-right: 5%;
-}
-
-.carousel-img{
-    margin-right: auto;
-    margin-left: auto;
-    margin-top: auto;
-    margin-bottom: auto;
-    height: 100%;
-    width: 70%;
-}
-
-#home-map-panel {
-  background-color: black;
-}
-
 .major-content {
     margin-top: 2%;
-}
-
-.carouselWrapper{
 }
 
 .run{
