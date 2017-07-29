@@ -31,15 +31,17 @@ class HomeLocation extends React.Component {
             <div className="col-lg-12">
                 <div className="col-lg-1"></div>
 
-                <div className="col-lg-5">
+                <div className="col-lg-5 sameheight">
                     <Panel header="Hours">
                       {this.state.hours.map((day) =>
                           <p key={day.dayName}>{day.dayName} : {day.hours}</p>
                       )}
+                      <div className="run"></div>
+                      <div className="walk"></div>
                     </Panel>
                 </div>
 
-                <div className="col-lg-5">
+                <div className="col-lg-5 sameheight">
                     <Panel id="home-map-panel" header="Location">
                         <AddressMap id="home-map" className="col-lg-12"/>
                     </Panel>

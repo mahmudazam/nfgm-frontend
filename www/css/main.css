@@ -23,6 +23,7 @@ body {
     margin-right: -10%;
 }
 
+
 .tabs {
     background-color: #DFDFDE;
     font-size: 100%;
@@ -42,4 +43,8 @@ body {
 
 .run{
     height: 50px;
+}
+
+.walk{
+    height: 32px;
 }
