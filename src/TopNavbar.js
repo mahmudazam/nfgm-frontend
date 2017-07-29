@@ -8,7 +8,7 @@ class TopNavbar extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      phone_number: "(306) 764-5467"
+      phone_number: "3067645467"
     }
   }
 
@@ -21,7 +21,7 @@ class TopNavbar extends React.Component {
           </Navbar.Brand>
         </Navbar.Header>
         <Nav className="pull-right">
-          <NavItem eventKey={1} href="#"><Glyphicon glyph="earphone"/> { this.state.phone_number }</NavItem>
+          <NavItem eventKey={1} href={ "tel:" + this.state.phone_number}><Glyphicon glyph="earphone"/> { this.state.phone_number }</NavItem>
 
         </Nav>
       </Navbar>
