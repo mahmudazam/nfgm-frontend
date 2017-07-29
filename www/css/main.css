@@ -24,6 +24,9 @@ body {
     margin-right: -10%;
 }
 
+.resize-y{
+    resize: vertical;
+}
 
 .tabs {
     background-color: #DFDFDE;

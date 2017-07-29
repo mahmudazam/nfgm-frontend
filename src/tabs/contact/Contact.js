@@ -62,7 +62,7 @@ class Contact extends React.Component {
                   </FormGroup>
                   <FormGroup controlId="formControlsTextarea">
                     <ControlLabel>Message</ControlLabel>
-                    <FormControl componentClass="textarea"
+                    <FormControl componentClass="textarea" className="resize-y" rows="10"
                       placeholder="Type your message here" />
                   </FormGroup>
                 </form>
