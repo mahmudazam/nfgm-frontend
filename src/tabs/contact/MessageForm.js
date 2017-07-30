@@ -1,7 +1,7 @@
 import React from 'react';
 import { Button , Col , Row , Panel , FormGroup , ControlLabel , FormControl , HelpBlock }
   from 'react-bootstrap/lib';
-import fire from '../../fire';
+import fire from '../../util/fire';
 
 class MessageForm extends React.Component {
     constructor(props) {
@@ -30,10 +30,7 @@ class MessageForm extends React.Component {
         event.preventDefault(); // <- prevent form submit from reloading the page
         let snapshot = this.state.values;
         this.setState({values: { fName: "",lName: "", eMail: "", message: "" }});
-        console.log(snapshot);
-        /* Send the message to Firebase */
-        // fire.database().ref('messages').push( this.inputEl.value );
-        // this.inputEl.value = '..'; // <- clear the input
+        console.log(JSON.stringify(snapshot));
     }
 
     handleChange(event) {

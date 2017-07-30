@@ -1,6 +1,6 @@
 import React from 'react';
 import { Jumbotron, Button , Col , Row } from 'react-bootstrap/lib';
-import fire from '../../fire';
+import fire from '../../util/fire';
 
 class Products extends React.Component {
     constructor(props) {

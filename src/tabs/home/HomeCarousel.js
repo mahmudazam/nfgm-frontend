@@ -13,7 +13,7 @@ import Carousel from 'react-bootstrap/lib/Carousel'
 import Well from 'react-bootstrap/lib/Well'
 
 // Firebase database control:
-import fire from '../../fire'
+import fire from '../../util/fire'
 
 /**
 * Models a Carousel capable of pulling images from Firebase storage:

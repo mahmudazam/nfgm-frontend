@@ -3,9 +3,9 @@
  */
 import React from 'react';
 import { Tab, Nav, NavItem, Col, Row } from 'react-bootstrap/lib/';
-import Home from './tabs/home/Home';
-import Products from './tabs/products/Products';
-import Contact from './tabs/contact/Contact';
+import Home from '../tabs/home/Home';
+import Products from '../tabs/products/Products';
+import Contact from '../tabs/contact/Contact';
 
 class TabBar extends React.Component {
     constructor() {

@@ -2,7 +2,7 @@ import React from 'react';
 import Button from 'react-bootstrap/lib/Button'
 import Panel from 'react-bootstrap/lib/Panel';
 import AddressMap from './AddressMap';
-import fire from '../../fire';
+import fire from '../../util/fire';
 
 class HomeLocation extends React.Component {
     constructor(props) {

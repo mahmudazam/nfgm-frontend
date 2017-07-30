@@ -1,7 +1,7 @@
 import React from 'react';
 import { Button , Col , Row , Panel , FormGroup , ControlLabel , FormControl , HelpBlock }
   from 'react-bootstrap/lib';
-import fire from '../../fire';
+import fire from '../../util/fire';
 import MessageForm from './MessageForm';
 
 class Contact extends React.Component {
