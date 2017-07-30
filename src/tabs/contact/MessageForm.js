@@ -6,7 +6,14 @@ import fire from '../../fire';
 class MessageForm extends React.Component {
     constructor(props) {
         super(props);
-        this.state = { address: "", ph: ["num1","num2"] };
+        this.state = {
+          values: {
+            fName: "",
+            lName: "",
+            eMail: "",
+            message: ""
+          }
+        };
     }
 
     componentWillMount(){
@@ -19,37 +26,58 @@ class MessageForm extends React.Component {
         })
     }
 
-    addMessage(e){
-        e.preventDefault(); // <- prevent form submit from reloading the page
+    sendMessage(event){
+        event.preventDefault(); // <- prevent form submit from reloading the page
+        let snapshot = this.state.values;
+        this.setState({values: { fName: "",lName: "", eMail: "", message: "" }});
+        console.log(snapshot);
         /* Send the message to Firebase */
-        fire.database().ref('messages').push( this.inputEl.value );
-        this.inputEl.value = '..'; // <- clear the input
+        // fire.database().ref('messages').push( this.inputEl.value );
+        // this.inputEl.value = '..'; // <- clear the input
     }
 
+    handleChange(event) {
+      let nodeId = event.target.id;
+      let nodeValue = event.target.value;
+      this.state.values[nodeId] = nodeValue;
+      this.setState(this.state);
+    }
 
     render() {
         return(
             <div className={this.props.size}>
               <Panel header="Send us a Message">
-                <form>
-                  <FormGroup controlId="formValidationSuccess1">
+                <form onSubmit={this.sendMessage.bind(this)}>
+                  <FormGroup controlId="fName">
                     <ControlLabel>First Name</ControlLabel>
-                    <FormControl type="text" />
+                    <FormControl type="text"
+                      value={this.state.values.fName}
+                      onChange={this.handleChange.bind(this)}
+                    />
                   </FormGroup>
-                  <FormGroup controlId="formValidationWarning1">
+                  <FormGroup controlId="lName">
                     <ControlLabel>Last Name</ControlLabel>
-                    <FormControl type="text" />
+                    <FormControl type="text"
+                      value={this.state.values.lName}
+                      onChange={this.handleChange.bind(this)}
+                    />
                   </FormGroup>
-                  <FormGroup controlId="formValidationWarning2">
+                  <FormGroup controlId="eMail">
                     <ControlLabel>Email Address</ControlLabel>
-                    <FormControl type="text" />
+                    <FormControl type="text"
+                      value={this.state.values.eMail}
+                      onChange={this.handleChange.bind(this)}
+                    />
                   </FormGroup>
-                  <FormGroup controlId="formControlsTextarea">
+                  <FormGroup controlId="message">
                     <ControlLabel>Message</ControlLabel>
                     <FormControl componentClass="textarea" className="resize-y" rows="10"
-                      placeholder="Type your message here" />
+                      placeholder="Type your message here"
+                      value={this.state.values.message}
+                      onChange={this.handleChange.bind(this)}
+                    />
                   </FormGroup>
-                  <Button type="submit">Submit</Button>
+                  <Button type="submit">Send</Button>
                 </form>
               </Panel>
             </div>

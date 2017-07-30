@@ -7,26 +7,14 @@ import MessageForm from './MessageForm';
 class Contact extends React.Component {
     constructor(props) {
         super(props);
-        this.state = { address: "", ph: ["num1","num2"] };
+        this.state = {
+          address: "",
+          ph: [
+            { id: "num1" , value: "+13069546328" },
+            { id: "num2" , value: "+13069546328" }
+          ]
+        };
     }
-
-    componentWillMount(){
-        /* Create reference to messages in Fire base Database */
-        let messagesRef = fire.database().ref('messages').orderByKey().limitToLast(100);
-        messagesRef.on('child_added', snapshot => {
-            /* Update React state when message is added at Fire base Database */
-            let message = { text: snapshot.val(), id: snapshot.key };
-            this.setState({ messages: [message].concat(this.state.messages) });
-        })
-    }
-
-    addMessage(e){
-        e.preventDefault(); // <- prevent form submit from reloading the page
-        /* Send the message to Firebase */
-        fire.database().ref('messages').push( this.inputEl.value );
-        this.inputEl.value = '..'; // <- clear the input
-    }
-
 
     render() {
         return(
@@ -41,7 +29,7 @@ class Contact extends React.Component {
                   </a>
                   <p>Phone:</p>
                   {this.state.ph.map((num) =>
-                    <p><a href={"tel:" + num}>num</a></p>
+                    <p key={num.id}><a href={"tel:" + num.value}>{num.value}</a></p>
                   )}
                 </div>
               </Panel>
