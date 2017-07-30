@@ -3,7 +3,7 @@ import { Button , Col , Row , Panel , FormGroup , ControlLabel , FormControl , H
   from 'react-bootstrap/lib';
 import fire from '../../fire';
 
-class Contact extends React.Component {
+class MessageForm extends React.Component {
     constructor(props) {
         super(props);
         this.state = { address: "", ph: ["num1","num2"] };
@@ -30,7 +30,7 @@ class Contact extends React.Component {
     render() {
         return(
             <div className={this.props.size}>
-              <Panel header="Email or Text Us">
+              <Panel header="Send us a Message">
                 <form>
                   <FormGroup controlId="formValidationSuccess1">
                     <ControlLabel>First Name</ControlLabel>
@@ -57,4 +57,4 @@ class Contact extends React.Component {
     }
 };
 
-export default Contact;
+export default MessageForm;
