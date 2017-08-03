@@ -5,6 +5,8 @@ const webpackConfig = require('./webpack.config.js');
 const fs = require('fs');
 const https = require('https');
 const http = require('http');
+const querystring = require('querystring');
+const bodyParser = require('body-parser');
 const app = express();
 
 const compiler = webpack(webpackConfig);
@@ -19,7 +21,14 @@ app.use(webpackDevMiddleware(compiler, {
   historyApiFallback: true,
 }));
 
+app.use(bodyParser.urlencoded({extended: false}));
+app.use(bodyParser.json());
+
 app.use(express.static(__dirname + '/www'));
+app.post('/', function(req, res) {
+  console.log(req.body);
+  res.send('POST Received');
+});
 
 https_server = https.createServer({
   key: fs.readFileSync('src/ssl/key.pem'),
