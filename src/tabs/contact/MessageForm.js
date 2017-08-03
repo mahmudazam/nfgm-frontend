@@ -2,16 +2,17 @@ import React from 'react';
 import { Button , Col , Row , Panel , FormGroup , ControlLabel , FormControl , HelpBlock }
   from 'react-bootstrap/lib';
 import fire from '../../util/fire';
+import * as req from '../../util/HTTPSReq';
 
 class MessageForm extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
           values: {
-            fName: "",
-            lName: "",
-            eMail: "",
-            message: ""
+            fName: "Hello",
+            lName: "World",
+            eMail: "hello.world@example.com",
+            message: "Hello World"
           }
         };
     }
@@ -30,7 +31,7 @@ class MessageForm extends React.Component {
         event.preventDefault(); // <- prevent form submit from reloading the page
         let snapshot = this.state.values;
         this.setState({values: { fName: "",lName: "", eMail: "", message: "" }});
-        console.log(JSON.stringify(snapshot));
+        req.post(snapshot);
     }
 
     handleChange(event) {
