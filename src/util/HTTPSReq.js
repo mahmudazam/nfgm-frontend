@@ -29,7 +29,7 @@ import querystring from 'querystring';
     req.end();
   }
 
-  export function post(data, success, error) {
+  export function post(data, url, success, error) {
     let postData = querystring.stringify(data);
 
     let opt = JSON.parse(JSON.stringify(this.options));
@@ -38,6 +38,7 @@ import querystring from 'querystring';
       'Content-Type': 'application/x-www-form-urlencoded',
       'Content-Length': Buffer.byteLength(postData)
     };
+    opt['path'] = url;
 
     const req = https.request(opt, (res) => {
       console.log(`STATUS: ${res.statusCode}`);

@@ -9,10 +9,10 @@ class MessageForm extends React.Component {
         super(props);
         this.state = {
           values: {
-            fName: "Hello",
-            lName: "World",
-            eMail: "hello.world@example.com",
-            message: "Hello World"
+            fName: "Mahmud",
+            lName: "Azam",
+            eMail: "mahmudfasihulazam@gmail.com",
+            message: "Hello"
           }
         };
     }
@@ -31,7 +31,7 @@ class MessageForm extends React.Component {
         event.preventDefault(); // <- prevent form submit from reloading the page
         let snapshot = this.state.values;
         this.setState({values: { fName: "",lName: "", eMail: "", message: "" }});
-        req.post(snapshot);
+        req.post(snapshot, '/customer_email');
     }
 
     handleChange(event) {
