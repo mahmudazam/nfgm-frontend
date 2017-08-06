@@ -21,6 +21,7 @@ var defaultEmailToCustomer = function (fName) {
       + "We will get back to you as soon as possible."
   });
 }
+
 var emailToStorePersonnel = function(emailObj) {
   return ({
     subject: "Website Email from " + emailObj.fName + " " + emailObj.lName,
@@ -31,6 +32,7 @@ var emailToStorePersonnel = function(emailObj) {
 
 const storePersonnelEmail = [ 'tafique05@yahoo.com' , 'eximfoodinc@gmail.com' ];
 
+// Express configurations:
 app.use(webpackDevMiddleware(compiler, {
   hot: true,
   filename: 'bundle.js',
@@ -43,15 +45,18 @@ app.use(webpackDevMiddleware(compiler, {
 
 app.use(bodyParser.urlencoded({extended: false}));
 app.use(bodyParser.json());
+app.use(bodyParser.json({limit : '3mb'}));
 
 app.use(express.static(__dirname + '/www'));
+
+// Handle POST Requests:
 app.post('/customer_email', function(req, res) {
   // Respond to customer with a default email :
   email.sendEmail([req.body.eMail], defaultEmailToCustomer(req.body.fName));
   // Forward email to store personnel :
   email.sendEmail(storePersonnelEmail, emailToStorePersonnel(req.body))
   // Respond to browser :
-  res.send('Email Received');
+  res.send('Email Received: ');
 });
 
 https_server = https.createServer({

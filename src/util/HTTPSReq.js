@@ -11,6 +11,8 @@ import querystring from 'querystring';
       agent: false
   };
 
+  const MAX_MESSAGE = 3145728;
+
   export function get(success, error) {
     let opt = JSON.parse(JSON.stringify(this.options));
     opt['method'] = 'GET';
@@ -39,7 +41,9 @@ import querystring from 'querystring';
       'Content-Length': Buffer.byteLength(postData)
     };
     opt['path'] = url;
-
+    if(opt.headers['Content-Length'] > MAX_MESSAGE) {
+      error("Message length exceeded");
+    }
     const req = https.request(opt, (res) => {
       console.log(`STATUS: ${res.statusCode}`);
       console.log(`HEADERS: ${JSON.stringify(res.headers)}`);
@@ -49,6 +53,7 @@ import querystring from 'querystring';
       });
       res.on('end', () => {
         console.log('No more data in response.');
+        success();
       });
     });
 

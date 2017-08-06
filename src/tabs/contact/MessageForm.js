@@ -1,13 +1,26 @@
 import React from 'react';
-import { Button , Col , Row , Panel , FormGroup , ControlLabel , FormControl , HelpBlock }
+import { ButtonToolbar, Button , Col , Row , Panel , FormGroup , ControlLabel , FormControl , HelpBlock }
   from 'react-bootstrap/lib';
 import fire from '../../util/fire';
 import * as req from '../../util/HTTPSReq';
+
+const emptyState = {
+  processing: false,
+  status: "",
+  values: {
+    fName: "",
+    lName: "",
+    eMail: "",
+    message: ""
+  }
+}
 
 class MessageForm extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
+          processing: false,
+          status : "",
           values: {
             fName: "Mahmud",
             lName: "Azam",
@@ -15,6 +28,10 @@ class MessageForm extends React.Component {
             message: "Hello"
           }
         };
+    }
+
+    defaultState() {
+      return JSON.parse(JSON.stringify(emptyState));
     }
 
     componentWillMount(){
@@ -30,8 +47,23 @@ class MessageForm extends React.Component {
     sendMessage(event){
         event.preventDefault(); // <- prevent form submit from reloading the page
         let snapshot = this.state.values;
-        this.setState({values: { fName: "",lName: "", eMail: "", message: "" }});
-        req.post(snapshot, '/customer_email');
+        // No empty fields allowed :
+        if(!(snapshot.fName
+              && snapshot.lName
+              && snapshot.eMail
+              && snapshot.message)) {
+          this.setState({...this.state, status: "Please fill all fields"});
+          return;
+        }
+        // Show loading if request has not been completed:
+        this.setState({ ...this.state, processing: true});
+        req.post(snapshot, '/customer_email',
+          (function() {
+            this.setState({
+              ...this.defaultState(),
+              status: "Message sent. Thank you"
+            });
+          }).bind(this));
     }
 
     handleChange(event) {
@@ -42,6 +74,22 @@ class MessageForm extends React.Component {
     }
 
     render() {
+      if(this.state.processing) {
+        return (
+          <div className={this.props.size}>
+            <Panel header="Send us a Message">
+              <Row>
+                <img src="./img/loading.gif"/>
+              </Row>
+              <Row>
+                <h3 className="col-sm-4">
+                  Processing your request, please wait
+                </h3>
+              </Row>
+            </Panel>
+          </div>
+        );
+      } else {
         return(
             <div className={this.props.size}>
               <Panel header="Send us a Message">
@@ -74,12 +122,21 @@ class MessageForm extends React.Component {
                       value={this.state.values.message}
                       onChange={this.handleChange.bind(this)}
                     />
+                    <FormControl.Feedback />
+                    <HelpBlock>{this.state.status}</HelpBlock>
                   </FormGroup>
-                  <Button type="submit">Send</Button>
+                  <ButtonToolbar>
+                    <Button type="submit">Send</Button>
+                    <Button onClick={() =>
+                        this.setState(this.defaultState())}>
+                      Reset
+                    </Button>
+                  </ButtonToolbar>
                 </form>
               </Panel>
             </div>
         )
+      }
     }
 };
 
