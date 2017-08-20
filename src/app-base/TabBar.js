@@ -20,7 +20,7 @@ class TabBar extends React.Component {
           <Tab.Container id="tab-container" defaultActiveKey="home">
             <Row>
               <Col sm={12}>
-                <Nav className="tabs" bsStyle="tabs">
+                <Nav className="tabs" bsStyle="pills">
                   <NavItem eventKey="home">Home</NavItem>
                   <NavItem eventKey="products">Products</NavItem>
                   <NavItem eventKey="contact">Contact</NavItem>

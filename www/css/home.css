@@ -6,8 +6,7 @@
     background-color: black;
     height: 40%;
     overflow: hidden;
-    margin-left: 5%;
-    margin-right: 5%;
+    
 }
 
 .carousel-img{
@@ -17,6 +16,10 @@
     margin-bottom: auto;
     height: 100%;
     width: 70%;
+}
+
+.facebook {
+  background-color: black;
 }
 
 #home-map-panel {

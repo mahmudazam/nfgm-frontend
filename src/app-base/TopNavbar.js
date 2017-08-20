@@ -2,6 +2,7 @@
 import React from 'react';
 import { Navbar, Nav, NavItem, NavDropdown, MenuItem} from 'react-bootstrap';
 import Glyphicon from 'react-bootstrap/lib/Glyphicon';
+import { formatPhoneNumber } from '../util/string_format';
 
 class TopNavbar extends React.Component {
 
@@ -10,18 +11,6 @@ class TopNavbar extends React.Component {
     this.state = {
       phone_number: "+13069546328"
     }
-  }
-
-  formatPhoneNumber(num) {
-    let start = 0;
-    if(num.charAt(0) === '+') {
-      num = num.substring(0 , 2) // +a
-            + ' (' + num.substring(2 , 5) + ') ' // _(bbb)_
-            + num.substring(5 , 8) + '-' // ccc-
-            + num.substring(8 , 12) // dddd
-            // num = +a (bbb) ccc-dddd
-    }
-    return num;
   }
 
   render() {
@@ -35,7 +24,7 @@ class TopNavbar extends React.Component {
         <Nav className="pull-right">
           <NavItem eventKey={1} href={ "tel:" + this.state.phone_number}>
             <Glyphicon glyph="earphone"/>
-            { ' ' + this.formatPhoneNumber(this.state.phone_number) }
+            { ' ' + formatPhoneNumber(this.state.phone_number) }
           </NavItem>
 
         </Nav>
