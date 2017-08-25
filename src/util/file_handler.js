@@ -20,6 +20,10 @@ const gcs = require('@google-cloud/storage')({
 
 const bucket = gcs.bucket(bucketName);
 
+// DB_Auth:
+const DB_EMAIL = process.env.NFGM_ADDRESS;
+const DB_PASS = process.env.NFGM_DB_PASS;
+
 /**
  * Pushes the URL of file in Firebase storage to the Firebase database
  * @param {String} readPath - path to the file to push
@@ -32,13 +36,25 @@ function pushAssetInfo(keyName, refPath, assetInfo) {
 	if(refPath !== "") {
 		refPath = path.normalize(refPath);
 	}
+	let promise = null;
+	// Sign in to Firebase for making changes to the database:
+	fire.auth().signInWithEmailAndPassword(DB_EMAIL, DB_PASS).then(function() {
+		let user = fire.auth().currentUser;
 
-	// Create database node for file :
-	dbPath = path.normalize('assets/' + refPath + '/'
-			+ assetInfo[keyName].replace('.' , '_'));
-	dbRef = fire.database().ref(dbPath);
-	Object.keys(assetInfo).map((key) => {
-		dbRef.child(key).set(assetInfo[key]);
+		// Create database node for file :
+		dbPath = path.normalize('/assets/' + refPath + '/'
+				+ assetInfo[keyName].replace('.' , '_'));
+		dbRef = fire.database().ref(dbPath);
+
+		// Push to database:
+		dbRef.set(assetInfo).then(function() {
+			// Sign out of Firebase database after the push completes:
+			fire.auth().signOut().then(function() { return; }).catch(function(error) {
+				console.log("Error Code: %s\nError: %s", error.code, error.message);
+			});
+		});
+	}).catch(function(error) {
+			console.log("Error Code: %s\nError: %s", error.code, error.message);
 	});
 }
 
@@ -87,6 +103,14 @@ function pushAsset(readPath, refPath, keyName, assetInfo) {
 }
 
 // Entry point for testing :
+
+// fire.database().ref('/FQWGucYy9EOGUQddRzkzWDrtiPe2/assets').once('value').
+// 	then(function(snapshot) {
+// 		fire.auth().signInWithEmailAndPassword(DB_EMAIL, DB_PASS).then(function() {
+// 			fire.database().ref('/assets').set(snapshot.val());
+// 			fire.auth().signOut().then(function() { return; });
+// 		});
+// 	});
 
 // Pushing images to database:
 pushAsset('../../assets/img/exim-food-item-img/Beef/Beef 1.jpg', '/items',

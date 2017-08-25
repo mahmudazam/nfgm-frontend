@@ -1,6 +1,8 @@
 {
   "rules": {
-    ".read": "true",
-    ".write": "true"
+    "assets": {
+      	".read": "true",
+        ".write": "'FQWGucYy9EOGUQddRzkzWDrtiPe2' === auth.uid"
+    }
   }
 }
