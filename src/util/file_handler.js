@@ -28,10 +28,10 @@ const DB_PASS = process.env.NFGM_DB_PASS;
  * Pushes the URL of file in Firebase storage to the Firebase database
  * @param {String} readPath - path to the file to push
  * @param {String} refPath - the Firebase storage location to store the file
- * @param {String} storage_url - the URL of the Firebase storage location
  * @param {Object} assetInfo - additional information about the asset
+ * @param {boolean} key_redundant - whether or not to keep the key as a field
 */
-function pushAssetInfo(keyName, refPath, assetInfo) {
+function pushAssetInfo(keyName, refPath, assetInfo, key_redundant) {
 	// Create path names:
 	if(refPath !== "") {
 		refPath = path.normalize(refPath);
@@ -47,6 +47,7 @@ function pushAssetInfo(keyName, refPath, assetInfo) {
 		dbRef = fire.database().ref(dbPath);
 
 		// Push to database:
+		if(key_redundant) assetInfo[keyName] = null;
 		dbRef.set(assetInfo).then(function() {
 			// Sign out of Firebase database after the push completes:
 			fire.auth().signOut().then(function() { return; }).catch(function(error) {
@@ -97,7 +98,7 @@ function pushAsset(readPath, refPath, keyName, assetInfo) {
 			// An index for the file is added to the database:
 			infoWithURL = JSON.parse(JSON.stringify(assetInfo));
 			infoWithURL.storage_urls = URL;
-			pushAssetInfo(keyName, refPath , infoWithURL);
+			pushAssetInfo(keyName, refPath , infoWithURL, true);
 		}
 	);
 }
@@ -113,12 +114,57 @@ function pushAsset(readPath, refPath, keyName, assetInfo) {
 // 	});
 
 // Pushing images to database:
-pushAsset('../../assets/img/exim-food-item-img/Beef/Beef 1.jpg', '/items',
-	'Item_Name',
-	{
-		Item_Name: 'Beef',
-		Price: 5.99,
-		Unit: 'kg',
-		Description: 'Fresh beef from the farms',
-		Sale: ''
-	});
+if('TEST' === process.argv[2]) {
+	pushAssetInfo('itemName', '/categories', {
+		itemName: 'Meat',
+		items: ['Beef', 'Chicken']
+	}, true);
+	pushAssetInfo('itemName', '/categories', {
+		itemName: 'Vegetables',
+		items: ['Carrots', 'Cauliflower']
+	}, true);
+	pushAsset('../../assets/img/exim-food-item-img/Beef/Beef 1.jpg',
+		'/items',
+		'Item_Name',
+		{
+			Item_Name: 'Beef',
+			Price: 5.99,
+			Unit: 'kg',
+			Description: 'Fresh beef from the farms',
+			Sale: ''
+		});
+
+  pushAsset('../../assets/img/exim-food-item-img/Chicken/whole Chicken.jpg',
+		'/items',
+		'Item_Name',
+		{
+			Item_Name: 'Chicken',
+			Price: 4.99,
+			Unit: 'kg',
+			Description: 'Fresh chicken from the farms',
+			Sale: ''
+		});
+
+		pushAsset('../../assets/img/exim-food-item-img/Beef/Beef 1.jpg',
+			'/items',
+			'Item_Name',
+			{
+				Item_Name: 'Carrots',
+				Price: 2.50,
+				Unit: 'kg',
+				Description: 'Fresh colourful carrots',
+				Sale: ''
+			});
+
+			pushAsset('../../assets/img/exim-food-item-img/Beef/Beef 1.jpg',
+				'/items',
+				'Item_Name',
+				{
+					Item_Name: 'Cauliflower',
+					Price: 5.00,
+					Unit: 'kg',
+					Description: 'Fresh clean Cauliflower',
+					Sale: ''
+				});
+
+}

@@ -8,6 +8,7 @@ const http = require('http');
 const querystring = require('querystring');
 const bodyParser = require('body-parser');
 const email = require('./src/util/email');
+const asset_handler = require('./src/util/file_handler');
 const app = express();
 
 const compiler = webpack(webpackConfig);
