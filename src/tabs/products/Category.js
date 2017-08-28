@@ -24,7 +24,6 @@ class Category extends React.Component {
           name: item.key,
           info: item.val()
         }
-        console.log(loadedItem);
         this.setState({
           loading: false,
           itemList: this.state.itemList.concat([loadedItem])

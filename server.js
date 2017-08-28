@@ -23,7 +23,7 @@ var defaultEmailToCustomer = function (fName) {
   });
 }
 
-var emailToStorePersonnel = function(emailObj) {
+const emailToStorePersonnel = function(emailObj) {
   return ({
     subject: "Website Email from " + emailObj.fName + " " + emailObj.lName,
     body: "Email Address of Customer: " +  emailObj.eMail + "\n" +
