@@ -44,18 +44,20 @@ class Products extends React.Component {
 
   render() {
     return (
-      <PanelGroup
-            activeKey={this.state.categoryList[this.state.activeKey]}
-            onSelect={this.handleSelect.bind(this)}
-            accordion>
-        {
-          this.state.categoryList.map(category =>
-            <Panel key={category} header={category} eventKey={category}>
-              <Category categoryName={category}/>
-            </Panel>
-          )
-        }
-      </PanelGroup>
+      <div className='major-content col-sm-12'>
+        <PanelGroup
+              activeKey={this.state.categoryList[this.state.activeKey]}
+              onSelect={this.handleSelect.bind(this)}
+              accordion>
+          {
+            this.state.categoryList.map(category =>
+              <Panel key={category} header={category} eventKey={category}>
+                <Category categoryName={category}/>
+              </Panel>
+            )
+          }
+        </PanelGroup>
+      </div>
     );
   }
 }
