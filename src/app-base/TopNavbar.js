@@ -3,6 +3,8 @@ import React from 'react';
 import { Navbar, Nav, NavItem, NavDropdown, MenuItem} from 'react-bootstrap';
 import Glyphicon from 'react-bootstrap/lib/Glyphicon';
 import { formatPhoneNumber } from '../util/string_format';
+import { Route } from 'react-router-dom';
+import { LinkContainer } from 'react-router-bootstrap/lib';
 
 class TopNavbar extends React.Component {
 
@@ -26,10 +28,11 @@ class TopNavbar extends React.Component {
             <Glyphicon glyph="earphone"/>
             { ' ' + formatPhoneNumber(this.state.phone_number) }
           </NavItem>
-
+          <LinkContainer to='/admin'>
+            <NavItem>Login</NavItem>
+          </LinkContainer>
         </Nav>
       </Navbar>
-
     );
   }
 

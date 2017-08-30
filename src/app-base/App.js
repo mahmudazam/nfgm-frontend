@@ -1,28 +1,29 @@
 import React from 'react';
-import TabBar from "./TabBar";
 import TopNavbar from './TopNavbar';
+import TabBar from './TabBar';
+import { Redirect, Route } from 'react-router-dom';
+import fire from '../util/fire';
+
+const LoginPage = () => (<div>Login Page</div>);
+
+const HomeRedirect = () => (<Redirect to='/home'/>);
 
 class App extends React.Component {
 
-  constructor() {
-    super();
-    this.state = {
-      count: 0,
-    };
+  constructor(props) {
+    super(props);
   }
 
   render() {
     return (
-		<div>
-      <TopNavbar/>
-	    <div className="col-lg-12">
-    	  <div className="col-lg-1"></div>
-	      <div className="col-lg-10">
-	        <TabBar/>
-	      </div>
-	      <div className="col-lg-1"></div>
-	    </div>
-	    </div>
+  		<div>
+        <TopNavbar/>
+        <Route exact path='/' component={HomeRedirect}/>
+        <Route exact path='/admin' component={LoginPage}/>
+        <Route path='/home' component={TabBar}/>
+        <Route path='/products' component={TabBar}/>
+        <Route path='/contact' component={TabBar}/>
+  	  </div>
     );
   }
 }

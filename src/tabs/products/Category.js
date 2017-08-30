@@ -32,7 +32,7 @@ class Category extends React.Component {
     })
   }
 
-  componentWillMount() {
+  componentDidMount() {
     this.loadItems(this.props.categoryName);
   }
 

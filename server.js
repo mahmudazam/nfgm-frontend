@@ -10,6 +10,7 @@ const bodyParser = require('body-parser');
 const email = require('./src/util/email');
 const asset_handler = require('./src/util/file_handler');
 const app = express();
+const path = require('path');
 
 const compiler = webpack(webpackConfig);
 
@@ -59,6 +60,11 @@ app.post('/customer_email', function(req, res) {
   // Respond to browser :
   res.send('Email Received: ');
 });
+
+// Handle GET requests:
+app.get('*', function(req, res) {
+  res.sendFile(path.join(__dirname, '/www/index.html'))
+})
 
 https_server = https.createServer({
   key: fs.readFileSync('src/ssl/key.pem'),

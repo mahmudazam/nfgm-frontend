@@ -10,21 +10,25 @@ class HomeLocation extends React.Component {
         this.state = {
           hours : []
         };
-        this.update = function (new_state) {this.setState({new_state})};
     }
 
     /**
     * Loads the hours array with hours stored in Firebase database:
     */
-    componentWillMount(){
+    componentWillMount() {
       // Get the reference to the database index of the image folder:
       let hoursRef = fire.database().ref('assets/hours').orderByKey().limitToLast(100);
       // Add every URL available in the index:
-      hoursRef.on('child_added', snapshot => {
-        let day = { dayName : snapshot.key, hours : snapshot.val() }
-        this.setState({ hours: this.state.hours.concat([day]) });
-      })
-    }
+      hoursRef.once('value').then(snapshot => {
+        let hoursArray = Object.keys(snapshot.val()).map((day) => {
+          return {
+            dayName: day,
+            hours: snapshot.val()[day]
+          };
+        });
+        this.setState({ hours: hoursArray });
+      });
+    }g
 
     render() {
         return(
