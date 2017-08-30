@@ -7,10 +7,10 @@ import { ButtonToolbar, Button , Col , Row , Panel , FormGroup , ControlLabel ,
   class FormPanel extends React.Component {
       constructor(props) {
           super(props);
-          this.state = this.defaultState(this.props.fields);
+          this.state = FormPanel.defaultState(props.fields);
       }
 
-      defaultState(fields) {
+      static defaultState(fields) {
         return JSON.parse(JSON.stringify({
           processing: false,
           status : "",
@@ -19,9 +19,6 @@ import { ButtonToolbar, Button , Col , Row , Panel , FormGroup , ControlLabel ,
             return result;
           }), {})
         }));
-      }
-
-      componentWillMount(){
       }
 
       handleChange(event) {
@@ -46,7 +43,7 @@ import { ButtonToolbar, Button , Col , Row , Panel , FormGroup , ControlLabel ,
         if(this.fieldsAreNotEmpty()) {
           this.props.onSubmit(this.state.fields);
         }
-        this.setState(this.defaultState(this.props.fields));
+        this.setState(FormPanel.defaultState(this.props.fields));
       }
 
       render() {
@@ -89,7 +86,8 @@ import { ButtonToolbar, Button , Col , Row , Panel , FormGroup , ControlLabel ,
                       <Button
                           bsStyle='danger'
                           onClick={() => {
-                              this.setState(this.defaultState(this.props.fields));
+                              this.setState(
+                                FormPanel.defaultState(this.props.fields));
                           }}>
                         Reset
                       </Button>

@@ -28,7 +28,7 @@ class TopNavbar extends React.Component {
             <Glyphicon glyph="earphone"/>
             { ' ' + formatPhoneNumber(this.state.phone_number) }
           </NavItem>
-          <LinkContainer to='/admin'>
+          <LinkContainer to='/signin'>
             <NavItem>Login</NavItem>
           </LinkContainer>
         </Nav>
