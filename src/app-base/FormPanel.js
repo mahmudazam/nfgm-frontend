@@ -14,8 +14,8 @@ import { ButtonToolbar, Button , Col , Row , Panel , FormGroup , ControlLabel ,
         return JSON.parse(JSON.stringify({
           processing: false,
           status : "",
-          fields: fields.reduce(((result, fieldName) => {
-            result[fieldName] = "";
+          fields: fields.reduce(((result, field) => {
+            result[field.title] = { type: field.type, value: "" };
             return result;
           }), {})
         }));
@@ -24,7 +24,7 @@ import { ButtonToolbar, Button , Col , Row , Panel , FormGroup , ControlLabel ,
       handleChange(event) {
         let nodeId = event.target.id;
         let nodeValue = event.target.value;
-        this.state.fields[nodeId] = nodeValue;
+        this.state.fields[nodeId].value = nodeValue;
         this.setState(this.state);
       }
 
@@ -70,8 +70,8 @@ import { ButtonToolbar, Button , Col , Row , Panel , FormGroup , ControlLabel ,
                     {Object.keys(this.state.fields).map((fieldName) =>
                       <FormGroup key={fieldName} controlId={fieldName}>
                         <ControlLabel>{fieldName}</ControlLabel>
-                        <FormControl type="text"
-                          value={this.state.fields[fieldName]}
+                        <FormControl type={this.state.fields[fieldName].type}
+                          value={this.state.fields[fieldName].value}
                           onChange={this.handleChange.bind(this)}
                         />
                       </FormGroup>
