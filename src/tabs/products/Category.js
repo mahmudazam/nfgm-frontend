@@ -45,7 +45,7 @@ class Category extends React.Component {
           : this.state.itemList.map((item) =>
               <Item
                 itemInfo={item}
-                className='col-sm-4'
+                className='col-sm-12 col-md-3'
                 key={item.name}/>)
         }
       </div>

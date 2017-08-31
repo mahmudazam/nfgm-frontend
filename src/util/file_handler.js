@@ -103,6 +103,14 @@ function pushAsset(readPath, refPath, keyName, assetInfo) {
 	);
 }
 
+function push(ref_path, obj, success, failure) {
+	fire.auth().signInWithEmailAndPassword(DB_EMAIL, DB_PASS).then(function() {
+		fire.database().ref(ref_path).set(obj).then(function() {
+			fire.auth().signOut().then(success).catch(failure);
+		}).catch(failure);
+	})
+}
+
 // Entry point for testing :
 
 // fire.database().ref('/FQWGucYy9EOGUQddRzkzWDrtiPe2/assets').once('value').
@@ -115,6 +123,18 @@ function pushAsset(readPath, refPath, keyName, assetInfo) {
 
 // Pushing images to database:
 if('TEST' === process.argv[2]) {
+	push('/assets/hours/',
+	[
+		{ name: 'Monday' , hours: '09:00AM - 09:00PM'  },
+		{ name: 'Tuesday' , hours: '09:00AM - 09:00PM'  },
+		{ name: 'Wednesday' , hours: '09:00AM - 09:00PM'  },
+		{ name: 'Thursday' , hours: '09:00AM - 09:00PM'  },
+		{ name: 'Friday' , hours: '09:00AM - 09:00PM'  },
+		{ name: 'Saturday' , hours: '09:00AM - 09:00PM'  },
+		{ name: 'Sunday' , hours: '09:00AM - 09:00PM'  }
+	],
+	function() { console.log('Success') },
+	function() { console.log('Failure') });
 	pushAssetInfo('itemName', '/categories', {
 		itemName: 'Meat',
 		items: ['Beef', 'Chicken']

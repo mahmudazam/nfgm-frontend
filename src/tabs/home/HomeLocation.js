@@ -20,13 +20,8 @@ class HomeLocation extends React.Component {
       let hoursRef = fire.database().ref('assets/hours').orderByKey().limitToLast(100);
       // Add every URL available in the index:
       hoursRef.once('value').then(snapshot => {
-        let hoursArray = Object.keys(snapshot.val()).map((day) => {
-          return {
-            dayName: day,
-            hours: snapshot.val()[day]
-          };
-        });
-        this.setState({ hours: hoursArray });
+        console.log(snapshot.val());
+        this.setState({ hours: snapshot.val() });
       });
     }g
 
@@ -37,7 +32,7 @@ class HomeLocation extends React.Component {
                 <div className="col-lg-6 sameheight">
                     <Panel header="Hours">
                       {this.state.hours.map((day) =>
-                          <p key={day.dayName}>{day.dayName} : {day.hours}</p>
+                          <p key={day.name}>{day.name} : {day.hours}</p>
                       )}
                       <div className="run"></div>
                       <div className="walk"></div>
