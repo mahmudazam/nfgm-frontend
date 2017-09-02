@@ -17,10 +17,9 @@ class HomeLocation extends React.Component {
     */
     componentWillMount() {
       // Get the reference to the database index of the image folder:
-      let hoursRef = fire.database().ref('assets/hours').orderByKey().limitToLast(100);
+      let hoursRef = fire.database().ref('assets/hours').orderByKey();
       // Add every URL available in the index:
       hoursRef.once('value').then(snapshot => {
-        console.log(snapshot.val());
         this.setState({ hours: snapshot.val() });
       });
     }g

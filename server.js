@@ -66,17 +66,25 @@ app.get('*', function(req, res) {
   res.sendFile(path.join(__dirname, '/www/index.html'))
 })
 
-https_server = https.createServer({
-  key: fs.readFileSync('src/ssl/key.pem'),
-  cert: fs.readFileSync('src/ssl/cert.pem'),
-  passphrase: 'crypto111'
-}, app);
+if("HTTPS" === process.argv[2]) {
+  https_server = https.createServer({
+    key: fs.readFileSync('src/ssl/key.pem'),
+    cert: fs.readFileSync('src/ssl/cert.pem'),
+    passphrase: 'crypto111'
+  }, app);
 
-https_server.listen(443);
+  https_server.listen(443);
 
-http_server = http.createServer(function(req, res) {
-  res.writeHead(301, {"Location" : "https://" + req.headers['host'] + req.url })
-  res.end();
-});
+  http_server = http.createServer(function(req, res) {
+    res.writeHead(301, {"Location" : "https://" + req.headers['host'] + req.url })
+    res.end();
+  });
 
-http_server.listen(80);
+  http_server.listen(80);
+} else {
+  const server = app.listen(3000, function() {
+    const host = server.address().address;
+    const port = server.address().port;
+    console.log('NFGM listening at http://%s:%s', host, port);
+  })
+}

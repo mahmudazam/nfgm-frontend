@@ -29,13 +29,15 @@ import { ButtonToolbar, Button , Col , Row , Panel , FormGroup , ControlLabel ,
       }
 
       fieldsAreNotEmpty() {
-        return this.props.fields.reduce((result, fieldName) => {
-          if(this.state.fields[fieldName]) {
-            return true && result;
-          } else {
-            return false && result;
-          }
-        }, true);
+        let empty = Object.keys(this.state.fields).reduce(
+          (result, fieldName) => {
+            if(this.state.fields[fieldName].value) {
+              return true && result;
+            } else {
+              return false && result;
+            }
+          }, true);
+        return empty;
       }
 
       onSubmit(event) {
@@ -88,6 +90,9 @@ import { ButtonToolbar, Button , Col , Row , Panel , FormGroup , ControlLabel ,
                           onClick={() => {
                               this.setState(
                                 FormPanel.defaultState(this.props.fields));
+                              if(this.props.onReset) {
+                                this.props.onReset();
+                              }
                           }}>
                         Reset
                       </Button>
