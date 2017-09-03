@@ -32,19 +32,19 @@ import querystring from 'querystring';
   }
 
   export function post(data, url, success, error) {
-    let postData = querystring.stringify(data);
+    let postData = data;
 
     let opt = JSON.parse(JSON.stringify(this.options));
     opt['method'] = 'POST';
     opt['headers'] = {
-      'Content-Type': 'application/x-www-form-urlencoded',
+      'Content-Type': 'multipart/form-data',
       'Content-Length': Buffer.byteLength(postData)
     };
     opt['path'] = url;
     if(opt.headers['Content-Length'] > MAX_MESSAGE) {
       error("Message length exceeded");
     }
-    const req = https.request(opt, (res) => {
+    let req = https.request(opt, (res) => {
       console.log(`STATUS: ${res.statusCode}`);
       console.log(`HEADERS: ${JSON.stringify(res.headers)}`);
       res.setEncoding('utf8');
@@ -59,12 +59,23 @@ import querystring from 'querystring';
 
     req.on('error', (e) => {
       console.error(`problem with request: ${e.message}`);
+      error();
     });
 
     // write data to request body
     console.log(postData);
     req.write(postData);
     req.end();
+  }
+
+  export function postFormData(data, url, success, error) {
+    let formData = new FormData();
+    Object.keys(data).map(function(dataKey) {
+      formData.append(dataKey, data[dataKey]);
+    });
+    let xhr = new XMLHttpRequest();
+    xhr.open('post', url, true);
+    xhr.send(formData);
   }
 
   //////////

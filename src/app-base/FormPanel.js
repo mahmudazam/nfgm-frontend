@@ -42,8 +42,13 @@ import { ButtonToolbar, Button , Col , Row , Panel , FormGroup , ControlLabel ,
 
       onSubmit(event) {
         event.preventDefault();
+        let inputData = Object.keys(this.state.fields).reduce(
+          (result, field) => {
+            result[field] = this.state.fields[field].value;
+            return result;
+          }, {})
         if(this.fieldsAreNotEmpty()) {
-          this.props.onSubmit(this.state.fields);
+          this.props.onSubmit(inputData);
         }
         this.setState(FormPanel.defaultState(this.props.fields));
       }

@@ -3,8 +3,8 @@ import React from 'react';
 import { Panel, FormControl } from 'react-bootstrap/lib';
 
 class FileUploadComponent extends React.Component {
-  constructor() {
-    super();
+  constructor(props) {
+    super(props);
   }
 
   handleChange(event) {

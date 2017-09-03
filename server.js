@@ -11,6 +11,7 @@ const email = require('./src/util/email');
 const asset_handler = require('./src/util/file_handler');
 const app = express();
 const path = require('path');
+const multiparty = require('multiparty');
 
 const compiler = webpack(webpackConfig);
 
@@ -58,7 +59,19 @@ app.post('/customer_email', function(req, res) {
   // Forward email to store personnel :
   email.sendEmail(storePersonnelEmail, emailToStorePersonnel(req.body))
   // Respond to browser :
-  res.send('Email Received: ');
+  res.send('Email Received');
+});
+
+// Database Edits:
+const POST_KEY = process.env.NFGM_POST_KEY;
+app.post('/' + POST_KEY + '/add_item', function(req, res) {
+  let form = new multiparty.Form();
+  form.parse(req, (err, fields, files) => {
+    console.log(err);
+    console.log(fields);
+    console.log(files);
+    res.send('Item added: ' + fields['Item Name']);
+  });
 });
 
 // Handle GET requests:

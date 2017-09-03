@@ -41,8 +41,8 @@ class SignInView extends React.Component {
       ...this.state,
       processing: true
     });
-    fire.auth().signInWithEmailAndPassword(userInfo.Email.value,
-      userInfo.Password.value)
+    fire.auth().signInWithEmailAndPassword(userInfo.Email,
+      userInfo.Password)
       .then(this.acceptUser.bind(this))
       .catch(this.rejectUser.bind(this));
   }
