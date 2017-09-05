@@ -97,7 +97,7 @@ class AddItemView extends React.Component {
         <Panel>
           <img src='./img/loading.gif'/>
           <br/>
-          <div>Uploading</div>
+          <div>Uploading...</div>
         </Panel>
       );
     } else {

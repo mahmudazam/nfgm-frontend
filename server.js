@@ -84,6 +84,24 @@ app.post('/add_item', function(req, res) {
   });
 });
 
+app.post('/add_category', function(req, res) {
+  let form = new multiparty.Form();
+  form.parse(req, (err, fields, files) => {
+    if(err) {
+      res.send("ERROR");
+    }
+    if(fields) {
+      if(POST_KEY === fields.post_key[0]) {
+        database_handler.pushCategory(fields.name[0], function() {});
+        res.send("SUCCESS");
+      } else {
+        console.log(fields);
+        res.send("Permission denied");
+      }
+    }
+  });
+});
+
 // Handle GET requests:
 app.get('*', function(req, res) {
   res.sendFile(path.join(__dirname, '/www/index.html'))
