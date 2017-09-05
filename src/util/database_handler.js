@@ -10,7 +10,7 @@ var fire = require('./fire').default;
 var path = require('path');
 
 // Google Cloud Storage Setup :
-const keyFilename = './exim-food-firebase-adminsdk-nsw0f-94a93e62ab.json';
+const keyFilename = process.argv[3] + '/exim-food-firebase-adminsdk-nsw0f-94a93e62ab.json';
 const projectId = 'exim-food';
 const bucketName = 'exim-food.appspot.com';
 
@@ -111,6 +111,46 @@ function push(ref_path, obj, success, failure) {
 	})
 }
 
+function pushCategory(categoryName, notify) {
+	fire.auth().signInWithEmailAndPassword(DB_EMAIL, DB_PASS).then(function() {
+		let categoryRef = fire.database().ref('/assets/categories/' + categoryName);
+		categoryRef.once('value').then(function(snapshot) {
+			if(null !== snapshot.val()) {
+				notify();
+			} else {
+				categoryRef.child('items').set("NO_ITEMS_ADDED_YET");
+			}
+		}).catch(function() {
+			categoryRef.set({ items: [] });
+		});
+	})
+}
+
+function pushItemToCategory(itemName, categoryNames) {
+	categoryNames.map((categoryName) => {
+		fire.auth().signInWithEmailAndPassword(DB_EMAIL, DB_PASS).then(function() {
+			let categoryRef = fire.database().ref(
+				'/assets/categories/' + categoryName + '/items');
+			categoryRef.once('value').then(function(snapshot) {
+				categoryRef.child(itemName).set("");
+			}).catch(function() {});
+		}).catch();
+	});
+}
+
+function pushItem(itemInfo, itemImage) {
+	pushItemToCategory(
+		itemInfo['Item Name'][0], itemInfo['categories']);
+	let newItem = {
+		Item_Name: itemInfo['Item Name'][0],
+		Description: itemInfo['Description'][0],
+		Price: itemInfo['Price'][0],
+		Unit: itemInfo['Unit'][0],
+		Sale: itemInfo['Sale Information'][0]
+	}
+	pushAsset(itemImage['path'], '/items', 'Item_Name', newItem);
+}
+
 // Entry point for testing :
 
 // fire.database().ref('/FQWGucYy9EOGUQddRzkzWDrtiPe2/assets').once('value').
@@ -135,14 +175,12 @@ if('TEST' === process.argv[2]) {
 	],
 	function() { console.log('Success') },
 	function() { console.log('Failure') });
-	pushAssetInfo('itemName', '/categories', {
-		itemName: 'Meat',
-		items: ['Beef', 'Chicken']
-	}, true);
-	pushAssetInfo('itemName', '/categories', {
-		itemName: 'Vegetables',
-		items: ['Carrots', 'Cauliflower']
-	}, true);
+	pushCategory('Meat', function() { console.log('Item exists'); });
+	pushCategory('Vegetables', function() { console.log('Item exists'); });
+	pushItemToCategory("Beef", ["Meat"]);
+	pushItemToCategory("Chicken", ["Meat"]);
+	pushItemToCategory("Cauliflower", ["Vegetables"]);
+	pushItemToCategory("Carrots", ["Vegetables"]);
 	pushAsset('../../assets/img/exim-food-item-img/Beef/Beef 1.jpg',
 		'/items',
 		'Item_Name',
@@ -165,26 +203,37 @@ if('TEST' === process.argv[2]) {
 			Sale: ''
 		});
 
-		pushAsset('../../assets/img/exim-food-item-img/Beef/Beef 1.jpg',
-			'/items',
-			'Item_Name',
-			{
-				Item_Name: 'Carrots',
-				Price: 2.50,
-				Unit: 'kg',
-				Description: 'Fresh colourful carrots',
-				Sale: ''
-			});
+	pushAsset('../../assets/img/exim-food-item-img/Beef/Beef 1.jpg',
+		'/items',
+		'Item_Name',
+		{
+			Item_Name: 'Carrots',
+			Price: 2.50,
+			Unit: 'kg',
+			Description: 'Fresh colourful carrots',
+			Sale: ''
+		});
 
-			pushAsset('../../assets/img/exim-food-item-img/Beef/Beef 1.jpg',
-				'/items',
-				'Item_Name',
-				{
-					Item_Name: 'Cauliflower',
-					Price: 5.00,
-					Unit: 'kg',
-					Description: 'Fresh clean Cauliflower',
-					Sale: ''
-				});
+	pushAsset('../../assets/img/exim-food-item-img/Beef/Beef 1.jpg',
+		'/items',
+		'Item_Name',
+		{
+			Item_Name: 'Cauliflower',
+			Price: 5.00,
+			Unit: 'kg',
+			Description: 'Fresh clean Cauliflower',
+			Sale: ''
+		});
 
 }
+
+const database_handler = {
+	pushAsset: pushAsset,
+	pushAssetInfo: pushAssetInfo,
+	pushCategory: pushCategory,
+	pushItem: pushItem,
+	pushItemToCategory: pushItemToCategory,
+	push: push
+};
+
+module.exports = database_handler;

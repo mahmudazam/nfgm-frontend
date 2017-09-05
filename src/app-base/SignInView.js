@@ -54,8 +54,8 @@ class SignInView extends React.Component {
         <FormPanel
           size='col-sm-12 col-md-4'
           fields={[
-            { title: 'Email', type: 'email'},
-            { title: 'Password', type: 'password'}
+            { title: 'Email', type: 'email', optional: false},
+            { title: 'Password', type: 'password', optional: false}
           ]}
           submitName='Sign in'
           onSubmit={this.signInUser.bind(this)}

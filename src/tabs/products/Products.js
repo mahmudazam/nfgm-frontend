@@ -9,33 +9,24 @@ class Products extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      activeKey: 0,
-      categoryList: [
-        'Meat', 'Vegetables'
-      ]
+      activeKey: "",
+      categoryList: null
     };
   }
 
-  setStateWithoutRefresh(newState) {
-
-  }
-
-  renderCategory(category) {
-    return (
-      <Panel
-          key={category.name}
-          header={category.name}
-          eventKey={category.name}
-      >
-        {category.items.map((item) =>
-          <Item
-              key={item.itemName}
-              className='col-sm-6 col-md-3 col-lg-3'
-              itemInfo={item}
-          />
-        )}
-      </Panel>
-    );
+  componentWillMount() {
+    fire.database().ref('/assets/categories/').once('value').then(
+      ((snapshot) => {
+        this.setState({
+          activeKey: Object.keys(snapshot.val())[0],
+          categoryList: Object.keys(snapshot.val()).map((categoryName) => {
+            return {
+              name: categoryName,
+              items: Object.keys(snapshot.val()[categoryName].items)
+            };
+          })
+        });
+      }).bind(this));
   }
 
   handleSelect(activeKey) {
@@ -43,22 +34,37 @@ class Products extends React.Component {
   }
 
   render() {
-    return (
-      <div className='major-content col-sm-12'>
-        <PanelGroup
-              activeKey={this.state.categoryList[this.state.activeKey]}
-              onSelect={this.handleSelect.bind(this)}
-              accordion>
-          {
-            this.state.categoryList.map(category =>
-              <Panel key={category} header={category} eventKey={category}>
-                <Category categoryName={category}/>
-              </Panel>
-            )
-          }
-        </PanelGroup>
-      </div>
-    );
+    if(null === this.state.categoryList) {
+      return (
+        <div className='major-content col-sm-12'>
+          <Panel>
+            <img src='./img/loading.gif'/>
+            <br/>
+            <div>Loading...</div>
+          </Panel>
+        </div>
+      );
+    } else {
+      return (
+        <div className='major-content col-sm-12'>
+          <PanelGroup
+                activeKey={this.state.activeKey}
+                onSelect={this.handleSelect.bind(this)}
+                accordion>
+            {
+              this.state.categoryList.map(category =>
+                <Panel
+                    key={category.name}
+                    header={category.name}
+                    eventKey={category.name}>
+                  <Category items={category.items}/>
+                </Panel>
+              )
+            }
+          </PanelGroup>
+        </div>
+      )
+    }
   }
 }
 

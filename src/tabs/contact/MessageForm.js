@@ -2,7 +2,7 @@ import React from 'react';
 import { ButtonToolbar, Button , Col , Row , Panel , FormGroup , ControlLabel , FormControl , HelpBlock }
   from 'react-bootstrap/lib';
 import fire from '../../util/fire';
-import * as req from '../../util/HTTPSReq';
+import { postFormData } from '../../util/HTTPSReq';
 
 const emptyState = {
   processing: false,
@@ -25,23 +25,13 @@ class MessageForm extends React.Component {
             fName: "Mahmud",
             lName: "Azam",
             eMail: "mahmudfasihulazam@gmail.com",
-            message: "Hello"
+            message: "Hello World"
           }
         };
     }
 
     defaultState() {
       return JSON.parse(JSON.stringify(emptyState));
-    }
-
-    componentWillMount(){
-        /* Create reference to messages in Fire base Database */
-        let messagesRef = fire.database().ref('messages').orderByKey().limitToLast(100);
-        messagesRef.on('child_added', snapshot => {
-            /* Update React state when message is added at Fire base Database */
-            let message = { text: snapshot.val(), id: snapshot.key };
-            this.setState({ messages: [message].concat(this.state.messages) });
-        })
     }
 
     sendMessage(event){
@@ -57,8 +47,8 @@ class MessageForm extends React.Component {
         }
         // Show loading if request has not been completed:
         this.setState({ ...this.state, processing: true});
-        req.post(snapshot, '/customer_email',
-          (function() {
+        postFormData(snapshot, '/customer_email',
+          ((xhr) => {
             this.setState({
               ...this.defaultState(),
               status: "Message sent. Thank you"

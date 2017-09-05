@@ -40,7 +40,7 @@ class AddItemView extends React.Component {
     }).bind(this));
   }
 
-  pushItem(itemInfo) {
+  pushItem(itemInfo, resetForm) {
     let newItem = {
       ...this.state,
       ...itemInfo,
@@ -53,15 +53,32 @@ class AddItemView extends React.Component {
           return result;
         }, [])
     };
+    if(newItem.categories.length <= 0) {
+      window.alert("Please select at least one category");
+      return;
+    }
+    if(!this.state.image.file) {
+      window.alert("Please select an image");
+      return;
+    }
     this.setState({
       ...this.state,
       uploading: true
     });
     fire.database().ref('/post_key').once('value').then((snapshot) => {
       let POST_KEY = snapshot.val();
-      postFormData(newItem, '/' + POST_KEY + '/add_item');
-      this.setState(AddItemView.defaultState());
-      this.componentWillMount();
+      postFormData({ ...newItem, post_key: POST_KEY }, '/add_item',
+        (xhr) => {
+          resetForm();
+          this.setState(AddItemView.defaultState());
+          this.componentWillMount();
+          window.alert(xhr.responseText);
+        },
+        (xhr) => {
+          this.setState(AddItemView.defaultState());
+          this.componentWillMount();
+          window.alert(xhr.responseText);
+        });
     }).catch((error) => {
       console.log(error);
     })
@@ -90,15 +107,19 @@ class AddItemView extends React.Component {
           size='col-sm-6'
           fields={
             [
-              { title:'Item Name', type: 'text'},
-              { title:'Price', type: 'text'},
-              { title:'Unit', type: 'text'},
-              { title:'Description', type: 'text'},
-              { title:'Sale Information', type: 'text'}
+              { title:'Item Name', type: 'text', optional: false },
+              { title:'Price', type: 'text', optional: false },
+              { title:'Unit', type: 'text', optional: false },
+              { title:'Description', type: 'text', optional: false },
+              { title:'Sale Information', type: 'text', optional: true }
             ]
           }
           submitName='Add New Item'
           onSubmit={this.pushItem.bind(this)}
+          onReset={(() => {
+            this.setState(AddItemView.defaultState());
+            this.componentWillMount();
+          }).bind(this)}
         >
           <ControlLabel>Select Categories</ControlLabel>
           <Row>

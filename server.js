@@ -5,13 +5,12 @@ const webpackConfig = require('./webpack.config.js');
 const fs = require('fs');
 const https = require('https');
 const http = require('http');
-const querystring = require('querystring');
 const bodyParser = require('body-parser');
 const email = require('./src/util/email');
-const asset_handler = require('./src/util/file_handler');
 const app = express();
 const path = require('path');
 const multiparty = require('multiparty');
+const database_handler = require('./src/util/database_handler');
 
 const compiler = webpack(webpackConfig);
 
@@ -54,23 +53,34 @@ app.use(express.static(__dirname + '/www'));
 
 // Handle POST Requests:
 app.post('/customer_email', function(req, res) {
-  // Respond to customer with a default email :
-  email.sendEmail([req.body.eMail], defaultEmailToCustomer(req.body.fName));
-  // Forward email to store personnel :
-  email.sendEmail(storePersonnelEmail, emailToStorePersonnel(req.body))
-  // Respond to browser :
-  res.send('Email Received');
+  let form = new multiparty.Form();
+  form.parse(req, (err, fields, files) => {
+    // Respond to customer with a default email :
+    email.sendEmail([fields.eMail], defaultEmailToCustomer(fields.fName));
+    // Forward email to store personnel :
+    email.sendEmail(storePersonnelEmail, emailToStorePersonnel(fields));
+    // Respond to browser :
+    res.send("SUCCESS");
+  });
 });
 
 // Database Edits:
 const POST_KEY = process.env.NFGM_POST_KEY;
-app.post('/' + POST_KEY + '/add_item', function(req, res) {
+app.post('/add_item', function(req, res) {
   let form = new multiparty.Form();
   form.parse(req, (err, fields, files) => {
-    console.log(err);
-    console.log(fields);
-    console.log(files);
-    res.send('Item added: ' + fields['Item Name']);
+    if(err) {
+      res.send("ERROR");
+    }
+    if(fields) {
+      if(POST_KEY === fields.post_key[0]) {
+        database_handler.pushItem(fields, files.image[0]);
+        res.send("SUCCESS");
+      } else {
+        console.log(fields);
+        res.send("Permission denied");
+      }
+    }
   });
 });
 

@@ -15,7 +15,11 @@ import { ButtonToolbar, Button , Col , Row , Panel , FormGroup , ControlLabel ,
           processing: false,
           status : "",
           fields: fields.reduce(((result, field) => {
-            result[field.title] = { type: field.type, value: "" };
+            result[field.title] = {
+              type: field.type,
+              value: "",
+              optional: field.optional
+            };
             return result;
           }), {})
         }));
@@ -31,13 +35,23 @@ import { ButtonToolbar, Button , Col , Row , Panel , FormGroup , ControlLabel ,
       fieldsAreNotEmpty() {
         let empty = Object.keys(this.state.fields).reduce(
           (result, fieldName) => {
-            if(this.state.fields[fieldName].value) {
+            if(this.state.fields[fieldName].value
+              || this.state.fields[fieldName].optional) {
               return true && result;
             } else {
               return false && result;
             }
           }, true);
         return empty;
+      }
+
+      optionalFields() {
+        return Object.keys(this.state.fields).reduce((result, fieldName) => {
+          if(this.state.fields[fieldName].optional) {
+            result.concat([fieldName]);
+          }
+          return result;
+        }, []);
       }
 
       onSubmit(event) {
@@ -48,9 +62,12 @@ import { ButtonToolbar, Button , Col , Row , Panel , FormGroup , ControlLabel ,
             return result;
           }, {})
         if(this.fieldsAreNotEmpty()) {
-          this.props.onSubmit(inputData);
+          this.props.onSubmit(inputData, () => {
+            this.setState(FormPanel.defaultState(this.props.fields));
+          });
+        } else {
+          window.alert("Please fill all fields except the optional fields");
         }
-        this.setState(FormPanel.defaultState(this.props.fields));
       }
 
       render() {
@@ -76,7 +93,11 @@ import { ButtonToolbar, Button , Col , Row , Panel , FormGroup , ControlLabel ,
                   <Form onSubmit={this.onSubmit.bind(this)}>
                     {Object.keys(this.state.fields).map((fieldName) =>
                       <FormGroup key={fieldName} controlId={fieldName}>
-                        <ControlLabel>{fieldName}</ControlLabel>
+                        <ControlLabel>{
+                          this.state.fields[fieldName].optional
+                          ? fieldName + "(optional)"
+                          : fieldName
+                        }</ControlLabel>
                         <FormControl type={this.state.fields[fieldName].type}
                           value={this.state.fields[fieldName].value}
                           onChange={this.handleChange.bind(this)}

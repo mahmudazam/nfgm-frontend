@@ -75,15 +75,13 @@ import querystring from 'querystring';
     });
     let xhr = new XMLHttpRequest();
     xhr.open('post', url, true);
+    xhr.onload = function() {
+      if("SUCCESS" === this.responseText) {
+        console.log(this.responseText);
+        success(this);
+      } else {
+        error(this);
+      }
+    }
     xhr.send(formData);
   }
-
-  //////////
-  // Tests :
-  // get();
-  // post({
-  //   fName: "Hello",
-  //   lName: "World",
-  //   email: "hello.world@example.com",
-  //   message: "Hello World"
-  // });

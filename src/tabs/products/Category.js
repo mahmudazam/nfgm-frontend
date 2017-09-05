@@ -14,11 +14,9 @@ class Category extends React.Component {
     this.setState = this.setState.bind(this);
   }
 
-  loadItems(categoryName) {
-    let catRef= fire.database().ref('/assets/categories/'
-      + categoryName + '/items');
-    catRef.on('child_added', category => {
-      let itemRef = fire.database().ref('/assets/items/' + category.val());
+  loadItems(itemNameList) {
+    itemNameList.map((item) => {
+      let itemRef = fire.database().ref('/assets/items/' + item);
       itemRef.once('value').then(item => {
         let loadedItem = {
           name: item.key,
@@ -33,14 +31,14 @@ class Category extends React.Component {
   }
 
   componentDidMount() {
-    this.loadItems(this.props.categoryName);
+    this.loadItems(this.props.items);
   }
 
   render() {
     return (
       <div>
         {
-          this.state.loading && this.state.itemList != null
+          this.state.loading && this.state.itemList != []
           ? (<div>Loading...</div>)
           : this.state.itemList.map((item) =>
               <Item
