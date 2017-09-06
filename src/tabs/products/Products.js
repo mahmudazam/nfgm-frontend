@@ -10,7 +10,7 @@ class Products extends React.Component {
     super(props);
     this.state = {
       activeKey: "",
-      categoryList: null
+      categoryList: []
     };
   }
 
@@ -22,7 +22,9 @@ class Products extends React.Component {
           categoryList: Object.keys(snapshot.val()).map((categoryName) => {
             return {
               name: categoryName,
-              items: Object.keys(snapshot.val()[categoryName].items)
+              items: ("NO_ITEMS_ADDED_YET" == snapshot.val()[categoryName].items)
+                ? []
+                : (Object.keys(snapshot.val()[categoryName].items))
             };
           })
         });
@@ -57,7 +59,9 @@ class Products extends React.Component {
                     key={category.name}
                     header={category.name}
                     eventKey={category.name}>
-                  <Category items={category.items}/>
+                  <Category
+                    itemButtons={this.props.itemButtons}
+                    items={category.items}/>
                 </Panel>
               )
             }

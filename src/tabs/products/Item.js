@@ -8,22 +8,36 @@ class Item extends React.Component {
     this.item = this.props.itemInfo;
   }
 
+  createItemInfo(item) {
+    let itemInfo = {};
+  }
+
   render() {
     return (
       <Thumbnail
           className={this.props.className}
-          src={this.item.info.storage_urls}
+          src={this.item.storage_urls}
           alt="242x200">
-        <h4>{this.item.name}</h4>
-        {this.item.info.Sale
-          ? (<p className='sale-on-item'>{this.item.info.Sale}</p>)
+        <h4>{this.item.Name}</h4>
+        {this.item.Sale
+          ? (<p className='sale-on-item'>{this.item.Sale}</p>)
           : null
         }
-        <p>Regular Price: {this.item.info.Price} / {this.item.info.Unit}</p>
-        <p>
-          <Button bsStyle="primary">Buy</Button>&nbsp;
-          <Button bsStyle="default">Description</Button>
-        </p>
+        <p>Regular Price: {this.item.Price} / {this.item.Unit}</p>
+        {
+          this.props.buttons.map((button) =>
+            <Button
+              key={button.label}
+              bsStyle={button.bsStyle}
+              onClick={
+                (() => {
+                  button.onClick(this.item);
+                }).bind(this)
+              }>
+              {button.label}
+            </Button>
+          )
+        }
       </Thumbnail>
     );
   }

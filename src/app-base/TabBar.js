@@ -10,8 +10,22 @@ import { Route } from 'react-router-dom';
 import { LinkContainer } from 'react-router-bootstrap/lib';
 
 class TabBar extends React.Component {
-    constructor() {
-        super();
+    constructor(props) {
+        super(props);
+    }
+
+    renderProducts() {
+      let buyButton = {
+        label: 'Buy',
+        bsStyle: 'primary',
+        onClick: () => {}
+      }
+      let descriptionButton = {
+        label: 'Description',
+        bsStyle: 'default',
+        onClick: () => {}
+      }
+      return (<Products itemButtons={[buyButton, descriptionButton]}/>);
     }
 
     render() {
@@ -35,7 +49,7 @@ class TabBar extends React.Component {
                 </Col>
                 <Col sm={12}>
                   <Route path='/home' component={Home}/>
-                  <Route path='/products' component={Products}/>
+                  <Route path='/products' component={this.renderProducts}/>
                   <Route path='/contact' component={Contact}/>
                 </Col>
               </Row>
