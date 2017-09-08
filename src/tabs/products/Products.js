@@ -22,7 +22,8 @@ class Products extends React.Component {
           categoryList: Object.keys(snapshot.val()).map((categoryName) => {
             return {
               name: categoryName,
-              items: ("NO_ITEMS_ADDED_YET" == snapshot.val()[categoryName].items)
+              items:
+                ("NO_ITEMS_ADDED_YET" == snapshot.val()[categoryName].items)
                 ? []
                 : (Object.keys(snapshot.val()[categoryName].items))
             };

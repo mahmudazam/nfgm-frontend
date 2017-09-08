@@ -17,7 +17,7 @@ import { ButtonToolbar, Button , Col , Row , Panel , FormGroup , ControlLabel ,
           fields: fields.reduce(((result, field) => {
             result[field.title] = {
               type: field.type,
-              value: "",
+              value: field.value,
               optional: field.optional
             };
             return result;

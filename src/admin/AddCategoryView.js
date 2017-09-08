@@ -66,7 +66,6 @@ class AddCategoryView extends React.Component {
           onSubmit={this.pushCategory.bind(this)}
           onReset={(() => {
             this.setState(AddCategoryView.defaultState());
-            this.componentWillMount();
           }).bind(this)}
         />
       );

@@ -27,11 +27,11 @@ class AddItemView extends React.Component {
     };
   }
 
-  componentWillMount() {
+  loadCategoriesAndRender() {
     let catRef = fire.database().ref('assets/categories').orderByKey();
     catRef.once('value').then(((snapshot) => {
       this.setState({
-        ...this.state,
+        ...AddItemView.defaultState(),
         categories: Object.keys(snapshot.val()).reduce(((result, name) => {
           result[name] = false
           return result;
@@ -40,10 +40,18 @@ class AddItemView extends React.Component {
     }).bind(this));
   }
 
+  componentWillMount() {
+    this.loadCategoriesAndRender();
+  }
+
   pushItem(itemInfo, resetForm) {
+    let normalizedItemInfo = Object.keys(itemInfo).reduce((result, key) => {
+      result[key.replace(' ', '_').toUpperCase().toLowerCase()] = itemInfo[key];
+      return result;
+    }, {});
     let newItem = {
       ...this.state,
-      ...itemInfo,
+      ...normalizedItemInfo,
       image: this.state.image.file,
       categories: Object.keys(this.state.categories).reduce(
         (result, category) => {
@@ -70,13 +78,11 @@ class AddItemView extends React.Component {
       postFormData({ ...newItem, post_key: POST_KEY }, '/add_item',
         (xhr) => {
           resetForm();
-          this.setState(AddItemView.defaultState());
-          this.componentWillMount();
+          this.loadCategoriesAndRender();
           window.alert(xhr.responseText);
         },
         (xhr) => {
-          this.setState(AddItemView.defaultState());
-          this.componentWillMount();
+          this.loadCategoriesAndRender();
           window.alert(xhr.responseText);
         });
     }).catch((error) => {
@@ -107,18 +113,17 @@ class AddItemView extends React.Component {
           size='col-sm-6'
           fields={
             [
-              { title:'Item Name', type: 'text', optional: false },
-              { title:'Price', type: 'text', optional: false },
-              { title:'Unit', type: 'text', optional: false },
-              { title:'Description', type: 'text', optional: false },
-              { title:'Sale Information', type: 'text', optional: true }
+              { title:'Item Name', type: 'text', optional: false, value: "" },
+              { title:'Price', type: 'text', optional: false, value: "" },
+              { title:'Unit', type: 'text', optional: false, value: "" },
+              { title:'Description', type: 'text', optional: false, value: "" },
+              { title:'Sale Information', type: 'text', optional: true, value: "" }
             ]
           }
           submitName='Add New Item'
           onSubmit={this.pushItem.bind(this)}
           onReset={(() => {
-            this.setState(AddItemView.defaultState());
-            this.componentWillMount();
+            this.loadCategoriesAndRender();
           }).bind(this)}
         >
           <ControlLabel>Select Categories</ControlLabel>

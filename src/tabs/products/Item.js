@@ -1,6 +1,6 @@
 
 import React from 'react';
-import { Thumbnail, Button } from 'react-bootstrap/lib';
+import { Button, ButtonToolbar, Thumbnail } from 'react-bootstrap/lib';
 
 class Item extends React.Component {
   constructor(props) {
@@ -18,26 +18,28 @@ class Item extends React.Component {
           className={this.props.className}
           src={this.item.storage_urls}
           alt="242x200">
-        <h4>{this.item.Name}</h4>
-        {this.item.Sale
-          ? (<p className='sale-on-item'>{this.item.Sale}</p>)
+        <h4>{this.item['item_name']}</h4>
+        {this.item['sale_information']
+          ? (<p className='sale-on-item'>{this.item['sale_information']}</p>)
           : null
         }
-        <p>Regular Price: {this.item.Price} / {this.item.Unit}</p>
-        {
-          this.props.buttons.map((button) =>
-            <Button
-              key={button.label}
-              bsStyle={button.bsStyle}
-              onClick={
-                (() => {
-                  button.onClick(this.item);
-                }).bind(this)
-              }>
-              {button.label}
-            </Button>
-          )
-        }
+        <p>Regular price: {this.item.price} / {this.item.Unit}</p>
+        <ButtonToolbar>
+          {
+            this.props.buttons.map((button) =>
+              <Button
+                key={button.label}
+                bsStyle={button.bsStyle}
+                onClick={
+                  (() => {
+                    button.onClick(this.item);
+                  }).bind(this)
+                }>
+                {button.label}
+              </Button>
+            )
+          }
+        </ButtonToolbar>
       </Thumbnail>
     );
   }

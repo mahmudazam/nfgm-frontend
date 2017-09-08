@@ -26,7 +26,7 @@ class Category extends React.Component {
       let itemRef = fire.database().ref('/assets/items/' + item);
       itemRef.once('value').then(item => {
         let loadedItem = {
-          Name: item.key,
+          item_name: item.key,
           ...item.val()
         }
         this.setState({
@@ -53,7 +53,7 @@ class Category extends React.Component {
                 <Item
                   itemInfo={item}
                   className='col-sm-12 col-md-3'
-                  key={item.Name}
+                  key={item.item_name}
                   buttons={this.props.itemButtons}/>
               )
         }

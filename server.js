@@ -74,6 +74,7 @@ app.post('/add_item', function(req, res) {
     }
     if(fields) {
       if(POST_KEY === fields.post_key[0]) {
+        console.log(files);
         database_handler.pushItem(fields, files.image[0]);
         res.send("SUCCESS");
       } else {
@@ -94,6 +95,24 @@ app.post('/add_category', function(req, res) {
       if(POST_KEY === fields.post_key[0]) {
         database_handler.pushCategory(fields.name[0], function() {});
         res.send("SUCCESS");
+      } else {
+        console.log(fields);
+        res.send("Permission denied");
+      }
+    }
+  });
+});
+
+app.post('/delete_item', function(req, res) {
+  let form = new multiparty.Form();
+  form.parse(req, (err, fields, files) => {
+    if(err) {
+      res.send("ERROR");
+    }
+    if(fields) {
+      if(POST_KEY === fields.post_key[0]) {
+        database_handler.deleteItem(fields);
+        res.send("DELETED " + fields.toString());
       } else {
         console.log(fields);
         res.send("Permission denied");
