@@ -152,18 +152,30 @@ function pushCategory(categoryName) {
 	});
 }
 
-function pushItemToCategory(itemName, categoryNames, success, failure) {
-	return new Promise(function(resolve, reject) {
-		categoryNames.map((categoryName) => {
-			fire.auth().signInWithEmailAndPassword(DB_EMAIL, DB_PASS).then(function() {
+/**
+ * Pushes an item's name to all categories in a list
+ * @param {String} itemName the name of the item to push
+ * @param {Array} categoryNames the names of categories to push itemName to
+ * @return {Promise}
+ */
+function pushItemToCategories(itemName, categoryNames) {
+	// Start by signing in:
+	let promise = fire.auth().signInWithEmailAndPassword(DB_EMAIL, DB_PASS);
+	promise
+		// Push itemName to all categories specified by categoryNames:
+		.then(function() {
+			let allPushes = categoryNames.map((categoryName) => {
 				let categoryRef = fire.database().ref(
 					'/assets/categories/' + categoryName + '/items');
-				categoryRef.once('value').then(function(snapshot) {
-					categoryRef.child(itemName).set("");
-				}).catch(failure);
-			}).catch(failure);
+				return categoryRef.child(itemName).set("");
+			});
+			return Promise.all(allPushes);
+		})
+		// Sign out when all pushes have been completed:
+		.then(function() {
+			return fire.auth().signOut();
 		});
-	});
+	return promise;
 }
 
 function pushItem(itemInfo, itemImage, success, failure) {
@@ -180,7 +192,7 @@ function pushItem(itemInfo, itemImage, success, failure) {
 	};
 	pushAsset(itemImage, '/items', 'item_name', newItem,
 		function() {
-			pushItemToCategory(itemInfo['item_name'][0], itemInfo['categories']);
+			pushItemToCategories(itemInfo['item_name'][0], itemInfo['categories']);
 			success();
 		},
 		failure
@@ -228,7 +240,7 @@ function deleteItem(itemInfo, success, failure) {
 // Entry point for testing :
 
 // Pushing images to database:
-if('TEST' === process.argv[2]) {
+if('TEST1' === process.argv[2]) {
 	push('/assets/hours/',
 	[
 		{ name: 'Monday' , hours: '09:00AM - 09:00PM' },
@@ -242,13 +254,24 @@ if('TEST' === process.argv[2]) {
 	function() { console.log('hours: Success') },
 	function() { console.log('hours: Failure') });
 
-	pushCategory("Spices").then(function(successMessage) {
-		console.log(successMessage);
-		return pushCategory("Spices");
-	})
-	.catch(function(error) {
-		console.log(error);
-	})
+	pushCategory("Spices")
+		.then(function(successMessage) {
+			console.log(successMessage);
+			return pushCategory("Spices");
+		})
+		.catch(function(error) {
+			console.log(error);
+		});
+
+	console.assert(!fire.auth().currentUser);
+
+	pushItemToCategories("Mint", ['Condiments', 'Leaves']);
+
+	console.assert(!fire.auth().currentUser);
+
+}
+
+if('TEST2' === process.argv[2]) {
 
 	pushItem(
 		{
@@ -348,7 +371,7 @@ const database_handler = {
 	pushAssetInfo: pushAssetInfo,
 	pushCategory: pushCategory,
 	pushItem: pushItem,
-	pushItemToCategory: pushItemToCategory
+	pushItemToCategories: pushItemToCategories
 };
 
 module.exports = database_handler;
