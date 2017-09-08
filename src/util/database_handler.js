@@ -115,17 +115,41 @@ function push(ref_path, obj, success, failure) {
 	})
 }
 
-function pushCategory(categoryName, categoryExists, success, failure) {
-	fire.auth().signInWithEmailAndPassword(DB_EMAIL, DB_PASS).then(function() {
-		let categoryRef = fire.database().ref('/assets/categories/' + categoryName);
-		categoryRef.once('value').then(function(snapshot) {
-			if(null !== snapshot.val()) {
-				categoryExists();
-			} else {
-				categoryRef.child('items').set("NO_ITEMS_ADDED_YET").then(success);
-			}
-		}).catch(failure);
-	})
+/**
+ * Push a new category to the database
+ * @param {String} categoryName The name of the category to push
+ * @return {Promise}
+ */
+function pushCategory(categoryName) {
+	return new Promise(function(resolve, reject) {
+		let categoryRef =
+			fire.database().ref('/assets/categories/' + categoryName);
+		// Sign in and access category:
+		fire.auth().signInWithEmailAndPassword(DB_EMAIL, DB_PASS)
+			.then(function() {
+				return categoryRef.once('value');
+			})
+			// Check if the category exists:
+			.then(function(snapshot) {
+				if(null === snapshot.val()) {
+					return categoryRef.child('items').set("NO_ITEMS_ADDED_YET");
+				} else {
+					fire.auth().signOut().then(function() {
+						reject("Category exists");
+					});
+				}
+			})
+			// Category does not exist:
+			.then(function() {
+				fire.auth().signOut().then(function() {
+					resolve("New category " + categoryName + " successfully uploaded");
+				});
+			})
+			// Sign in failed:
+			.catch(function(error) {
+				reject(error.Error);
+			})
+	});
 }
 
 function pushItemToCategory(itemName, categoryNames, success, failure) {
@@ -217,6 +241,14 @@ if('TEST' === process.argv[2]) {
 	],
 	function() { console.log('hours: Success') },
 	function() { console.log('hours: Failure') });
+
+	pushCategory("Spices").then(function(successMessage) {
+		console.log(successMessage);
+		return pushCategory("Spices");
+	})
+	.catch(function(error) {
+		console.log(error);
+	})
 
 	pushItem(
 		{
