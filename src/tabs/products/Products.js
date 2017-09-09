@@ -41,7 +41,7 @@ class Products extends React.Component {
       return (
         <div className='major-content col-sm-12'>
           <Panel>
-            <img src='./img/loading.gif'/>
+            <img src='./assets/img/loading.gif'/>
             <br/>
             <div>Loading...</div>
           </Panel>

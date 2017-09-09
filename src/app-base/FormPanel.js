@@ -76,7 +76,7 @@ import { ButtonToolbar, Button , Col , Row , Panel , FormGroup , ControlLabel ,
             <div className={this.props.size}>
               <Panel header={this.props.title}>
                 <Row>
-                  <img src="./img/loading.gif"/>
+                  <img src="./assets/img/loading.gif"/>
                 </Row>
                 <Row>
                   <h3 className="col-sm-4">

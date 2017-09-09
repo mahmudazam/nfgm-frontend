@@ -47,7 +47,7 @@ class AddCategoryView extends React.Component {
     if(this.state.uploading) {
       return (
         <Panel>
-          <img src='./img/loading.gif'/>
+          <img src='./assets/img/loading.gif'/>
           <br/>
           <div>Uploading...</div>
         </Panel>

@@ -3,9 +3,10 @@
  * Imports:
  */
 // Node Standard Modules:
-var path = require('path'); // normalize, basename
+const path = require('path'); // normalize, basename
+const fileIO = require('./fileIO');
 // Firebase database control:
-var fire = require('./fire').default;
+const fire = require('./fire').default;
 
 // Google Cloud Storage Setup :
 const keyFilename = process.argv[3] + '/exim-food-firebase-adminsdk-nsw0f-94a93e62ab.json';
@@ -53,20 +54,80 @@ function pushAssetInfo(refPath, assetInfo, keyName, keyRedundant) {
  * A convenience function for creating a URL to access the storage
  * location specified:
  * @param {String} storageName - the storage location in Firebase storage
-*/
+ */
 function createPublicFileURL(storageName) {
 	return ('https://storage.googleapis.com/')
 		+ path.normalize(bucketName + '/' + storageName);
 }
 
 /**
- * Pushes a file to Firebase storage with a corresponding database index:
+ * A raw push to a database node
+ * @param {String} refPath the path to the database node
+ * @param {Object} obj the object to push to the database node
+ * @return {Promise}
+ */
+function push(refPath, obj) {
+	return fire.database().ref(refPath).set(obj);
+}
+
+/**
+ * Push a new category to the database
+ * @param {String} categoryName The name of the category to push
+ * @return {Promise}
+ */
+function pushCategory(categoryName) {
+	let categoryRef = fire.database().ref('/assets/categories/' + categoryName);
+	let promise = new Promise(function(resolve, reject) {
+		categoryRef.once('value')
+			// Check if the category exists:
+			.then((snapshot) => {
+				if(null === snapshot.val()) {
+					return categoryRef.child('items').set("NO_ITEMS_ADDED_YET");
+				} else {
+					reject("Category exists");
+				}
+			})
+			// Category successfully pushed:
+			.then(() => {
+				resolve("Category " + categoryName
+					+ " successfully pushed to database");
+			});
+	});
+	return promise;
+}
+
+/**
+ * Pushes an item's name to all categories in a list
+ * @param {String} itemName the name of the item to push
+ * @param {Array} categoryNames the names of categories to push itemName to
+ * @return {Promise}
+ */
+function pushItemToCategories(itemName, categoryNames) {
+	// Push itemName to all categories specified by categoryNames:
+	let allPushes = categoryNames.map((categoryName) => {
+		let categoryRef =
+			fire.database().ref('/assets/categories/' + categoryName + '/items');
+		return categoryRef.child(itemName).set("");
+	});
+	// Return a promise that resolves when itemNames has been pushed to all
+	// categories in categoryNames:
+	return Promise.all(allPushes);
+}
+
+/**
+ * Pushes a file to www/assets with a corresponding database index:
  * @param {String} file - file information
  * @param {String} refPath - the Firebase storage location to store the file
  * @param {Object} assetInfo - additional information about the asset
  */
-function pushAsset(file, refPath, keyName, assetInfo, success, failure) {
+function pushAsset(file, destination, refPath, keyName, assetInfo) {
 	// Upload to the bucket:
+	let srcPath = file.path;
+	let destPath = path.normalize(
+		destination + '/assets/' + refPath + '/'
+		+ path.basename(assetInfo[keyName] + path.extname(srcPath))
+	);
+	return fileIO.copyFile(srcPath, destPath);
 	bucket.upload(
 		file['path'],
 		{
@@ -96,60 +157,6 @@ function pushAsset(file, refPath, keyName, assetInfo, success, failure) {
 	);
 }
 
-/**
- * A raw push to a database node
- * @param {String} refPath the path to the database node
- * @param {Object} obj the object to push to the database node
- * @return {Promise}
- */
-function push(refPath, obj) {
-	return fire.database().ref(refPath).set(obj);
-}
-
-/**
- * Push a new category to the database
- * @param {String} categoryName The name of the category to push
- * @return {Promise}
- */
-function pushCategory(categoryName) {
-	let categoryRef = fire.database().ref('/assets/categories/' + categoryName);
-	let promise = new Promise(function(resolve, reject) {
-		categoryRef.once('value')
-			// Check if the category exists:
-			.then(function(snapshot) {
-				if(null === snapshot.val()) {
-					return categoryRef.child('items').set("NO_ITEMS_ADDED_YET");
-				} else {
-					reject("Category exists");
-				}
-			})
-			// Category successfully pushed:
-			.then(function() {
-				resolve("Category " + categoryName
-					+ " successfully pushed to database");
-			});
-	});
-	return promise;
-}
-
-/**
- * Pushes an item's name to all categories in a list
- * @param {String} itemName the name of the item to push
- * @param {Array} categoryNames the names of categories to push itemName to
- * @return {Promise}
- */
-function pushItemToCategories(itemName, categoryNames) {
-	// Push itemName to all categories specified by categoryNames:
-	let allPushes = categoryNames.map(function(categoryName) {
-		let categoryRef =
-			fire.database().ref('/assets/categories/' + categoryName + '/items');
-		return categoryRef.child(itemName).set("");
-	});
-	// Return a promise that resolves when itemNames has been pushed to all
-	// categories in categoryNames:
-	return Promise.all(allPushes);
-}
-
 function pushItem(itemInfo, itemImage, success, failure) {
 	let newItem = {
 		item_name: itemInfo['item_name'][0],
@@ -172,7 +179,7 @@ function pushItem(itemInfo, itemImage, success, failure) {
 }
 
 function deleteAsset(refPath, success, file_failure, db_failure) {
-	bucket.file(refPath).delete().then(function() {
+	bucket.file(refPath).delete().then(() => {
 		push(
 			path.normalize('/assets/' + refPath.replace('.' , '_').replace(' ', '_')),
 			null,
@@ -183,7 +190,7 @@ function deleteAsset(refPath, success, file_failure, db_failure) {
 }
 
 function deleteItemFromCategories(itemName, categories) {
-	categories.map(function(category) {
+	categories.map((category) => {
 		let refPath = path.normalize(
 			'/assets/categories/' + category + '/items/' + itemName
 		);
@@ -212,9 +219,9 @@ function deleteItem(itemInfo, success, failure) {
 // Entry point for testing :
 
 // Pushing images to database:
-if('TEST1' === process.argv[2]) {
+if('DB_TEST1' === process.argv[2]) {
 	fire.auth().signInWithEmailAndPassword(DB_EMAIL, DB_PASS)
-		.then(function() {
+		.then(() => {
 			return push(
 				'/assets/hours/',
 				[
@@ -228,15 +235,15 @@ if('TEST1' === process.argv[2]) {
 				]
 			);
 		})
-		.then(function() {
+		.then(() => {
 			console.log('push hours: Success');
 			return pushCategory("Spices")
 		})
-		.then(function(successMessage) {
+		.then((successMessage) => {
 			console.log('pushCategory: ' + successMessage);
 			return pushItemToCategories('Mint', ['Spices', 'Condiments'])
 		})
-		.then(function() {
+		.then(() => {
 			console.log('pushItemToCategories: Success');
 			return pushAssetInfo(
 				'/test',
@@ -248,12 +255,12 @@ if('TEST1' === process.argv[2]) {
 				true
 			);
 		})
-		.then(function() {
+		.then(() => {
 			console.log('pushAssetInfo: Success');
 			console.log('Testing category overwrite:');
 			return pushCategory("Spices");
 		})
-		.catch(function(error) {
+		.catch((error) => {
 			console.log(error);
 			return Promise.all([
 				push('/assets/test', null),
@@ -261,17 +268,35 @@ if('TEST1' === process.argv[2]) {
 				push('/assets/categories/Condiments', null)
 			]);
 		})
-		.then(function() {
+		.then(() => {
 			console.log('crude delete: Success');
 			return fire.auth().signOut();
 		})
-		.then(function() {
+		.then(() => {
 			console.assert(!fire.auth().currentUser);
 			console.log('sign out: Success');
 		});
 }
 
-if('TEST2' === process.argv[2]) {
+if('DB_TEST2' === process.argv[2]) {
+	pushAsset(
+		{
+			path: '../../assets/img//img1.jpg'
+		},
+		'../../www/',
+		'/img/carousel/',
+		'name',
+		{ name: 'first_image' }
+	)
+	.then((message) => {
+		console.log(message);
+	})
+	.catch((error) => {
+		console.log(error);
+	});
+}
+
+if('TEST3' === process.argv[2]) {
 
 	pushItem(
 		{
@@ -282,7 +307,7 @@ if('TEST2' === process.argv[2]) {
 			sale_information: [''],
 			categories: ['Meat']
 		},
-		{ path: '../../assets/img/exim-food-item-img/Beef/Beef 1.jpg' },
+		{ path: '../../assets/img//exim-food-item-img/Beef/Beef 1.jpg' },
 		function() { console.log("pushItem: success") },
 		function(error) { console.log(error.message); }
 	);
@@ -296,7 +321,7 @@ if('TEST2' === process.argv[2]) {
 			sale_information: [''],
 			categories: ['Meat']
 		},
-		{ path: '../../assets/img/exim-food-item-img/Chicken/whole Chicken.jpg' },
+		{ path: '../../assets/img//exim-food-item-img/Chicken/whole Chicken.jpg' },
 		function() { console.log("pushItem: success") },
 		function(error) { console.log(error.message); }
 	);
@@ -310,7 +335,7 @@ if('TEST2' === process.argv[2]) {
 			sale_information: [''],
 			categories: ['Vegetables']
 		},
-		{ path: '../../assets/img/exim-food-item-img/Beef/Beef 1.jpg' },
+		{ path: '../../assets/img//exim-food-item-img/Beef/Beef 1.jpg' },
 		function() { console.log("pushItem: success") },
 		function(error) { console.log(error.message); }
 	);
@@ -324,7 +349,7 @@ if('TEST2' === process.argv[2]) {
 			sale_information: [''],
 			categories: ['Vegetables']
 		},
-		{ path: '../../assets/img/exim-food-item-img/Beef/Beef 1.jpg' },
+		{ path: '../../assets/img//exim-food-item-img/Beef/Beef 1.jpg' },
 		function() { console.log("pushItem: success") },
 		function(error) { console.log(error.message); }
 	);
@@ -338,7 +363,7 @@ if('TEST2' === process.argv[2]) {
 			sale_information: [''],
 			categories: ['Meat']
 		},
-		{ path: '../../assets/img/exim-food-item-img/Chicken/Duck.jpg' },
+		{ path: '../../assets/img//exim-food-item-img/Chicken/Duck.jpg' },
 		function() {
 			console.log("pushItem: success");
 		},

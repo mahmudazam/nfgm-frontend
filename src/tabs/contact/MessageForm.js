@@ -69,7 +69,7 @@ class MessageForm extends React.Component {
           <div className={this.props.size}>
             <Panel header="Send us a Message">
               <Row>
-                <img src="./img/loading.gif"/>
+                <img src="./assets/img/loading.gif"/>
               </Row>
               <Row>
                 <h3 className="col-sm-4">
