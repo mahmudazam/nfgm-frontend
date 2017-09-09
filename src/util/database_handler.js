@@ -1,13 +1,11 @@
 
 /**
  * Imports:
-*/
-// File Operations:
-var fs = require('fs');
+ */
+// Node Standard Modules:
+var path = require('path'); // normalize, basename
 // Firebase database control:
 var fire = require('./fire').default;
-// Path string handler :
-var path = require('path');
 
 // Google Cloud Storage Setup :
 const keyFilename = process.argv[3] + '/exim-food-firebase-adminsdk-nsw0f-94a93e62ab.json';
@@ -26,38 +24,29 @@ const DB_PASS = process.env.NFGM_DB_PASS;
 
 /**
  * Pushes the URL of file in Firebase storage to the Firebase database
- * @param {String} readPath - path to the file to push
- * @param {String} refPath - the Firebase storage location to store the file
- * @param {Object} assetInfo - additional information about the asset
- * @param {boolean} key_redundant - whether or not to keep the key as a field
+ * @param {String} refPath the Firebase storage location to store the file
+ * @param {Object} assetInfo additional information about the asset
+ * @param {String} keyName the field which will be used as the node's key
+ * @param {boolean} keyRedundant whether or not to keep the key as a field
+ * @return {Promise}
 */
-function pushAssetInfo(keyName, refPath, assetInfo, key_redundant,
-		success, failure) {
+function pushAssetInfo(refPath, assetInfo, keyName, keyRedundant) {
 	// Create path names:
 	if(refPath !== "") {
 		refPath = path.normalize(refPath);
 	}
-	let promise = null;
-	// Sign in to Firebase for making changes to the database:
-	fire.auth().signInWithEmailAndPassword(DB_EMAIL, DB_PASS).then(function() {
-		let user = fire.auth().currentUser;
 
-		// Create database node for file :
-		dbPath = path.normalize('/assets/' + refPath + '/'
-				+ assetInfo[keyName].replace('.' , '_')).replace(' ' , '_');
-		dbRef = fire.database().ref(dbPath);
+	// Refer to database node for asset:
+	let dbPath = path.normalize('/assets/' + refPath + '/'
+			+ assetInfo[keyName].replace('.' , '_')).replace(' ' , '_');
+	if(keyRedundant) {
+		assetInfo[keyName] = null;
+	}
+	let dbRef = fire.database().ref(dbPath);
 
-		// Push to database:
-		if(key_redundant) assetInfo[keyName] = null;
-		dbRef.set(assetInfo).then(function() {
-			// Sign out of Firebase database after the push completes:
-			fire.auth().signOut().then(success).catch(function(error) {
-				console.log("Error Code: %s\nError: %s", error.code, error.message);
-			});
-		}).catch(failure);
-	}).catch(function(error) {
-		console.log("Error Code: %s\nError: %s", error.code, error.message);
-	});
+	// Push to database:
+	return dbRef.set(assetInfo);
+
 }
 
 /**
@@ -107,12 +96,14 @@ function pushAsset(file, refPath, keyName, assetInfo, success, failure) {
 	);
 }
 
-function push(ref_path, obj, success, failure) {
-	fire.auth().signInWithEmailAndPassword(DB_EMAIL, DB_PASS).then(function() {
-		fire.database().ref(ref_path).set(obj).then(function() {
-			fire.auth().signOut().then(success).catch(failure);
-		}).catch(failure);
-	})
+/**
+ * A raw push to a database node
+ * @param {String} refPath the path to the database node
+ * @param {Object} obj the object to push to the database node
+ * @return {Promise}
+ */
+function push(refPath, obj) {
+	return fire.database().ref(refPath).set(obj);
 }
 
 /**
@@ -121,35 +112,24 @@ function push(ref_path, obj, success, failure) {
  * @return {Promise}
  */
 function pushCategory(categoryName) {
-	return new Promise(function(resolve, reject) {
-		let categoryRef =
-			fire.database().ref('/assets/categories/' + categoryName);
-		// Sign in and access category:
-		fire.auth().signInWithEmailAndPassword(DB_EMAIL, DB_PASS)
-			.then(function() {
-				return categoryRef.once('value');
-			})
+	let categoryRef = fire.database().ref('/assets/categories/' + categoryName);
+	let promise = new Promise(function(resolve, reject) {
+		categoryRef.once('value')
 			// Check if the category exists:
 			.then(function(snapshot) {
 				if(null === snapshot.val()) {
 					return categoryRef.child('items').set("NO_ITEMS_ADDED_YET");
 				} else {
-					fire.auth().signOut().then(function() {
-						reject("Category exists");
-					});
+					reject("Category exists");
 				}
 			})
-			// Category does not exist:
+			// Category successfully pushed:
 			.then(function() {
-				fire.auth().signOut().then(function() {
-					resolve("New category " + categoryName + " successfully uploaded");
-				});
-			})
-			// Sign in failed:
-			.catch(function(error) {
-				reject(error.Error);
-			})
+				resolve("Category " + categoryName
+					+ " successfully pushed to database");
+			});
 	});
+	return promise;
 }
 
 /**
@@ -159,23 +139,15 @@ function pushCategory(categoryName) {
  * @return {Promise}
  */
 function pushItemToCategories(itemName, categoryNames) {
-	// Start by signing in:
-	let promise = fire.auth().signInWithEmailAndPassword(DB_EMAIL, DB_PASS);
-	promise
-		// Push itemName to all categories specified by categoryNames:
-		.then(function() {
-			let allPushes = categoryNames.map((categoryName) => {
-				let categoryRef = fire.database().ref(
-					'/assets/categories/' + categoryName + '/items');
-				return categoryRef.child(itemName).set("");
-			});
-			return Promise.all(allPushes);
-		})
-		// Sign out when all pushes have been completed:
-		.then(function() {
-			return fire.auth().signOut();
-		});
-	return promise;
+	// Push itemName to all categories specified by categoryNames:
+	let allPushes = categoryNames.map(function(categoryName) {
+		let categoryRef =
+			fire.database().ref('/assets/categories/' + categoryName + '/items');
+		return categoryRef.child(itemName).set("");
+	});
+	// Return a promise that resolves when itemNames has been pushed to all
+	// categories in categoryNames:
+	return Promise.all(allPushes);
 }
 
 function pushItem(itemInfo, itemImage, success, failure) {
@@ -241,34 +213,62 @@ function deleteItem(itemInfo, success, failure) {
 
 // Pushing images to database:
 if('TEST1' === process.argv[2]) {
-	push('/assets/hours/',
-	[
-		{ name: 'Monday' , hours: '09:00AM - 09:00PM' },
-		{ name: 'Tuesday' , hours: '09:00AM - 09:00PM' },
-		{ name: 'Wednesday' , hours: '09:00AM - 09:00PM' },
-		{ name: 'Thursday' , hours: '09:00AM - 09:00PM' },
-		{ name: 'Friday' , hours: '09:00AM - 01:00PM, 02:00PM - 09:00PM' },
-		{ name: 'Saturday' , hours: '09:00AM - 09:00PM' },
-		{ name: 'Sunday' , hours: '09:00AM - 09:00PM' }
-	],
-	function() { console.log('hours: Success') },
-	function() { console.log('hours: Failure') });
-
-	pushCategory("Spices")
+	fire.auth().signInWithEmailAndPassword(DB_EMAIL, DB_PASS)
+		.then(function() {
+			return push(
+				'/assets/hours/',
+				[
+					{ name: 'Monday' , hours: '09:00AM - 09:00PM' },
+					{ name: 'Tuesday' , hours: '09:00AM - 09:00PM' },
+					{ name: 'Wednesday' , hours: '09:00AM - 09:00PM' },
+					{ name: 'Thursday' , hours: '09:00AM - 09:00PM' },
+					{ name: 'Friday' , hours: '09:00AM - 01:00PM, 02:00PM - 09:00PM' },
+					{ name: 'Saturday' , hours: '09:00AM - 09:00PM' },
+					{ name: 'Sunday' , hours: '09:00AM - 09:00PM' }
+				]
+			);
+		})
+		.then(function() {
+			console.log('push hours: Success');
+			return pushCategory("Spices")
+		})
 		.then(function(successMessage) {
-			console.log(successMessage);
+			console.log('pushCategory: ' + successMessage);
+			return pushItemToCategories('Mint', ['Spices', 'Condiments'])
+		})
+		.then(function() {
+			console.log('pushItemToCategories: Success');
+			return pushAssetInfo(
+				'/test',
+				{
+					test_name: 'pushAssetInfoTest',
+					test_data: 'data'
+				},
+				'test_name',
+				true
+			);
+		})
+		.then(function() {
+			console.log('pushAssetInfo: Success');
+			console.log('Testing category overwrite:');
 			return pushCategory("Spices");
 		})
 		.catch(function(error) {
 			console.log(error);
+			return Promise.all([
+				push('/assets/test', null),
+				push('/assets/categories/Spices', null),
+				push('/assets/categories/Condiments', null)
+			]);
+		})
+		.then(function() {
+			console.log('crude delete: Success');
+			return fire.auth().signOut();
+		})
+		.then(function() {
+			console.assert(!fire.auth().currentUser);
+			console.log('sign out: Success');
 		});
-
-	console.assert(!fire.auth().currentUser);
-
-	pushItemToCategories("Mint", ['Condiments', 'Leaves']);
-
-	console.assert(!fire.auth().currentUser);
-
 }
 
 if('TEST2' === process.argv[2]) {
