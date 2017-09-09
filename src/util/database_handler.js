@@ -9,8 +9,18 @@ const fire = require('./fire').default; // database, auth
 const fileIO = require('./fileIO'); // copyFile, deleteFile
 
 /**
- * Pushes the URL of file in Firebase storage to the Firebase database
- * @param {String} refPath the Firebase storage location to store the file
+ * A raw push to a database node
+ * @param {String} refPath the path to the database node
+ * @param {Object} obj the object to push to the database node
+ * @return {Promise}
+ */
+function push(refPath, obj) {
+	return fire.database().ref(refPath).set(obj);
+}
+
+/**
+ * Pushes information about an asset to the Firebase database
+ * @param {String} refPath the Firebase database node path to the asset
  * @param {Object} assetInfo additional information about the asset
  * @param {String} keyName the field which will be used as the node's key
  * @param {boolean} keyRedundant whether or not to keep the key as a field
@@ -24,25 +34,13 @@ function pushAssetInfo(refPath, assetInfo, keyName, keyRedundant) {
 
 	// Refer to database node for asset:
 	let dbPath = path.normalize('/assets/' + refPath + '/'
-			+ assetInfo[keyName].replace('.' , '_')).replace(' ' , '_');
+			+ assetInfo[keyName].replace('.' , '_'));
 	if(keyRedundant) {
 		assetInfo[keyName] = null;
 	}
-	let dbRef = fire.database().ref(dbPath);
 
 	// Push to database:
-	return dbRef.set(assetInfo);
-
-}
-
-/**
- * A raw push to a database node
- * @param {String} refPath the path to the database node
- * @param {Object} obj the object to push to the database node
- * @return {Promise}
- */
-function push(refPath, obj) {
-	return fire.database().ref(refPath).set(obj);
+	return push(dbPath, assetInfo);
 }
 
 /**
@@ -78,9 +76,9 @@ function pushCategory(categoryName) {
 function pushItemToCategories(itemName, categoryNames) {
 	// Push itemName to all categories specified by categoryNames:
 	let allPushes = categoryNames.map((categoryName) => {
-		let categoryRef =
-			fire.database().ref('/assets/categories/' + categoryName + '/items');
-		return categoryRef.child(itemName).set("");
+		let refPathToItem =
+			'/assets/categories/' + categoryName + '/items/' + itemName;
+		return push(refPathToItem, "");
 	});
 	// Return a promise that resolves when itemNames has been pushed to all
 	// categories in categoryNames:
@@ -88,19 +86,19 @@ function pushItemToCategories(itemName, categoryNames) {
 }
 
 /**
- * Pushes a file to www/assets/ with a corresponding database index:
+ * Pushes a file to www/assets/ with a given database entry
  * @param {String} file file information
- * @param {String} destination the location of the file within www/assets/
+ * @param {String} rootDirPath the path to the www directory
  * @param {String} refPath the Firebase storage location to store the file
  * @param {String} keyName the name of the key field of assetInfo
  * @param {Object} assetInfo additional information about the asset
  */
-function pushAsset(file, destination, refPath, keyName, assetInfo) {
+function pushAsset(file, rootDirPath, refPath, keyName, assetInfo) {
 	// Copy file to www/assets:
 	let srcPath = file.path;
 	let filename =  assetInfo[keyName] + path.extname(srcPath)
 	let destPath = path.normalize(
-		destination + '/assets/' + refPath + '/' + filename
+		rootDirPath + '/assets/' + refPath + '/' + filename
 	);
 
 	let promise = fileIO.copyFile(srcPath, destPath).then((message) => {
@@ -137,42 +135,46 @@ function pushItem(itemInfo, itemImage, rootDirPath) {
 	return promise;
 }
 
-function deleteAsset(refPath, success, file_failure, db_failure) {
-	bucket.file(refPath).delete().then(() => {
-		push(
-			path.normalize('/assets/' + refPath.replace('.' , '_').replace(' ', '_')),
-			null,
-			success,
-			db_failure
-		);
-	}).catch(file_failure);
-}
-
+/**
+ * Deletes the name of an item from all specified categories
+ * @param {String} itemName the name of the item
+ * @param {Array} categories the array of names of categories
+ * @return {Promise}
+ */
 function deleteItemFromCategories(itemName, categories) {
-	categories.map((category) => {
+	// Create a deletion promise for every category:
+	let allDeletes = categories.map((category) => {
 		let refPath = path.normalize(
 			'/assets/categories/' + category + '/items/' + itemName
 		);
-		push(
-			refPath,
-			null,
-			function() { ; },
-			function(error) {
-				console.log(
-					"deleteItem:\nError Code: %s\nError: %s", error.code, error.message
-				);
-			}
-		);
+		return push(refPath, null);
 	});
+	// Return a promise that resolves when all the deletes have completed:
+	return Promise.all(allDeletes);
 }
 
-function deleteItem(itemInfo, success, failure) {
-	deleteItemFromCategories(itemInfo['item_name'][0], itemInfo['categories']);
-	deleteAsset(
-		path.normalize('items/' + itemInfo['item_name'][0]),
-		success,
-		failure
+/**
+ * Deletes an item with all associated files and data
+ * @param {String} itemInfo all information about the item
+ * @param {Array} rootDirPath the path to the www directory
+ * @return {Promise}
+ */
+function deleteItem(itemInfo, rootDirPath) {
+	// Path to the item's image file:
+	let filePath = path.normalize(
+		rootDirPath + '/assets/items/' + path.basename(itemInfo.asset_url)
 	);
+	// Path to database node:
+	let refPath = '/assets/items/' + itemInfo.item_name;
+	// Return a promise that resolves when:
+	return Promise.all([
+		// the item has been deleted from all categories,
+		deleteItemFromCategories(itemInfo['item_name'], itemInfo['categories']),
+		// the image file has been deleted and
+		fileIO.deleteFile(filePath),
+		// the database node has been deleted
+		push(refPath, null)
+	]);
 }
 
 // Tests :
@@ -250,7 +252,7 @@ if('DB_TEST1' === process.argv[2]) {
 					unit: 'kg',
 					description: 'Fresh chicken from the farms',
 					sale_information: '',
-					categories: ['Meat']
+					categories: ['Meat', 'Bird Meat']
 				},
 				{ path: '../../assets/img//exim-food-item-img/Chicken/whole Chicken.jpg' },
 				'../../www'
@@ -286,7 +288,7 @@ if('DB_TEST1' === process.argv[2]) {
 					unit: 'kg',
 					description: 'Fresh duck',
 					sale_information: '',
-					categories: ['Meat']
+					categories: ['Meat', 'Bird Meat']
 				},
 				{ path: '../../assets/img//exim-food-item-img/Chicken/Duck.jpg' },
 				'../../www'
@@ -298,7 +300,7 @@ if('DB_TEST1' === process.argv[2]) {
 					unit: 'kg',
 					description: 'Fresh beef from the farms',
 					sale_information: '',
-					categories: ['Meat']
+					categories: ['Meat', 'Cattle Meat']
 				},
 				{ path: '../../assets/img//exim-food-item-img/Beef/Beef 1.jpg' },
 				'../../www'
@@ -307,11 +309,23 @@ if('DB_TEST1' === process.argv[2]) {
 	}).then(() => {
 		console.log('pushItem: Success');
 	}).then(() => {
-		return Promise.all(
-			[
+		return deleteItem(
+			{
+				item_name: 'Duck',
+				price: 5.99,
+				unit: 'kg',
+				description: 'Fresh duck',
+				sale_information: '',
+				categories: ['Meat', 'Bird Meat'],
+				asset_url: './assets/items/Duck.jpg'
+			},
+			'../../www/'
+		)
+	}).then(() => {
+		return Promise.all([
 				push('/assets/carousel/', ""),
-				fileIO.deleteFile('../../www/assets/carousel/first_image.jpg'),			]
-		);
+				fileIO.deleteFile('../../www/assets/carousel/first_image.jpg')
+		]);
 	}).then(() => {
 		console.log("crude deletion: Success");
 		return fire.auth().signOut();
@@ -324,25 +338,9 @@ if('DB_TEST1' === process.argv[2]) {
 	});
 }
 
-if("TEST_DELETE" === process.argv[2]) {
-	deleteItem(
-		{
-			item_name: ['Duck'],
-			price: [5.99],
-			unit: ['kg'],
-			description: ['Fresh duck'],
-			sale_information: [''],
-			categories: ['Meat']
-		},
-		function() { console.log("deleteItem: success") },
-		function(error) { console.log(error.message); }
-	);
-}
-
 const database_handler = {
-	deleteAsset: deleteAsset,
-	deleteItemFromCategories: deleteItemFromCategories,
 	deleteItem: deleteItem,
+	deleteItemFromCategories: deleteItemFromCategories,
 	push: push,
 	pushAsset: pushAsset,
 	pushAssetInfo: pushAssetInfo,
