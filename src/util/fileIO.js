@@ -6,8 +6,14 @@
 const path = require('path'); // normalize, basename
 const fs = require('fs'); // createReadStream, createWriteStream
 
+/**
+ * Copy a file from a given source to a destination
+ * @param {String} source the path to the source file
+ * @param {String} destination the path to the destination file
+ * @param {Promise}
+ */
 function copyFile(source, destination) {
-	let promise = new Promise((reject, resolve) => {
+	let promise = new Promise((resolve, reject) => {
 		// Stream to read source file:
 		let srcStream = fs.createReadStream(source);
     srcStream.on("error", (error) => {
@@ -21,8 +27,8 @@ function copyFile(source, destination) {
     })
 
     // Resolve promise on successfully reading the source file:
-		destStream.on('close', () => {
-			resolve({ status: 'SUCCESS', source: source, destination: destination});
+		srcStream.on("end", () => {
+			resolve({status: 'SUCCESS', source: source, destination: destination});
 		});
 		srcStream.pipe(destStream);
 	});
@@ -30,6 +36,40 @@ function copyFile(source, destination) {
 	return promise;
 }
 
+/**
+ * Delete a given file
+ * @param {String} pathToFile the path to the file to be deleted
+ * @param {Promise}
+ */
+function deleteFile(source) {
+	let promise = new Promise((resolve, reject) => {
+    fs.unlink(source, (error) => {
+      if(error) {
+        reject(error);
+      } else {
+        resolve("Deleted " + source);
+      }
+    });
+  });
+
+	return promise;
+}
+
+if("FILE_TEST" === process.argv[2]) {
+  copyFile('./fileIO.js', './fileIO_copy.js')
+    .then((message) => {
+      console.log("copyFile: " + message.status);
+      return deleteFile(message.destination);
+    })
+    .then((message) => {
+      console.log(message);
+    })
+    .catch((error) => {
+      console.log(error);
+    });
+}
+
 module.exports = {
-  copyFile: copyFile
+  copyFile: copyFile,
+  deleteFile: deleteFile
 };

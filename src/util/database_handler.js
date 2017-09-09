@@ -8,17 +8,6 @@ const fileIO = require('./fileIO');
 // Firebase database control:
 const fire = require('./fire').default;
 
-// Google Cloud Storage Setup :
-const keyFilename = process.argv[3] + '/exim-food-firebase-adminsdk-nsw0f-94a93e62ab.json';
-const projectId = 'exim-food';
-const bucketName = 'exim-food.appspot.com';
-
-const gcs = require('@google-cloud/storage')({
-		projectId,
-		keyFilename});
-
-const bucket = gcs.bucket(bucketName);
-
 // DB_Auth:
 const DB_EMAIL = process.env.NFGM_ADDRESS;
 const DB_PASS = process.env.NFGM_DB_PASS;
@@ -51,16 +40,6 @@ function pushAssetInfo(refPath, assetInfo, keyName, keyRedundant) {
 }
 
 /**
- * A convenience function for creating a URL to access the storage
- * location specified:
- * @param {String} storageName - the storage location in Firebase storage
- */
-function createPublicFileURL(storageName) {
-	return ('https://storage.googleapis.com/')
-		+ path.normalize(bucketName + '/' + storageName);
-}
-
-/**
  * A raw push to a database node
  * @param {String} refPath the path to the database node
  * @param {Object} obj the object to push to the database node
@@ -77,18 +56,18 @@ function push(refPath, obj) {
  */
 function pushCategory(categoryName) {
 	let categoryRef = fire.database().ref('/assets/categories/' + categoryName);
-	let promise = new Promise(function(resolve, reject) {
+	let promise = new Promise((resolve, reject) => {
 		categoryRef.once('value')
-			// Check if the category exists:
 			.then((snapshot) => {
+				// Check if the category exists:
 				if(null === snapshot.val()) {
 					return categoryRef.child('items').set("NO_ITEMS_ADDED_YET");
 				} else {
 					reject("Category exists");
 				}
 			})
-			// Category successfully pushed:
 			.then(() => {
+				// Category successfully pushed:
 				resolve("Category " + categoryName
 					+ " successfully pushed to database");
 			});
@@ -121,40 +100,22 @@ function pushItemToCategories(itemName, categoryNames) {
  * @param {Object} assetInfo - additional information about the asset
  */
 function pushAsset(file, destination, refPath, keyName, assetInfo) {
-	// Upload to the bucket:
+	// Copy file to www/assets:
 	let srcPath = file.path;
 	let destPath = path.normalize(
 		destination + '/assets/' + refPath + '/'
 		+ path.basename(assetInfo[keyName] + path.extname(srcPath))
 	);
-	return fileIO.copyFile(srcPath, destPath);
-	bucket.upload(
-		file['path'],
-		{
-			destination: refPath + '/' + path.basename(assetInfo[keyName]),
-			public: true
-		},
-		function(err, file) { // On completion:
-			// Print error if any:
-			if(err) {
-				failure(err, file);
-			} else {
-				// Get the URL to the file just uploaded:
-				URL = createPublicFileURL(refPath + '/'
-					+ path.basename(assetInfo[keyName]));
-				// If an undefined URL is obtained:
-				if(!URL) {
-					// We leave it blank:
-					URL = '';
-					return;
-				}
-				// An index for the file is added to the database:
-				infoWithURL = JSON.parse(JSON.stringify(assetInfo));
-				infoWithURL.storage_urls = URL;
-				pushAssetInfo(keyName, refPath , infoWithURL, true, success, failure);
-			}
-		}
-	);
+
+	let promise = fileIO.copyFile(srcPath, destPath)
+		.then((message) => {
+			// An index for the file is added to the database:
+			infoWithURL = JSON.parse(JSON.stringify(assetInfo));
+			infoWithURL.asset_url = destPath;
+			return pushAssetInfo(refPath , infoWithURL, keyName, true);
+		});
+
+	return promise;
 }
 
 function pushItem(itemInfo, itemImage, success, failure) {
@@ -279,21 +240,43 @@ if('DB_TEST1' === process.argv[2]) {
 }
 
 if('DB_TEST2' === process.argv[2]) {
-	pushAsset(
-		{
-			path: '../../assets/img//img1.jpg'
-		},
-		'../../www/',
-		'/img/carousel/',
-		'name',
-		{ name: 'first_image' }
-	)
-	.then((message) => {
-		console.log(message);
-	})
-	.catch((error) => {
-		console.log(error);
-	});
+	fire.auth().signInWithEmailAndPassword(DB_EMAIL, DB_PASS)
+		.then(() => {
+			return pushAsset(
+				{
+					path: '../../assets/img//img1.jpg'
+				},
+				'../../www/',
+				'/img/carousel/',
+				'name',
+				{ name: 'first_image', description: 'A test image' }
+			);
+		})
+		.then(() => {
+			return fire.database().ref('/assets/img/carousel/first_image/')
+				.once('value');
+		})
+		.then((snapshot) => {
+			console.assert('first_image' === snapshot.key);
+			console.assert('A test image' === snapshot.val().description);
+			console.log('pushhAsset: Success');
+			return Promise.all(
+				[
+					push('/assets/img/carousel/', ""),
+					fileIO.deleteFile('../../www/assets/img/carousel/first_image.jpg')
+				]
+			);
+		})
+		.then(() => {
+			console.log("crude deletion: Success");
+			return fire.auth().signOut();
+		})
+		.then(() => {
+			console.log("sign out: Success");
+		})
+		.catch((error) => {
+			console.log(error);
+		});
 }
 
 if('TEST3' === process.argv[2]) {
