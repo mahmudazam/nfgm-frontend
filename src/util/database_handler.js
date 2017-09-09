@@ -4,13 +4,9 @@
  */
 // Node Standard Modules:
 const path = require('path'); // normalize, basename
-const fileIO = require('./fileIO');
 // Firebase database control:
-const fire = require('./fire').default;
-
-// DB_Auth:
-const DB_EMAIL = process.env.NFGM_ADDRESS;
-const DB_PASS = process.env.NFGM_DB_PASS;
+const fire = require('./fire').default; // database, auth
+const fileIO = require('./fileIO'); // copyFile, deleteFile
 
 /**
  * Pushes the URL of file in Firebase storage to the Firebase database
@@ -19,7 +15,7 @@ const DB_PASS = process.env.NFGM_DB_PASS;
  * @param {String} keyName the field which will be used as the node's key
  * @param {boolean} keyRedundant whether or not to keep the key as a field
  * @return {Promise}
-*/
+ */
 function pushAssetInfo(refPath, assetInfo, keyName, keyRedundant) {
 	// Create path names:
 	if(refPath !== "") {
@@ -57,20 +53,18 @@ function push(refPath, obj) {
 function pushCategory(categoryName) {
 	let categoryRef = fire.database().ref('/assets/categories/' + categoryName);
 	let promise = new Promise((resolve, reject) => {
-		categoryRef.once('value')
-			.then((snapshot) => {
-				// Check if the category exists:
-				if(null === snapshot.val()) {
-					return categoryRef.child('items').set("NO_ITEMS_ADDED_YET");
-				} else {
-					reject("Category exists");
-				}
-			})
-			.then(() => {
-				// Category successfully pushed:
-				resolve("Category " + categoryName
-					+ " successfully pushed to database");
-			});
+		categoryRef.once('value').then((snapshot) => {
+			// Check if the category exists:
+			if(null === snapshot.val()) {
+				return categoryRef.child('items').set("NO_ITEMS_ADDED_YET");
+			} else {
+				reject("Category exists");
+			}
+		}).then(() => {
+			// Category successfully pushed:
+			resolve("Category " + categoryName
+				+ " successfully pushed to database");
+		});
 	});
 	return promise;
 }
@@ -94,49 +88,53 @@ function pushItemToCategories(itemName, categoryNames) {
 }
 
 /**
- * Pushes a file to www/assets with a corresponding database index:
- * @param {String} file - file information
- * @param {String} refPath - the Firebase storage location to store the file
- * @param {Object} assetInfo - additional information about the asset
+ * Pushes a file to www/assets/ with a corresponding database index:
+ * @param {String} file file information
+ * @param {String} destination the location of the file within www/assets/
+ * @param {String} refPath the Firebase storage location to store the file
+ * @param {String} keyName the name of the key field of assetInfo
+ * @param {Object} assetInfo additional information about the asset
  */
 function pushAsset(file, destination, refPath, keyName, assetInfo) {
 	// Copy file to www/assets:
 	let srcPath = file.path;
+	let filename =  assetInfo[keyName] + path.extname(srcPath)
 	let destPath = path.normalize(
-		destination + '/assets/' + refPath + '/'
-		+ path.basename(assetInfo[keyName] + path.extname(srcPath))
+		destination + '/assets/' + refPath + '/' + filename
 	);
 
-	let promise = fileIO.copyFile(srcPath, destPath)
-		.then((message) => {
-			// An index for the file is added to the database:
-			infoWithURL = JSON.parse(JSON.stringify(assetInfo));
-			infoWithURL.asset_url = destPath;
-			return pushAssetInfo(refPath , infoWithURL, keyName, true);
-		});
+	let promise = fileIO.copyFile(srcPath, destPath).then((message) => {
+		// An index for the file is added to the database:
+		infoWithURL = JSON.parse(JSON.stringify(assetInfo));
+		infoWithURL.asset_url = './'
+			+ path.normalize('assets/' + refPath + '/' + filename);
+		return pushAssetInfo(refPath , infoWithURL, keyName, true);
+	});
 
 	return promise;
 }
 
-function pushItem(itemInfo, itemImage, success, failure) {
-	let newItem = {
-		item_name: itemInfo['item_name'][0],
-		description: itemInfo['description'][0],
-		price: itemInfo['price'][0],
-		unit: itemInfo['unit'][0],
-		sale_information: itemInfo['sale_information'][0],
-		categories: itemInfo['categories'].reduce(function(result, category) {
-			result[category] = "";
-			return result;
-		}, {})
-	};
-	pushAsset(itemImage, '/items', 'item_name', newItem,
-		function() {
-			pushItemToCategories(itemInfo['item_name'][0], itemInfo['categories']);
-			success();
-		},
-		failure
-	);
+/**
+ * Pushes an item object for display in the Products view
+ * @param {Object} itemInfo the information associated with the item to push
+ * @param {Object} itemImage the information about the item's image file
+ * @param {String} rootDirPath the path to the root public directory
+ * @return {Promise}
+ */
+function pushItem(itemInfo, itemImage, rootDirPath) {
+	// Create the promise: First push the item itself as an asset:
+	let promise = pushAsset(
+		itemImage,
+		rootDirPath,
+		'/items',
+		'item_name',
+		itemInfo
+	).then(() => {
+		// Next include the item in the specified categories:
+		pushItemToCategories(itemInfo['item_name'], itemInfo['categories']);
+	});
+
+	return promise;
 }
 
 function deleteAsset(refPath, success, file_failure, db_failure) {
@@ -177,182 +175,153 @@ function deleteItem(itemInfo, success, failure) {
 	);
 }
 
-// Entry point for testing :
-
-// Pushing images to database:
+// Tests :
 if('DB_TEST1' === process.argv[2]) {
-	fire.auth().signInWithEmailAndPassword(DB_EMAIL, DB_PASS)
-		.then(() => {
-			return push(
-				'/assets/hours/',
-				[
-					{ name: 'Monday' , hours: '09:00AM - 09:00PM' },
-					{ name: 'Tuesday' , hours: '09:00AM - 09:00PM' },
-					{ name: 'Wednesday' , hours: '09:00AM - 09:00PM' },
-					{ name: 'Thursday' , hours: '09:00AM - 09:00PM' },
-					{ name: 'Friday' , hours: '09:00AM - 01:00PM, 02:00PM - 09:00PM' },
-					{ name: 'Saturday' , hours: '09:00AM - 09:00PM' },
-					{ name: 'Sunday' , hours: '09:00AM - 09:00PM' }
-				]
-			);
-		})
-		.then(() => {
-			console.log('push hours: Success');
-			return pushCategory("Spices")
-		})
-		.then((successMessage) => {
-			console.log('pushCategory: ' + successMessage);
-			return pushItemToCategories('Mint', ['Spices', 'Condiments'])
-		})
-		.then(() => {
-			console.log('pushItemToCategories: Success');
-			return pushAssetInfo(
-				'/test',
+	// Authentication for database edits:
+	let DB_EMAIL = process.env.NFGM_ADDRESS;
+	let DB_PASS = process.env.NFGM_DB_PASS;
+	// 1. Test leaf functions:
+	fire.auth().signInWithEmailAndPassword(DB_EMAIL, DB_PASS).then(() => {
+		return push(
+			'/assets/hours/',
+			[
+				{ name: 'Monday' , hours: '09:00AM - 09:00PM' },
+				{ name: 'Tuesday' , hours: '09:00AM - 09:00PM' },
+				{ name: 'Wednesday' , hours: '09:00AM - 09:00PM' },
+				{ name: 'Thursday' , hours: '09:00AM - 09:00PM' },
+				{ name: 'Friday' , hours: '09:00AM - 01:00PM, 02:00PM - 09:00PM' },
+				{ name: 'Saturday' , hours: '09:00AM - 09:00PM' },
+				{ name: 'Sunday' , hours: '09:00AM - 09:00PM' }
+			]
+		);
+	}).then(() => {
+		console.log('push hours: Success');
+		return pushCategory("Spices")
+	}).then((successMessage) => {
+		console.log('pushCategory: ' + successMessage);
+		return pushItemToCategories('Mint', ['Spices', 'Condiments'])
+	}).then(() => {
+		console.log('pushItemToCategories: Success');
+		return pushAssetInfo(
+			'/test',
+			{
+				test_name: 'pushAssetInfoTest',
+				test_data: 'data'
+			},
+			'test_name',
+			true
+		);
+	}).then(() => {
+		console.log('pushAssetInfo: Success');
+		console.log('Testing category overwrite:');
+		return pushCategory("Spices");
+	}).catch((error) => {
+		console.log(error);
+		return Promise.all([
+			push('/assets/test', null),
+			push('/assets/categories/Spices', null),
+			push('/assets/categories/Condiments', null)
+		]);
+		// 2. Test functions that directly call leaf functions:
+	}).then(() => {
+		console.log('crude deletion: Success');
+		return pushAsset(
+			{
+				path: '../../assets/img//img1.jpg'
+			},
+			'../../www/',
+			'/carousel/',
+			'name',
+			{ name: 'first_image', description: 'A test image' }
+		);
+	}).then(() => {
+		return fire.database().ref('/assets/carousel/first_image/')
+			.once('value');
+	}).then((snapshot) => {
+		console.assert('first_image' === snapshot.key);
+		console.assert('A test image' === snapshot.val().description);
+		console.log('pushAsset: Success');
+		// Test functions that do not call leaf functions:
+		return Promise.all([
+			pushItem(
 				{
-					test_name: 'pushAssetInfoTest',
-					test_data: 'data'
+					item_name: 'Chicken',
+					price: 4.99,
+					unit: 'kg',
+					description: 'Fresh chicken from the farms',
+					sale_information: '',
+					categories: ['Meat']
 				},
-				'test_name',
-				true
-			);
-		})
-		.then(() => {
-			console.log('pushAssetInfo: Success');
-			console.log('Testing category overwrite:');
-			return pushCategory("Spices");
-		})
-		.catch((error) => {
-			console.log(error);
-			return Promise.all([
-				push('/assets/test', null),
-				push('/assets/categories/Spices', null),
-				push('/assets/categories/Condiments', null)
-			]);
-		})
-		.then(() => {
-			console.log('crude delete: Success');
-			return fire.auth().signOut();
-		})
-		.then(() => {
-			console.assert(!fire.auth().currentUser);
-			console.log('sign out: Success');
-		});
-}
-
-if('DB_TEST2' === process.argv[2]) {
-	fire.auth().signInWithEmailAndPassword(DB_EMAIL, DB_PASS)
-		.then(() => {
-			return pushAsset(
+				{ path: '../../assets/img//exim-food-item-img/Chicken/whole Chicken.jpg' },
+				'../../www'
+			),
+			pushItem(
 				{
-					path: '../../assets/img//img1.jpg'
+					item_name: 'Carrots',
+					price: 2.50,
+					unit: 'kg',
+					description: 'Fresh colourful carrots',
+					sale_information: '',
+					categories: ['Vegetables']
 				},
-				'../../www/',
-				'/img/carousel/',
-				'name',
-				{ name: 'first_image', description: 'A test image' }
-			);
-		})
-		.then(() => {
-			return fire.database().ref('/assets/img/carousel/first_image/')
-				.once('value');
-		})
-		.then((snapshot) => {
-			console.assert('first_image' === snapshot.key);
-			console.assert('A test image' === snapshot.val().description);
-			console.log('pushhAsset: Success');
-			return Promise.all(
-				[
-					push('/assets/img/carousel/', ""),
-					fileIO.deleteFile('../../www/assets/img/carousel/first_image.jpg')
-				]
-			);
-		})
-		.then(() => {
-			console.log("crude deletion: Success");
-			return fire.auth().signOut();
-		})
-		.then(() => {
-			console.log("sign out: Success");
-		})
-		.catch((error) => {
-			console.log(error);
-		});
-}
-
-if('TEST3' === process.argv[2]) {
-
-	pushItem(
-		{
-			item_name: ['Beef'],
-			price: [5.99],
-			unit: ['kg'],
-			description: ['Fresh beef from the farms'],
-			sale_information: [''],
-			categories: ['Meat']
-		},
-		{ path: '../../assets/img//exim-food-item-img/Beef/Beef 1.jpg' },
-		function() { console.log("pushItem: success") },
-		function(error) { console.log(error.message); }
-	);
-
-  pushItem(
-		{
-			item_name: ['Chicken'],
-			price: [4.99],
-			unit: ['kg'],
-			description: ['Fresh chicken from the farms'],
-			sale_information: [''],
-			categories: ['Meat']
-		},
-		{ path: '../../assets/img//exim-food-item-img/Chicken/whole Chicken.jpg' },
-		function() { console.log("pushItem: success") },
-		function(error) { console.log(error.message); }
-	);
-
-	pushItem(
-		{
-			item_name: ['Carrots'],
-			price: [2.50],
-			unit: ['kg'],
-			description: ['Fresh colourful carrots'],
-			sale_information: [''],
-			categories: ['Vegetables']
-		},
-		{ path: '../../assets/img//exim-food-item-img/Beef/Beef 1.jpg' },
-		function() { console.log("pushItem: success") },
-		function(error) { console.log(error.message); }
-	);
-
-	pushItem(
-		{
-			item_name: ['Cauliflower'],
-			price: [5.00],
-			unit: ['kg'],
-			description: ['Fresh clean Cauliflower'],
-			sale_information: [''],
-			categories: ['Vegetables']
-		},
-		{ path: '../../assets/img//exim-food-item-img/Beef/Beef 1.jpg' },
-		function() { console.log("pushItem: success") },
-		function(error) { console.log(error.message); }
-	);
-
-	pushItem(
-		{
-			item_name: ['Duck'],
-			price: [5.99],
-			unit: ['kg'],
-			description: ['Fresh duck'],
-			sale_information: [''],
-			categories: ['Meat']
-		},
-		{ path: '../../assets/img//exim-food-item-img/Chicken/Duck.jpg' },
-		function() {
-			console.log("pushItem: success");
-		},
-		function(error) { console.log(error.message); }
-	);
-
+				{ path: '../../assets/img//exim-food-item-img/Beef/Beef 1.jpg' },
+				'../../www'
+			),
+			pushItem(
+				{
+					item_name: 'Cauliflower',
+					price: 5.00,
+					unit: 'kg',
+					description: 'Fresh clean Cauliflower',
+					sale_information: '',
+					categories: ['Vegetables']
+				},
+				{ path: '../../assets/img//exim-food-item-img/Beef/Beef 1.jpg' },
+				'../../www'
+			),
+			pushItem(
+				{
+					item_name: 'Duck',
+					price: 5.99,
+					unit: 'kg',
+					description: 'Fresh duck',
+					sale_information: '',
+					categories: ['Meat']
+				},
+				{ path: '../../assets/img//exim-food-item-img/Chicken/Duck.jpg' },
+				'../../www'
+			),
+			pushItem(
+				{
+					item_name: 'Beef',
+					price: 5.99,
+					unit: 'kg',
+					description: 'Fresh beef from the farms',
+					sale_information: '',
+					categories: ['Meat']
+				},
+				{ path: '../../assets/img//exim-food-item-img/Beef/Beef 1.jpg' },
+				'../../www'
+			)
+		]);
+	}).then(() => {
+		console.log('pushItem: Success');
+	}).then(() => {
+		return Promise.all(
+			[
+				push('/assets/carousel/', ""),
+				fileIO.deleteFile('../../www/assets/carousel/first_image.jpg'),			]
+		);
+	}).then(() => {
+		console.log("crude deletion: Success");
+		return fire.auth().signOut();
+	}).then(() => {
+		console.log("sign out: Success");
+		process.exit(0);
+	}).catch((error) => {
+		console.log(error);
+		process.exit(1);
+	});
 }
 
 if("TEST_DELETE" === process.argv[2]) {

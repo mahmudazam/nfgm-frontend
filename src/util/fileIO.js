@@ -63,9 +63,11 @@ if("FILE_TEST" === process.argv[2]) {
     })
     .then((message) => {
       console.log(message);
+			process.exit(0);
     })
     .catch((error) => {
       console.log(error);
+			process.exit(1);
     });
 }
 
