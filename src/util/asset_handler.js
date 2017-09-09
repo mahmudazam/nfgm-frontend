@@ -178,24 +178,14 @@ function deleteItem(itemInfo, rootDirPath) {
 }
 
 // Tests :
-if('DB_TEST1' === process.argv[2]) {
+if('DB_TEST' === process.argv[2]) {
+	data = JSON.parse(require('fs').readFileSync('../../database_data.json'));
 	// Authentication for database edits:
 	let DB_EMAIL = process.env.NFGM_ADDRESS;
 	let DB_PASS = process.env.NFGM_DB_PASS;
 	// 1. Test leaf functions:
 	fire.auth().signInWithEmailAndPassword(DB_EMAIL, DB_PASS).then(() => {
-		return push(
-			'/assets/hours/',
-			[
-				{ name: 'Monday' , hours: '09:00AM - 09:00PM' },
-				{ name: 'Tuesday' , hours: '09:00AM - 09:00PM' },
-				{ name: 'Wednesday' , hours: '09:00AM - 09:00PM' },
-				{ name: 'Thursday' , hours: '09:00AM - 09:00PM' },
-				{ name: 'Friday' , hours: '09:00AM - 01:00PM, 02:00PM - 09:00PM' },
-				{ name: 'Saturday' , hours: '09:00AM - 09:00PM' },
-				{ name: 'Sunday' , hours: '09:00AM - 09:00PM' }
-			]
-		);
+		return push('/assets/hours/', data.hours);
 	}).then(() => {
 		console.log('push hours: Success');
 		return pushCategory("Spices")
@@ -204,15 +194,7 @@ if('DB_TEST1' === process.argv[2]) {
 		return pushItemToCategories('Mint', ['Spices', 'Condiments'])
 	}).then(() => {
 		console.log('pushItemToCategories: Success');
-		return pushAssetInfo(
-			'/test',
-			{
-				test_name: 'pushAssetInfoTest',
-				test_data: 'data'
-			},
-			'test_name',
-			true
-		);
+		return pushAssetInfo('/test', data.test, 'test_name', true);
 	}).then(() => {
 		console.log('pushAssetInfo: Success');
 		console.log('Testing category overwrite:');
@@ -244,83 +226,14 @@ if('DB_TEST1' === process.argv[2]) {
 		console.assert('A test image' === snapshot.val().description);
 		console.log('pushAsset: Success');
 		// Test functions that do not call leaf functions:
-		return Promise.all([
-			pushItem(
-				{
-					item_name: 'Chicken',
-					price: 4.99,
-					unit: 'kg',
-					description: 'Fresh chicken from the farms',
-					sale_information: '',
-					categories: ['Meat', 'Bird Meat']
-				},
-				{ path: '../../assets/img//exim-food-item-img/Chicken/whole Chicken.jpg' },
-				'../../www'
-			),
-			pushItem(
-				{
-					item_name: 'Carrots',
-					price: 2.50,
-					unit: 'kg',
-					description: 'Fresh colourful carrots',
-					sale_information: '',
-					categories: ['Vegetables']
-				},
-				{ path: '../../assets/img//exim-food-item-img/Beef/Beef 1.jpg' },
-				'../../www'
-			),
-			pushItem(
-				{
-					item_name: 'Cauliflower',
-					price: 5.00,
-					unit: 'kg',
-					description: 'Fresh clean Cauliflower',
-					sale_information: '',
-					categories: ['Vegetables']
-				},
-				{ path: '../../assets/img//exim-food-item-img/Beef/Beef 1.jpg' },
-				'../../www'
-			),
-			pushItem(
-				{
-					item_name: 'Duck',
-					price: 5.99,
-					unit: 'kg',
-					description: 'Fresh duck',
-					sale_information: '',
-					categories: ['Meat', 'Bird Meat']
-				},
-				{ path: '../../assets/img//exim-food-item-img/Chicken/Duck.jpg' },
-				'../../www'
-			),
-			pushItem(
-				{
-					item_name: 'Beef',
-					price: 5.99,
-					unit: 'kg',
-					description: 'Fresh beef from the farms',
-					sale_information: '',
-					categories: ['Meat', 'Cattle Meat']
-				},
-				{ path: '../../assets/img//exim-food-item-img/Beef/Beef 1.jpg' },
-				'../../www'
-			)
-		]);
+		return Promise.all(data.items.map((item) => {
+			return pushItem(item.itemInfo, item.fileInfo, item.root);
+		}));
 	}).then(() => {
 		console.log('pushItem: Success');
-	}).then(() => {
-		return deleteItem(
-			{
-				item_name: 'Duck',
-				price: 5.99,
-				unit: 'kg',
-				description: 'Fresh duck',
-				sale_information: '',
-				categories: ['Meat', 'Bird Meat'],
-				asset_url: './assets/items/Duck.jpg'
-			},
-			'../../www/'
-		)
+		let duckData = data.items[data.items.length - 1];
+		duckData.itemInfo.asset_url = './assets/items/Duck.jpg';
+		return deleteItem(duckData.itemInfo, duckData.root);
 	}).then(() => {
 		return Promise.all([
 				push('/assets/carousel/', ""),

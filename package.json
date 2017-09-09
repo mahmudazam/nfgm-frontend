@@ -8,7 +8,7 @@
     "build": "webpack -p",
     "start": "node server.js",
     "deploy": "firebase deploy",
-    "test_lib": "pushd src/util > /dev/null; node fileIO.js FILE_TEST '.'; node database_handler.js DB_TEST1 '.'; popd > /dev/null"
+    "test_lib": "pushd src/util > /dev/null; node fileIO.js FILE_TEST; node asset_handler.js DB_TEST; popd > /dev/null"
   },
   "keywords": [
     "react",
