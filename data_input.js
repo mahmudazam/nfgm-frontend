@@ -1,6 +1,40 @@
 
 const fs = require('fs');
 var data = {
+  carousel: [
+    {
+      info: {
+        image_name: 'carousel image 1',
+        description: ''
+      },
+      path: '../../assets/img/img1.jpg',
+      root: '../../www/'
+    },
+    {
+      info: {
+        image_name: 'carousel image 2',
+        description: ''
+      },
+      path: '../../assets/img/img2.jpg',
+      root: '../../www/'
+    },
+    {
+      info: {
+        image_name: 'carousel image 3',
+        description: ''
+      },
+      path: '../../assets/img/img3.jpg',
+      root: '../../www/'
+    },
+    {
+      info: {
+        image_name: 'carousel image 4',
+        description: ''
+      },
+      path: '../../assets/img/img4.jpg',
+      root: '../../www/'
+    }
+  ],
   hours: [
     { name: 'Monday' , hours: '09:00AM - 09:00PM' },
     { name: 'Tuesday' , hours: '09:00AM - 09:00PM' },

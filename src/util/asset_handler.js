@@ -177,6 +177,27 @@ function deleteItem(itemInfo, rootDirPath) {
 	]);
 }
 
+/**
+ * Pushes an image to the carousel
+ * @param {Object} imageInfo all information associated with the carousel image
+ * @param {Object} imageFile imageFile information (only the path field is used)
+ * @param {String} rootDirPath path to the www directory
+ * @return {Promise}
+ */
+function pushCarouselImage(imageInfo, imageFile, rootDirPath) {
+	// Obtain a timestamp for the push:
+	let imageInfoWithTimeStamp = JSON.parse(JSON.stringify(imageInfo));
+	imageInfoWithTimeStamp.upload_time = new Date().toString();
+	// Push the carousel image:
+	return pushAsset(
+		imageFile,
+		rootDirPath,
+		'/carousel',
+		'image_name',
+		imageInfoWithTimeStamp
+	);
+}
+
 // Tests :
 if('DB_TEST' === process.argv[2]) {
 	data = JSON.parse(require('fs').readFileSync('../../database_data.json'));
@@ -239,6 +260,10 @@ if('DB_TEST' === process.argv[2]) {
 				push('/assets/carousel/', ""),
 				fileIO.deleteFile('../../www/assets/carousel/first_image.jpg')
 		]);
+	}).then(() => {
+		return Promise.all(data.carousel.map((image) => {
+			return pushCarouselImage(image.info, image, image.root);
+		}));
 	}).then(() => {
 		console.log("crude deletion: Success");
 		return fire.auth().signOut();
