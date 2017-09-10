@@ -5,8 +5,12 @@ const fire = require('./src/util/fire').default;
 fire.database().ref('/assets').once('value').then((snapshot) => {
   // Backup database each time this file is executed to prevent data loss during
   // tests:
+  let backup = undefined;
+  if("BACKUP" === process.argv[2]) {
+    backup = { assets: snapshot.val() };
+  }
   var data = {
-    backup: { assets: snapshot.val() },
+    backup: backup,
     carousel: [
       {
         info: {
@@ -120,9 +124,11 @@ fire.database().ref('/assets').once('value').then((snapshot) => {
   fs.writeFileSync('./database_data.json', JSON.stringify(data));
   var readData = JSON.parse(fs.readFileSync('./database_data.json'));
   console.assert(readData.test.test_name === data.test.test_name);
-  console.assert(
-    readData.backup.assets.hours[0].name === data.backup.assets.hours[0].name
-  );
+  if("BACKUP" === process.argv[2]) {
+    console.assert(
+      readData.backup.assets.hours[0].name === data.backup.assets.hours[0].name
+    );
+  }
   console.log('Database backup and test data write complete');
   process.exit(0);
 });

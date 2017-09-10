@@ -18,7 +18,14 @@ class Category extends React.Component {
     let categoryQuery = fire.database()
       .ref('/assets/categories/' + this.props.categoryName).orderByKey();
     categoryQuery.on('value', ((snapshot) => {
-      if(null == snapshot.val()) return;
+      if(!snapshot.val() || 'NO_ITEMS_ADDED_YET' === snapshot.val()) {
+        this.setState({
+          ...this.state,
+          itemList: {},
+          loading: false
+        });
+        return;
+      };
       let items = Object.keys(snapshot.val().items);
       items.map((itemName) => {
         fire.database().ref('/assets/items/' + itemName).orderByKey()
@@ -42,7 +49,7 @@ class Category extends React.Component {
         {
           this.state.loading
           ? (<div>Loading...</div>)
-          : {} === this.state.itemList || !this.state.itemList
+          : !this.state.itemList || 0 >= Object.keys(this.state.itemList).length
             ? (<div>No items in this category</div>)
             : Object.keys(this.state.itemList).map((itemName) => {
               let item = {

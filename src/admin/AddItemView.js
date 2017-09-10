@@ -29,7 +29,7 @@ class AddItemView extends React.Component {
 
   loadCategoriesAndRender() {
     let catRef = fire.database().ref('assets/categories').orderByKey();
-    catRef.once('value').then(((snapshot) => {
+    catRef.on('value', ((snapshot) => {
       this.setState({
         ...AddItemView.defaultState(),
         categories: Object.keys(snapshot.val()).reduce(((result, name) => {
@@ -53,13 +53,13 @@ class AddItemView extends React.Component {
       ...this.state,
       ...normalizedItemInfo,
       image: this.state.image.file,
-      categories: Object.keys(this.state.categories).reduce(
+      categories: JSON.stringify(Object.keys(this.state.categories).reduce(
         (result, category) => {
           if(this.state.categories[category]) {
             result.push(category);
           }
           return result;
-        }, [])
+        }, []))
     };
     if(newItem.categories.length <= 0) {
       window.alert("Please select at least one category");

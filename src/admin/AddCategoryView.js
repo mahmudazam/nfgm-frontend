@@ -57,11 +57,9 @@ class AddCategoryView extends React.Component {
   			<FormPanel
           title='Add a new category'
           size='col-sm-6'
-          fields={
-            [
-              { title:'Category Name', type: 'text', optional: false }
-            ]
-          }
+          fields={[
+            { title:'Category Name', type: 'text', optional: false, value: "" }
+          ]}
           submitName='Add New Category'
           onSubmit={this.pushCategory.bind(this)}
           onReset={(() => {

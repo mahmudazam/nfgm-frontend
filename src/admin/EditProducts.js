@@ -38,7 +38,7 @@ class EditProducts extends React.Component {
       let POST_KEY = snapshot.val();
       let itemInfo = {
         ...this.state.itemSelected,
-        categories: Object.keys(this.state.itemSelected.categories),
+        categories: JSON.stringify(this.state.itemSelected.categories),
         post_key: POST_KEY
       };
       postFormData(
@@ -47,7 +47,6 @@ class EditProducts extends React.Component {
         (xhr) => { window.alert(xhr.responseText); },
         (xhr) => { window.alert(xhr.responseText); }
       );
-      console.log(itemInfo);
       this.showDeleteItemModal(false)(null);
     })
   }

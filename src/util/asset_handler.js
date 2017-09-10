@@ -147,7 +147,14 @@ function deleteItemFromCategories(itemName, categories) {
 		let refPath = path.normalize(
 			'/assets/categories/' + category + '/items/' + itemName
 		);
-		return push(refPath, null);
+		return push(refPath, null).then(() => {
+			return fire.database().ref('/assets/categories/' + category)
+				.once('value');
+		}).then((snapshot) => {
+			if(null === snapshot.val()) {
+				return push('/assets/categories/' + category, 'NO_ITEMS_ADDED_YET');
+			}
+		});
 	});
 	// Return a promise that resolves when all the deletes have completed:
 	return Promise.all(allDeletes);

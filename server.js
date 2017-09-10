@@ -11,6 +11,7 @@ const app = express();
 const path = require('path');
 const multiparty = require('multiparty');
 const asset_handler = require('./src/util/asset_handler');
+const firebase_auth = require('./src/util/firebase_auth');
 
 const compiler = webpack(webpackConfig);
 
@@ -57,7 +58,7 @@ function simplifyFields(fields) {
     if('categories' !== fieldName) {
       result[fieldName] = fields[fieldName][0];
     } else {
-      result['categories'] = fields['categories'];
+      result['categories'] = JSON.parse(fields['categories'][0]);
     }
     return result
   }, {});
@@ -78,6 +79,8 @@ app.post('/customer_email', function(req, res) {
 
 // Database Edits:
 const POST_KEY = process.env.NFGM_POST_KEY;
+const DB_EMAIL = process.env.NFGM_ADDRESS;
+const DB_PASS = process.env.NFGM_DB_PASS;
 app.post('/add_item', function(req, res) {
   let form = new multiparty.Form();
   form.parse(req, (err, fields, files) => {
@@ -86,12 +89,20 @@ app.post('/add_item', function(req, res) {
     }
     if(fields) {
       if(POST_KEY === fields.post_key[0]) {
-        asset_handler.pushItem(simplifyFields(fields), files.image[0])
-          .then(() => { res.send("SUCCESS"); })
-          .catch((error) => {
-            if(error instanceof Object) res.send(JSON.stringify(error));
-            else res.send(error);
-          });
+        firebase_auth.signIn(DB_EMAIL, DB_PASS).then(() => {
+          asset_handler.pushItem(simplifyFields(fields), files.image[0], './www/')
+            .then(() => {
+              return firebase_auth.signOut();
+            })
+            .then(() => { res.send("SUCCESS"); })
+            .catch((error) => {
+              if(error instanceof Object) res.send(JSON.stringify(error));
+              else res.send(error);
+            });
+        }).catch((error) => {
+          console.log(error);
+          res.send("Permission denied");
+        })
       } else {
         console.log(fields);
         res.send("Permission denied");
@@ -108,12 +119,20 @@ app.post('/add_category', function(req, res) {
     }
     if(fields) {
       if(POST_KEY === fields.post_key[0]) {
-        asset_handler.pushCategory(fields.name[0], function() {})
-          .then(() => { res.send("SUCCESS"); })
-          .catch((error) => {
-            if(error instanceof Object) res.send(JSON.stringify(error));
-            else res.send(error);
-          });
+        firebase_auth.signIn(DB_EMAIL, DB_PASS).then(() => {
+          asset_handler.pushCategory(fields.name[0])
+            .then(() => {
+              return firebase_auth.signOut();
+            })
+            .then(() => { res.send("SUCCESS"); })
+            .catch((error) => {
+              if(error instanceof Object) res.send(JSON.stringify(error));
+              else res.send(error);
+            });
+        }).catch((error) => {
+          console.log(error);
+          res.send("Permission denied");
+        })
       } else {
         console.log(fields);
         res.send("Permission denied");
@@ -130,8 +149,20 @@ app.post('/delete_item', function(req, res) {
     }
     if(fields) {
       if(POST_KEY === fields.post_key[0]) {
-        asset_handler.deleteItem(simplifyFields(fields));
-        res.send("DELETED " + fields.toString());
+        firebase_auth.signIn(DB_EMAIL, DB_PASS).then(() => {
+          asset_handler.deleteItem(simplifyFields(fields), './www/')
+            .then(() => {
+              return firebase_auth.signOut();
+            })
+            .then(() => { res.send("SUCCESS"); })
+            .catch((error) => {
+              if(error instanceof Object) res.send(JSON.stringify(error));
+              else res.send(error);
+            });
+        }).catch((error) => {
+          console.log(error);
+          res.send("Permission denied");
+        })
       } else {
         console.log(fields);
         res.send("Permission denied");
