@@ -17,13 +17,6 @@ class SignInView extends React.Component {
     this.notify = props.notify;
   }
 
-  onSubmit(event) {
-    event.preventDefault();
-    if(this.fieldsAreNotEmpty()) {
-      this.logInUser(this.state.fields);
-    }
-  }
-
   acceptUser() {
     this.setState({
       ...this.state,
@@ -33,6 +26,14 @@ class SignInView extends React.Component {
   }
 
   rejectUser(error) {
+    if('auth/user-not-found' === error.code) {
+      window.alert("Email address not found");
+    } else if('auth/wrong-password' === error.code) {
+      window.alert("Incorrect password");
+    } else {
+      console.log(error);
+      window.alert("Unknown error: Please contact the developers");
+    }
     this.notify(false);
   }
 
@@ -49,19 +50,23 @@ class SignInView extends React.Component {
 
   render() {
     return (
-      <Row>
-        <Col sm={0} md={4}/>
-        <FormPanel
-          size='col-sm-12 col-md-4'
-          fields={[
-            { title: 'Email', type: 'email', optional: false, value: ""},
-            { title: 'Password', type: 'password', optional: false, value: ""}
-          ]}
-          submitName='Sign in'
-          onSubmit={this.signInUser.bind(this)}
-        />
-        <Col sm={0} md={4}/>
-      </Row>
+      fire.auth().currentUser
+      ? (<Admin/>)
+      : (
+        <Col sm={12}>
+          <Col sm={0} md={4}/>
+          <FormPanel
+            size='col-sm-12 col-md-4'
+            fields={[
+              { title: 'Email', type: 'email', optional: false, value: ""},
+              { title: 'Password', type: 'password', optional: false, value: ""}
+            ]}
+            submitName='Sign in'
+            onSubmit={this.signInUser.bind(this)}
+          />
+          <Col sm={0} md={4}/>
+        </Col>
+      )
     );
   }
 

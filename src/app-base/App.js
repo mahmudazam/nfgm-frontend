@@ -4,7 +4,6 @@ import TabBar from './TabBar';
 import SignInView from './SignInView';
 import { Redirect, Route } from 'react-router-dom';
 import fire from '../util/fire';
-import Admin from '../admin/Admin';
 
 const HomeRedirect = () => (<Redirect to='/home'/>);
 
@@ -13,20 +12,19 @@ class App extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      loggedIn : false
+      signedIn : false
     }
   }
 
   getSignInView() {
     return (
-      <SignInView notify={this.forceUpdate.bind(this)}/>
+      <SignInView notify={(signInState) => {
+        this.setState({
+          ...this.state,
+          signedIn: signInState
+        });
+      }}/>
     );
-  }
-
-  getAdminPage() {
-    return (
-      <Admin notify={this.forceUpdate.bind(this)}/>
-    )
   }
 
   isUserAuthenticated() {
@@ -51,11 +49,7 @@ class App extends React.Component {
           signedIn={this.isUserAuthenticated}
           signOut={this.signOut.bind(this)}/>
         <Route exact path='/' component={HomeRedirect}/>
-        {
-          this.isUserAuthenticated()
-          ? (<Route exact path='/signin' component={this.getAdminPage.bind(this)}/>)
-          : (<Route exact path='/signin' component={this.getSignInView.bind(this)}/>)
-        }
+        <Route exact path='/signin' component={this.getSignInView.bind(this)}/>
         <Route path='/home' component={TabBar}/>
         <Route path='/products' component={TabBar}/>
         <Route path='/contact' component={TabBar}/>
