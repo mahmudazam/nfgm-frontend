@@ -15,19 +15,12 @@ class Products extends React.Component {
   }
 
   componentWillMount() {
-    fire.database().ref('/assets/categories/').once('value').then(
+    fire.database().ref('/assets/categories/').orderByKey().on('value',
       ((snapshot) => {
+        let categoryList = Object.keys(snapshot.val());
         this.setState({
-          activeKey: Object.keys(snapshot.val())[0],
-          categoryList: Object.keys(snapshot.val()).map((categoryName) => {
-            return {
-              name: categoryName,
-              items:
-                ("NO_ITEMS_ADDED_YET" == snapshot.val()[categoryName].items)
-                ? []
-                : (Object.keys(snapshot.val()[categoryName].items))
-            };
-          })
+          activeKey: categoryList[0],
+          categoryList: categoryList
         });
       }).bind(this));
   }
@@ -57,12 +50,13 @@ class Products extends React.Component {
             {
               this.state.categoryList.map(category =>
                 <Panel
-                    key={category.name}
-                    header={category.name}
-                    eventKey={category.name}>
+                    key={category}
+                    header={category}
+                    eventKey={category}>
                   <Category
+                    categoryName={category}
                     itemButtons={this.props.itemButtons}
-                    items={category.items}/>
+                  />
                 </Panel>
               )
             }

@@ -16,13 +16,13 @@ class HomeLocation extends React.Component {
     * Loads the hours array with hours stored in Firebase database:
     */
     componentWillMount() {
-      // Get the reference to the database index of the image folder:
+      // Get the reference to the database node storing current hours:
       let hoursRef = fire.database().ref('assets/hours').orderByKey();
-      // Add every URL available in the index:
-      hoursRef.once('value').then(snapshot => {
+      // Set the state with hours:
+      hoursRef.on('value', (snapshot) => {
         this.setState({ hours: snapshot.val() });
       });
-    }g
+    }
 
     render() {
         return(

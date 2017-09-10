@@ -9,36 +9,31 @@ class Category extends React.Component {
     super(props);
     this.state = {
       loading: true,
-      itemList: []
+      itemList: {}
     };
     this.setState = this.setState.bind(this);
   }
 
-  loadItems(itemNameList) {
-    if(0 >= itemNameList.length) {
-      this.setState({
-        ...this.state,
-        loading: false
+  componentWillMount() {
+    let categoryQuery = fire.database()
+      .ref('/assets/categories/' + this.props.categoryName).orderByKey();
+    categoryQuery.on('value', ((snapshot) => {
+      if(null == snapshot.val()) return;
+      let items = Object.keys(snapshot.val().items);
+      items.map((itemName) => {
+        fire.database().ref('/assets/items/' + itemName).orderByKey()
+          .once('value').then(((snapshot) => {
+            if(null == snapshot.val()) return;
+            let itemList = { ...this.state.itemList };
+            itemList[snapshot.key] = snapshot.val();
+            this.setState({
+              ...this.state,
+              loading: false,
+              itemList: itemList
+            });
+          }).bind(this));
       });
-      return;
-    }
-    itemNameList.map((item) => {
-      let itemRef = fire.database().ref('/assets/items/' + item);
-      itemRef.once('value').then(item => {
-        let loadedItem = {
-          item_name: item.key,
-          ...item.val()
-        }
-        this.setState({
-          loading: false,
-          itemList: this.state.itemList.concat([loadedItem])
-        });
-      })
-    })
-  }
-
-  componentDidMount() {
-    this.loadItems(this.props.items);
+    }).bind(this));
   }
 
   render() {
@@ -47,15 +42,21 @@ class Category extends React.Component {
         {
           this.state.loading
           ? (<div>Loading...</div>)
-          : 0 >= this.state.itemList.length
+          : {} === this.state.itemList || !this.state.itemList
             ? (<div>No items in this category</div>)
-            : this.state.itemList.map((item) =>
+            : Object.keys(this.state.itemList).map((itemName) => {
+              let item = {
+                ...this.state.itemList[itemName],
+                item_name: itemName
+              };
+              return (
                 <Item
                   itemInfo={item}
                   className='col-sm-12 col-md-3'
-                  key={item.item_name}
+                  key={itemName}
                   buttons={this.props.itemButtons}/>
               )
+            })
         }
         { this.props.children }
       </div>
