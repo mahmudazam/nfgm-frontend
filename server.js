@@ -10,7 +10,7 @@ const email = require('./src/util/email');
 const app = express();
 const path = require('path');
 const multiparty = require('multiparty');
-const database_handler = require('./src/util/database_handler');
+const asset_handler = require('./src/util/asset_handler');
 
 const compiler = webpack(webpackConfig);
 
@@ -51,6 +51,18 @@ app.use(bodyParser.json({limit : '3mb'}));
 
 app.use(express.static(__dirname + '/www'));
 
+// Function for parsing fields to remove single-element arrays:
+function simplifyFields(fields) {
+  return Object.keys(fields).reduce((result, fieldName) => {
+    if('categories' !== fieldName) {
+      result[fieldName] = fields[fieldName][0];
+    } else {
+      result['categories'] = fields['categories'];
+    }
+    return result
+  }, {});
+}
+
 // Handle POST Requests:
 app.post('/customer_email', function(req, res) {
   let form = new multiparty.Form();
@@ -74,9 +86,12 @@ app.post('/add_item', function(req, res) {
     }
     if(fields) {
       if(POST_KEY === fields.post_key[0]) {
-        console.log(files);
-        database_handler.pushItem(fields, files.image[0]);
-        res.send("SUCCESS");
+        asset_handler.pushItem(simplifyFields(fields), files.image[0])
+          .then(() => { res.send("SUCCESS"); })
+          .catch((error) => {
+            if(error instanceof Object) res.send(JSON.stringify(error));
+            else res.send(error);
+          });
       } else {
         console.log(fields);
         res.send("Permission denied");
@@ -93,8 +108,12 @@ app.post('/add_category', function(req, res) {
     }
     if(fields) {
       if(POST_KEY === fields.post_key[0]) {
-        database_handler.pushCategory(fields.name[0], function() {});
-        res.send("SUCCESS");
+        asset_handler.pushCategory(fields.name[0], function() {})
+          .then(() => { res.send("SUCCESS"); })
+          .catch((error) => {
+            if(error instanceof Object) res.send(JSON.stringify(error));
+            else res.send(error);
+          });
       } else {
         console.log(fields);
         res.send("Permission denied");
@@ -111,7 +130,7 @@ app.post('/delete_item', function(req, res) {
     }
     if(fields) {
       if(POST_KEY === fields.post_key[0]) {
-        database_handler.deleteItem(fields);
+        asset_handler.deleteItem(simplifyFields(fields));
         res.send("DELETED " + fields.toString());
       } else {
         console.log(fields);

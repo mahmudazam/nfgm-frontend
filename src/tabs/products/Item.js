@@ -16,7 +16,7 @@ class Item extends React.Component {
     return (
       <Thumbnail
           className={this.props.className}
-          src={this.item.storage_urls}
+          src={this.item.asset_url}
           alt="242x200">
         <h4>{this.item['item_name']}</h4>
         {this.item['sale_information']
