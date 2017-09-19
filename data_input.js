@@ -1,4 +1,4 @@
-
+10
 const fs = require('fs');
 const fire = require('./src/util/fire').default;
 
@@ -46,13 +46,13 @@ fire.database().ref('/assets').once('value').then((snapshot) => {
       }
     ],
     hours: [
-      { name: 'Monday' , hours: '09:00AM - 09:00PM' },
-      { name: 'Tuesday' , hours: '09:00AM - 09:00PM' },
-      { name: 'Wednesday' , hours: '09:00AM - 09:00PM' },
-      { name: 'Thursday' , hours: '09:00AM - 09:00PM' },
-      { name: 'Friday' , hours: '09:00AM - 01:00PM, 02:00PM - 09:00PM' },
-      { name: 'Saturday' , hours: '09:00AM - 09:00PM' },
-      { name: 'Sunday' , hours: '09:00AM - 09:00PM' }
+      { name: 'Monday' , hours: '10:00AM - 09:00PM' },
+      { name: 'Tuesday' , hours: '10:00AM - 09:00PM' },
+      { name: 'Wednesday' , hours: '10:00AM - 09:00PM' },
+      { name: 'Thursday' , hours: '10:00AM - 09:00PM' },
+      { name: 'Friday' , hours: '10:00AM - 01:00PM, 02:00PM - 09:00PM' },
+      { name: 'Saturday' , hours: '10:00AM - 09:00PM' },
+      { name: 'Sunday' , hours: '10:00AM - 09:00PM' }
     ],
     items: [
       {

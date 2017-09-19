@@ -1,7 +1,7 @@
 
 import React from 'react';
 import fire from '../util/fire';
-import { Panel, ButtonToolbar, Button, ControlLabel, Form, Row }
+import { Panel, ButtonToolbar, Button, ControlLabel, Form, Row, Col }
   from 'react-bootstrap/lib';
 import FormPanel from '../app-base/FormPanel';
 import { postFormData } from '../util/HTTPSReq';
@@ -46,17 +46,27 @@ class AddCategoryView extends React.Component {
   render() {
     if(this.state.uploading) {
       return (
-        <Panel>
-          <img src='./assets/img/loading.gif'/>
-          <br/>
-          <div>Uploading...</div>
-        </Panel>
+        <Col
+          sm={this.props.size.sm}
+          md={this.props.size.md}
+          lg={this.props.size.lg}>
+          <Panel header={this.props.title}>
+            <Row>
+              <img src="./assets/img/loading.gif"/>
+            </Row>
+            <Row>
+              <h3 className="col-sm-4">
+                Processing your request, please wait
+              </h3>
+            </Row>
+          </Panel>
+        </Col>
       );
     } else {
       return (
   			<FormPanel
           title='Add a new category'
-          size='col-sm-6'
+          size={this.props.size}
           fields={[
             { title:'Category Name', type: 'text', optional: false, value: "" }
           ]}

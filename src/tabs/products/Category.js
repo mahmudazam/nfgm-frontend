@@ -18,7 +18,8 @@ class Category extends React.Component {
     let categoryQuery = fire.database()
       .ref('/assets/categories/' + this.props.categoryName).orderByKey();
     categoryQuery.on('value', ((snapshot) => {
-      if(!snapshot.val() || 'NO_ITEMS_ADDED_YET' === snapshot.val()) {
+      if(snapshot.val() && 'NO_ITEMS_ADDED_YET' === snapshot.val()) {
+        console.log("Here");
         this.setState({
           ...this.state,
           itemList: {},

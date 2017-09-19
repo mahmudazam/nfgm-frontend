@@ -100,17 +100,22 @@ class AddItemView extends React.Component {
   render() {
     if(this.state.uploading) {
       return (
-        <Panel>
-          <img src='./assets/img/loading.gif'/>
-          <br/>
-          <div>Uploading...</div>
-        </Panel>
+        <Col
+          sm={this.props.size.sm}
+          md={this.props.size.md}
+          lg={this.props.size.lg}>
+          <Panel>
+            <img src='./assets/img/loading.gif'/>
+            <br/>
+            <div>Uploading...</div>
+          </Panel>
+        </Col>
       );
     } else {
       return (
   			<FormPanel
           title='Add a new item'
-          size='col-sm-6'
+          size={this.props.size}
           fields={
             [
               { title:'Item Name', type: 'text', optional: false, value: "" },
@@ -143,7 +148,7 @@ class AddItemView extends React.Component {
                   image: imageInfo
                 });
               }).bind(this) }
-              className='col-sm-6'/>
+              className='col-sm-12'/>
           </Row>
         </FormPanel>
       );

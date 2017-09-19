@@ -63,7 +63,10 @@ class EditProducts extends React.Component {
       onClick: this.showDeleteItemModal(true)
     };
     return (
-      <Col sm={12}>
+      <Col
+        sm={this.props.size.sm}
+        md={this.props.size.md}
+        lg={this.props.size.lg}>
         <Panel header="Edit products">
           <Products itemButtons={[ editButton, deleteButton ]}/>
         </Panel>
