@@ -1,7 +1,7 @@
 
 import React from 'react';
 import fire from '../util/fire';
-import { Panel, ButtonToolbar, Button, ControlLabel, Form, Row }
+import { Panel, ButtonToolbar, Button, ControlLabel, Form, Row, Col }
   from 'react-bootstrap/lib';
 import FileUploadComponent from './FileUploadComponent';
 import FormPanel from '../app-base/FormPanel';

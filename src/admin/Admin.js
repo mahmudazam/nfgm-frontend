@@ -4,6 +4,7 @@ import { Col, Row } from 'react-bootstrap';
 import fire from '../util/fire';
 import AddItemView from './AddItemView';
 import AddCategoryView from './AddCategoryView';
+import AddCarouselImageView from './AddCarouselImageView';
 import EditProducts from './EditProducts';
 
 class Admin extends React.Component {
@@ -20,6 +21,7 @@ class Admin extends React.Component {
         </Col>
         <Col sm={12} md={7} lg={7}>
           <EditProducts size={{sm: 12, md:12, lg: 12}}/>
+          <AddCarouselImageView size={{sm: 12, md:12, lg: 12}}/>
         </Col>
       </Col>
     );

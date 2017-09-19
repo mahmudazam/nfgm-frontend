@@ -171,6 +171,37 @@ app.post('/delete_item', function(req, res) {
   });
 });
 
+app.post('/add_carousel_image', function(req, res) {
+  let form = new multiparty.Form();
+  form.parse(req, (err, fields, files) => {
+    if(err) {
+      res.send("ERROR");
+    }
+    if(fields) {
+      if(POST_KEY === fields.post_key[0]) {
+        firebase_auth.signIn(DB_EMAIL, DB_PASS).then(() => {
+          asset_handler.pushCarouselImage(
+              simplifyFields(fields), files.image[0], './www/')
+            .then(() => {
+              return firebase_auth.signOut();
+            })
+            .then(() => { res.send("SUCCESS"); })
+            .catch((error) => {
+              if(error instanceof Object) res.send(JSON.stringify(error));
+              else res.send(error);
+            });
+        }).catch((error) => {
+          console.log(error);
+          res.send("Permission denied");
+        })
+      } else {
+        console.log(fields);
+        res.send("Permission denied");
+      }
+    }
+  });
+});
+
 // Handle GET requests:
 app.get('*', function(req, res) {
   res.sendFile(path.join(__dirname, '/www/index.html'))

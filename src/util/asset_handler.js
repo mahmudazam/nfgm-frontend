@@ -289,6 +289,7 @@ const database_handler = {
 	push: push,
 	pushAsset: pushAsset,
 	pushAssetInfo: pushAssetInfo,
+    pushCarouselImage: pushCarouselImage,
 	pushCategory: pushCategory,
 	pushItem: pushItem,
 	pushItemToCategories: pushItemToCategories
