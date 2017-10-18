@@ -205,6 +205,32 @@ function pushCarouselImage(imageInfo, imageFile, rootDirPath) {
 	);
 }
 
+/**
+ * Deletes a category from an item
+ * @param itemName
+ * @param categoryName
+ */
+function deleteCategory(categoryName) {
+	let refPath = '/assets/categories/' + categoryName + '/items';
+	return fire.database().ref(refPath).once('value').then((snapshot) => {
+		let keys = Object.keys(snapshot.val());
+		let promises = keys.map((key) => {
+			let categoryInItem =
+				'/assets/items/' + key + '/categories/';
+			let dbRef =  fire.database().ref(categoryInItem)
+			return dbRef.once('value').then((snapshot) => {
+				let categoryArray = snapshot.val();
+				let index = categoryArray.indexOf(categoryName);
+				categoryArray[index] = null;
+				return push(categoryInItem, categoryArray);
+			});
+		});
+		return Promise.all(promises);
+	}).then(() => {
+		return push(refPath, null);
+	});
+}
+
 // Tests :
 if('DB_TEST' === process.argv[2]) {
 	data = JSON.parse(require('fs').readFileSync('../../database_data.json'));
@@ -272,6 +298,10 @@ if('DB_TEST' === process.argv[2]) {
 			return pushCarouselImage(image.info, image, image.root);
 		}));
 	}).then(() => {
+		return deleteCategory('Bird Meat');
+	}).then(() => {
+		console.log("category deletion: Success");
+	}).then(() => {
 		console.log("crude deletion: Success");
 		return fire.auth().signOut();
 	}).then(() => {
@@ -281,15 +311,16 @@ if('DB_TEST' === process.argv[2]) {
 		console.log(error);
 		process.exit(1);
 	});
-}
+} else if('DB_TEST2' === process.argv[2]) { /* Any separate tests */ }
 
 const database_handler = {
+	deleteCategory: deleteCategory,
 	deleteItem: deleteItem,
 	deleteItemFromCategories: deleteItemFromCategories,
 	push: push,
 	pushAsset: pushAsset,
 	pushAssetInfo: pushAssetInfo,
-    pushCarouselImage: pushCarouselImage,
+	pushCarouselImage: pushCarouselImage,
 	pushCategory: pushCategory,
 	pushItem: pushItem,
 	pushItemToCategories: pushItemToCategories
