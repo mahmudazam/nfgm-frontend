@@ -12,6 +12,8 @@ class EditProducts extends React.Component {
     this.state = {
       showDeleteItemModal: false,
       showEditItemModal: false,
+      showDeleteCategoryModal: false,
+      categorySelected: null,
       itemSelected: null
     };
   }
@@ -33,6 +35,16 @@ class EditProducts extends React.Component {
     }).bind(this);
   }
 
+  showDeleteCategoryModal(show) {
+      return (function(category) {
+          this.setState({
+              ...this.state,
+              categorySelected: category,
+              showDeleteCategoryModal: show
+          });
+      }).bind(this);
+  }
+
   deleteSelectedItem() {
     fire.database().ref('/post_key').once('value').then((snapshot) => {
       let POST_KEY = snapshot.val();
@@ -51,6 +63,25 @@ class EditProducts extends React.Component {
     })
   }
 
+  deleteSelectedCategory() {
+    console.log(this.state.categorySelected);
+    //   fire.database().ref('/post_key').once('value').then((snapshot) => {
+    //     let POST_KEY = snapshot.val();
+    //     let categoryInfo = {
+    //       ...this.state.categorySelected,
+    //       post_key: POST_KEY
+    //     };
+    //     postFormData(
+    //       categoryInfo,
+    //       '/delete_category',
+    //       (xhr) => { window.alert(xhr.responseText); },
+    //       (xhr) => { window.alert(xhr.responseText); }
+    //     );
+    //     this.showDeleteCategoryModal(false)(null);
+    //   })
+    this.showDeleteCategoryModal(false)(null);
+  }
+
   render() {
     let editButton = {
       label: 'Edit',
@@ -62,17 +93,25 @@ class EditProducts extends React.Component {
       bsStyle: 'danger',
       onClick: this.showDeleteItemModal(true)
     };
+    let deleteCategoryButton = {
+        label: 'Delete Cateogry',
+        bsStyle: 'danger',
+        onClick: this.showDeleteCategoryModal(true)
+    }
     return (
       <Col
         sm={this.props.size.sm}
         md={this.props.size.md}
         lg={this.props.size.lg}>
         <Panel header="Edit products">
-          <Products itemButtons={[ editButton, deleteButton ]}/>
+          <Products
+            itemButtons={[ editButton, deleteButton ]}
+            categoryButtons={[ deleteCategoryButton ]}/>
         </Panel>
+
         <Modal
           show={this.state.showDeleteItemModal}
-          onHide={this.showDeleteItemModal(null)}>
+          onHide={this.showDeleteItemModal(false)}>
           <Modal.Header closeButton>
             <Modal.Title>
               Delete item
@@ -97,6 +136,39 @@ class EditProducts extends React.Component {
               </Button>
               <Button
                 onClick={this.showDeleteItemModal(false)}>
+                Cancel
+              </Button>
+            </ButtonToolbar>
+          </Modal.Footer>
+        </Modal>\
+
+        // Category deletion confirmation modal:
+        <Modal
+          show={this.state.showDeleteCategoryModal}
+          onHide={this.showDeleteCategoryModal(false)}>
+          <Modal.Header closeButton>
+            <Modal.Title>
+              Delete category
+              {
+                this.state.categorySelected
+                ? " " + this.state.categorySelected
+                : null
+              }
+              ?
+            </Modal.Title>
+          </Modal.Header>
+          <Modal.Body>
+            This category will be removed and cannot be recovered.
+          </Modal.Body>
+          <Modal.Footer>
+            <ButtonToolbar>
+              <Button
+                bsStyle='danger'
+                onClick={this.deleteSelectedCategory.bind(this)}>
+                Confirm
+              </Button>
+              <Button
+                onClick={this.showDeleteCategoryModal(false)}>
                 Cancel
               </Button>
             </ButtonToolbar>

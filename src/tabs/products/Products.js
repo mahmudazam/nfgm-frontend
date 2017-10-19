@@ -56,6 +56,7 @@ class Products extends React.Component {
                   <Category
                     categoryName={category}
                     itemButtons={this.props.itemButtons}
+                    categoryButtons={this.props.categoryButtons}
                   />
                 </Panel>
               )

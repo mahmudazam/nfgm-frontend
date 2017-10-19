@@ -1,6 +1,6 @@
 
 import React from 'react';
-import { Row, PanelGroup, Panel } from 'react-bootstrap/lib';
+import { Button, Row, PanelGroup, Panel } from 'react-bootstrap/lib';
 import Item from './Item';
 import fire from '../../util/fire';
 
@@ -65,6 +65,17 @@ class Category extends React.Component {
                   buttons={this.props.itemButtons}/>
               )
             })
+        }
+        {
+            this.props.categoryButtons.map((buttonInfo) =>
+                <Button
+                    key={buttonInfo.label}
+                    bsStyle={buttonInfo.bsStyle}
+                    onClick={(() => {
+                        buttonInfo.onClick(this.props.categoryName);
+                    }).bind(this)}
+                >{buttonInfo.label}</Button>
+            )
         }
         { this.props.children }
       </div>

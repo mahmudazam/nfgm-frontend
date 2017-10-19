@@ -25,7 +25,8 @@ class TabBar extends React.Component {
         bsStyle: 'default',
         onClick: () => {}
       }
-      return (<Products itemButtons={[buyButton, descriptionButton]}/>);
+      return (<Products itemButtons={[buyButton, descriptionButton]}
+          categoryButtons={[]}/>);
     }
 
     render() {
