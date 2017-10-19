@@ -96,6 +96,7 @@ app.post('/add_item', function(req, res) {
             })
             .then(() => { res.send("SUCCESS"); })
             .catch((error) => {
+              console.log(error);
               if(error instanceof Object) res.send(JSON.stringify(error));
               else res.send(error);
             });
@@ -126,6 +127,7 @@ app.post('/add_category', function(req, res) {
             })
             .then(() => { res.send("SUCCESS"); })
             .catch((error) => {
+              console.log(error);
               if(error instanceof Object) res.send(JSON.stringify(error));
               else res.send(error);
             });
@@ -156,6 +158,7 @@ app.post('/delete_item', function(req, res) {
             })
             .then(() => { res.send("SUCCESS"); })
             .catch((error) => {
+              console.log(error);
               if(error instanceof Object) res.send(JSON.stringify(error));
               else res.send(error);
             });
@@ -187,6 +190,7 @@ app.post('/add_carousel_image', function(req, res) {
             })
             .then(() => { res.send("SUCCESS"); })
             .catch((error) => {
+              console.log(error);
               if(error instanceof Object) res.send(JSON.stringify(error));
               else res.send(error);
             });
@@ -200,6 +204,37 @@ app.post('/add_carousel_image', function(req, res) {
       }
     }
   });
+});
+
+app.post('/delete_category', function(req,res) {
+    let form = new multiparty.Form();
+    form.parse(req, (err, fields, files) => {
+      if(err) {
+        res.send("ERROR");
+      }
+      if(fields) {
+        if(POST_KEY === fields.post_key[0]) {
+          firebase_auth.signIn(DB_EMAIL, DB_PASS).then(() => {
+            asset_handler.deleteCategory(fields.name[0], './www/')
+              .then(() => {
+                  return firebase_auth.signOut();
+              })
+              .then(() => { res.send("SUCESS") })
+              .catch((error) => {
+                  console.log(error);
+                  if(error instanceof Object) res.send(JSON.stringify(error));
+                  else res.send(error);
+              })
+          }).catch((error) => {
+            console.log(error);
+            res.send("Permission denied");
+          })
+        } else {
+          console.log(fields);
+          res.send("Permission denied");
+        }
+      }
+    });
 });
 
 // Handle GET requests:

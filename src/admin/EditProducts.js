@@ -94,7 +94,7 @@ class EditProducts extends React.Component {
       onClick: this.showDeleteItemModal(true)
     };
     let deleteCategoryButton = {
-        label: 'Delete Cateogry',
+        label: 'Delete Category',
         bsStyle: 'danger',
         onClick: this.showDeleteCategoryModal(true)
     }

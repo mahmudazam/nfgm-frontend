@@ -16,31 +16,33 @@ class Category extends React.Component {
 
   componentWillMount() {
     let categoryQuery = fire.database()
-      .ref('/assets/categories/' + this.props.categoryName).orderByKey();
+      .ref('/assets/categories/' + this.props.categoryName + '/items');
     categoryQuery.on('value', ((snapshot) => {
-      if(snapshot.val() && 'NO_ITEMS_ADDED_YET' === snapshot.val()) {
-        console.log("Here");
+      if('Meat' === this.props.categoryName) console.log(this.state);
+      if(null === snapshot.val()
+        || (snapshot.val() && 'NO_ITEMS_ADDED_YET' === snapshot.val())) {
         this.setState({
           ...this.state,
           itemList: {},
           loading: false
         });
         return;
-      };
-      let items = Object.keys(snapshot.val().items);
-      items.map((itemName) => {
-        fire.database().ref('/assets/items/' + itemName).orderByKey()
-          .once('value').then(((snapshot) => {
-            if(null == snapshot.val()) return;
-            let itemList = { ...this.state.itemList };
-            itemList[snapshot.key] = snapshot.val();
-            this.setState({
-              ...this.state,
-              loading: false,
-              itemList: itemList
-            });
-          }).bind(this));
-      });
+      } else {
+          let items = Object.keys(snapshot.val());
+          let itemList = {};
+          items.map((itemName) => {
+            fire.database().ref('/assets/items/' + itemName).orderByKey()
+              .once('value').then(((snapshot) => {
+                if(null == snapshot.val()) return;
+                itemList[snapshot.key] = snapshot.val();
+                this.setState({
+                  ...this.state,
+                  loading: false,
+                  itemList: itemList
+                });
+              }).bind(this));
+          });
+      }
     }).bind(this));
   }
 
@@ -62,10 +64,12 @@ class Category extends React.Component {
                   itemInfo={item}
                   className='col-sm-12 col-md-3'
                   key={itemName}
-                  buttons={this.props.itemButtons}/>
+                  buttons={this.props.itemButtons}
+                />
               )
             })
         }
+        <Row/>
         {
             this.props.categoryButtons.map((buttonInfo) =>
                 <Button
