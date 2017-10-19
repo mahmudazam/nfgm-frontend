@@ -64,22 +64,20 @@ class EditProducts extends React.Component {
   }
 
   deleteSelectedCategory() {
-    console.log(this.state.categorySelected);
-    //   fire.database().ref('/post_key').once('value').then((snapshot) => {
-    //     let POST_KEY = snapshot.val();
-    //     let categoryInfo = {
-    //       ...this.state.categorySelected,
-    //       post_key: POST_KEY
-    //     };
-    //     postFormData(
-    //       categoryInfo,
-    //       '/delete_category',
-    //       (xhr) => { window.alert(xhr.responseText); },
-    //       (xhr) => { window.alert(xhr.responseText); }
-    //     );
-    //     this.showDeleteCategoryModal(false)(null);
-    //   })
-    this.showDeleteCategoryModal(false)(null);
+    fire.database().ref('/post_key').once('value').then((snapshot) => {
+      let POST_KEY = snapshot.val();
+      let categoryInfo = {
+        name: this.state.categorySelected,
+        post_key: POST_KEY
+      };
+      postFormData(
+        categoryInfo,
+        '/delete_category',
+        (xhr) => { window.alert(xhr.responseText); },
+        (xhr) => { window.alert(xhr.responseText); }
+      );
+      this.showDeleteCategoryModal(false)(null);
+    })
   }
 
   render() {
@@ -141,8 +139,6 @@ class EditProducts extends React.Component {
             </ButtonToolbar>
           </Modal.Footer>
         </Modal>\
-
-        // Category deletion confirmation modal:
         <Modal
           show={this.state.showDeleteCategoryModal}
           onHide={this.showDeleteCategoryModal(false)}>

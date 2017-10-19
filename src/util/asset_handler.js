@@ -152,7 +152,8 @@ function deleteItemFromCategories(itemName, categories) {
                 .once('value');
         }).then((snapshot) => {
             if(null === snapshot.val()) {
-                return push('/assets/categories/' + category, 'NO_ITEMS_ADDED_YET');
+                return push('/assets/categories/' + category,
+                    'NO_ITEMS_ADDED_YET');
             }
         });
     });
@@ -221,16 +222,22 @@ function deleteCategory(categoryName, rootDirPath) {
             let keys = Object.keys(snapshot.val());
             let promises = keys.map((key) => {
                 let categoryInItem =
-                    '/assets/items/' + key + '/categories/';
+                    '/assets/items/' + key;
                 let dbRef =  fire.database().ref(categoryInItem)
                 return dbRef.once('value').then((snapshot) => {
-                    if(null == snapshot.val()) {
-                        return deleteItem(key, rootDirPath);
+                    if(1 == snapshot.val().categories.length
+                        && categoryName == snapshot.val().categories[0]) {
+                        return deleteItem({
+                            item_name: key,
+                            categories: snapshot.val().categories,
+                            asset_url: snapshot.val().asset_url
+                        }, rootDirPath);
                     } else {
-                        let categoryArray = snapshot.val();
+                        let categoryArray = snapshot.val().categories;
                         let index = categoryArray.indexOf(categoryName);
                         categoryArray[index] = null;
-                        return push(categoryInItem, categoryArray);
+                        return push(categoryInItem + '/categories',
+                            categoryArray);
                     }
                 });
             });
