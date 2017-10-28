@@ -350,6 +350,7 @@ if('DB_TEST' === process.argv[2]) {
 } else if('DB_TEST2' === process.argv[2]) { /* Any separate tests */ }
 
 const database_handler = {
+    deleteCarouselImage: deleteCarouselImage,
     deleteCategory: deleteCategory,
     deleteItem: deleteItem,
     deleteItemFromCategories: deleteItemFromCategories,
