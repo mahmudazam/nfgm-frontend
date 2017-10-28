@@ -30,6 +30,10 @@ class AddItemView extends React.Component {
   loadCategoriesAndRender() {
     let catRef = fire.database().ref('assets/categories').orderByKey();
     catRef.on('value', ((snapshot) => {
+      if(null == snapshot.val() || undefined == snapshot.val()) {
+          this.setState(AddItemView.defaultState());
+          return;
+      }
       this.setState({
         ...AddItemView.defaultState(),
         categories: Object.keys(snapshot.val()).reduce(((result, name) => {

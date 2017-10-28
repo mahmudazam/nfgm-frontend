@@ -22,10 +22,10 @@ class MessageForm extends React.Component {
           processing: false,
           status : "",
           values: {
-            fName: "Mahmud",
-            lName: "Azam",
-            eMail: "mahmudfasihulazam@gmail.com",
-            message: "Hello World"
+            fName: "",
+            lName: "",
+            eMail: "",
+            message: ""
           }
         };
     }

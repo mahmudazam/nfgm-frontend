@@ -19,6 +19,14 @@ class EditCarouselView extends React.Component {
   componentWillMount() {
     fire.database().ref('/assets/carousel/').orderByKey().on('value',
         ((snapshot) => {
+            if(null == snapshot.val() || undefined == snapshot.val()) {
+                this.setState({
+                    images: {},
+                    selectedImage: null,
+                    showDeleteImageModal: false
+                });
+                return;
+            }
             this.setState({
                 ...this.state,
                 images: snapshot.val()

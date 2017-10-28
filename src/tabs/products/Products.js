@@ -17,6 +17,13 @@ class Products extends React.Component {
   componentWillMount() {
     fire.database().ref('/assets/categories/').orderByKey().on('value',
       ((snapshot) => {
+        if(null == snapshot.val() || undefined == snapshot.val()) {
+            this.setState({
+                activeKey: "",
+                categoryList: []
+            });
+            return;
+        }
         let categoryList = Object.keys(snapshot.val());
         this.setState({
           activeKey: categoryList[0],
