@@ -41,13 +41,13 @@ function copyFile(source, destination) {
  * @param {String} pathToFile the path to the file to be deleted
  * @param {Promise}
  */
-function deleteFile(source) {
+function deleteFile(pathToFile) {
 	let promise = new Promise((resolve, reject) => {
-    fs.unlink(source, (error) => {
+    fs.unlink(pathToFile, (error) => {
       if(error) {
         reject(error);
       } else {
-        resolve("Deleted " + source);
+        resolve("Deleted " + pathToFile);
       }
     });
   });

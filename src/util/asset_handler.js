@@ -208,7 +208,8 @@ function pushCarouselImage(imageInfo, imageFile, rootDirPath) {
 
 /**
  * Deletes a category from an item
- * @param categoryName
+ * @param {String} categoryName Name of the category to delete
+ * @param {String} rootDirPath path of the project root directory
  */
 function deleteCategory(categoryName, rootDirPath) {
     let refPath = '/assets/categories/' + categoryName;
@@ -244,6 +245,22 @@ function deleteCategory(categoryName, rootDirPath) {
             return Promise.all(promises);
         }
     }).then(() => {
+        return push(refPath, null);
+    });
+}
+
+/**
+ * Deletes an image from the carousel
+ * @param {String} name name of carousel image
+ * @param {String} rootDirPath path of the project root directory
+ */
+function deleteCarouselImage(name, rootDirPath) {
+    let refPath = '/assets/carousel/' + name;
+    return fire.database().ref(refPath).once('value').then((snapshot) => {
+        let filename = path.basename(snapshot.val().asset_url);
+        return fileIO.deleteFile(
+            path.normalize(rootDirPath + '/assets/carousel/' + filename));
+    }).then(function() {
         return push(refPath, null);
     });
 }
@@ -311,6 +328,7 @@ if('DB_TEST' === process.argv[2]) {
             fileIO.deleteFile('../../www/assets/carousel/first_image.jpg')
         ]);
     }).then(() => {
+        console.log("crude deletion: Success");
         return Promise.all(data.carousel.map((image) => {
             return pushCarouselImage(image.info, image, image.root);
         }));
@@ -318,8 +336,9 @@ if('DB_TEST' === process.argv[2]) {
         return deleteCategory('Bird Meat', '../../www/');
     }).then(() => {
         console.log("category deletion: Success");
+        return deleteCarouselImage('carousel image 4', '../../www/');
     }).then(() => {
-        console.log("crude deletion: Success");
+        console.log("carousel image deletion: Success");
         return fire.auth().signOut();
     }).then(() => {
         console.log("sign out: Success");
