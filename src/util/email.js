@@ -43,15 +43,17 @@ const email = {
 }
 
 /** Tests : */
-// console.log(["Mahmud", "Tayab" , "Czarina"].reduce(function(list, recipient) {
-//   if(list) {
-//     return list + ' , ' + recipient;
-//   } else {
-//     return recipient;
-//   }
-// }, ""));
-//
-// email.sendEmail(['mahmudfasihulazam@gmail.com'],
-//   { subject: "Hello World", body: "Hello World" });
+if("TEST" === process.argv[2]) {
+  console.log(["Mahmud", "Tayab" , "Czarina"].reduce(function(list, recipient) {
+    if(list) {
+      return list + ' , ' + recipient;
+    } else {
+      return recipient;
+    }
+  }, ""));
+
+  email.sendEmail(['mahmudfasihulazam@gmail.com'],
+    { subject: "Hello World", body: "Hello World" });
+}
 
 module.exports = email;

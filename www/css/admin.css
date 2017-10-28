@@ -1,0 +1,31 @@
+.file-upload-button {
+  background: #36cc04;
+  background-image: -webkit-linear-gradient(top, #36cc04, #1c8a00);
+  background-image: -moz-linear-gradient(top, #36cc04, #1c8a00);
+  background-image: -ms-linear-gradient(top, #36cc04, #1c8a00);
+  background-image: -o-linear-gradient(top, #36cc04, #1c8a00);
+  background-image: linear-gradient(to bottom, #36cc04, #1c8a00);
+  -webkit-border-radius: 6;
+  -moz-border-radius: 6;
+  border-radius: 6px;
+  font-family: Arial;
+  color: #ffffff;
+  font-size: 110%;
+  padding: 5px 10px 5px 10px;
+  text-decoration: none;
+}
+
+.file-upload-button:hover {
+  background: #3cd93c;
+  background-image: -webkit-linear-gradient(top, #3cd93c, #3cb52f);
+  background-image: -moz-linear-gradient(top, #3cd93c, #3cb52f);
+  background-image: -ms-linear-gradient(top, #3cd93c, #3cb52f);
+  background-image: -o-linear-gradient(top, #3cd93c, #3cb52f);
+  background-image: linear-gradient(to bottom, #3cd93c, #3cb52f);
+  text-decoration: none;
+}
+
+.image {
+  max-width: 100%;
+  height: auto;
+}

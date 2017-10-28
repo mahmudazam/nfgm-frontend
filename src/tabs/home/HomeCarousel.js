@@ -25,7 +25,7 @@ class HomeCarousel extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      imgURLs: []
+      imageURLs: {}
     };
   }
 
@@ -34,11 +34,13 @@ class HomeCarousel extends React.Component {
   */
   componentWillMount(){
     // Get the reference to the database index of the image folder:
-    let dirRef = fire.database().ref('assets/img').orderByKey().limitToLast(100);
+    let carouselQuery = fire.database().ref('assets/carousel').orderByKey();
     // Add every URL available in the index:
-    dirRef.on('child_added', snapshot => {
-      let image = { URL : snapshot.val().URL, id : snapshot.key }
-      this.setState({ imgURLs: this.state.imgURLs.concat([image]) });
+    carouselQuery.on('value', snapshot => {
+      this.setState({
+        ...this.state,
+        imageURLs: snapshot.val()
+      });
     })
   }
 
@@ -52,10 +54,13 @@ class HomeCarousel extends React.Component {
       {
         // Map the array of URLs to Carousel items with img tags
         // containing the URLs as src:
-        this.state.imgURLs.map((image) =>
-        <Carousel.Item key={image.id}>
-          <img className="carousel-img" alt="500x300" src={image.URL} />
-        </Carousel.Item>
+        Object.keys(this.state.imageURLs).map((imageName) =>
+          <Carousel.Item key={imageName}>
+            <img
+              className="carousel-img"
+              alt="500x300"
+              src={this.state.imageURLs[imageName].asset_url} />
+          </Carousel.Item>
       )
     }
     </Carousel>

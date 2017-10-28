@@ -1,42 +1,71 @@
+
 import React from 'react';
-import { Jumbotron, Button , Col , Row } from 'react-bootstrap/lib';
+import { Row, PanelGroup, Panel } from 'react-bootstrap/lib';
+import Item from './Item';
 import fire from '../../util/fire';
+import Category from './Category';
 
 class Products extends React.Component {
-    constructor(props) {
-        super(props);
-        this.state = { messages: [] };
-    }
+  constructor(props) {
+    super(props);
+    this.state = {
+      activeKey: "",
+      categoryList: []
+    };
+  }
 
-    componentWillMount(){
-        /* Create reference to messages in Fire base Database */
-        let messagesRef = fire.database().ref('messages').orderByKey().limitToLast(100);
-        messagesRef.on('child_added', snapshot => {
-            /* Update React state when message is added at Fire base Database */
-            let message = { text: snapshot.val(), id: snapshot.key };
-            this.setState({ messages: [message].concat(this.state.messages) });
-        })
-    }
+  componentWillMount() {
+    fire.database().ref('/assets/categories/').orderByKey().on('value',
+      ((snapshot) => {
+        let categoryList = Object.keys(snapshot.val());
+        this.setState({
+          activeKey: categoryList[0],
+          categoryList: categoryList
+        });
+      }).bind(this));
+  }
 
-    addMessage(e){
-        e.preventDefault(); // <- prevent form submit from reloading the page
-        /* Send the message to Firebase */
-        fire.database().ref('messages').push( this.inputEl.value );
-        this.inputEl.value = '..'; // <- clear the input
-    }
+  handleSelect(activeKey) {
+    this.setState({ ...this.state, activeKey });
+  }
 
-
-    render() {
-        return(
-          <div className="col-sm-12 major-content">
-            <Jumbotron className="col-sm-12">
-              <h1>Coming Soon</h1>
-              <p>This will be like an online shop</p>
-              <p><Button bsStyle="primary">Functionality</Button></p>
-            </Jumbotron>
-          </div>
-        )
+  render() {
+    if(null === this.state.categoryList) {
+      return (
+        <div className='major-content col-sm-12'>
+          <Panel>
+            <img src='./assets/img/loading.gif'/>
+            <br/>
+            <div>Loading...</div>
+          </Panel>
+        </div>
+      );
+    } else {
+      return (
+        <div className='major-content col-sm-12'>
+          <PanelGroup
+                activeKey={this.state.activeKey}
+                onSelect={this.handleSelect.bind(this)}
+                accordion>
+            {
+              this.state.categoryList.map(category =>
+                <Panel
+                    key={category}
+                    header={category}
+                    eventKey={category}>
+                  <Category
+                    categoryName={category}
+                    itemButtons={this.props.itemButtons}
+                    categoryButtons={this.props.categoryButtons}
+                  />
+                </Panel>
+              )
+            }
+          </PanelGroup>
+        </div>
+      )
     }
-};
+  }
+}
 
 export default Products;

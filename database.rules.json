@@ -1,6 +1,12 @@
 {
   "rules": {
-    ".read": "true",
-    ".write": "true"
+    "post_key" : {
+      ".read": "null != auth",
+      ".write": "false"
+    },
+    "assets": {
+      	".read": "true",
+        ".write": "'FQWGucYy9EOGUQddRzkzWDrtiPe2' === auth.uid"
+    }
   }
 }
