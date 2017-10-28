@@ -4,14 +4,25 @@ import { Navbar, Nav, NavItem, NavDropdown, MenuItem} from 'react-bootstrap';
 import Glyphicon from 'react-bootstrap/lib/Glyphicon';
 import { formatPhoneNumber } from '../util/string_format';
 import { LinkContainer } from 'react-router-bootstrap/lib';
+import fire from '../util/fire';
 
 class TopNavbar extends React.Component {
 
   constructor(props) {
     super(props);
     this.state = {
+      user: null,
       phone_number: "+13069546328"
     }
+  }
+
+  componentDidMount() {
+      fire.auth().onAuthStateChanged((user) => {
+          this.setState({
+              ...this.state,
+              user
+          });
+      });
   }
 
   render() {
@@ -30,7 +41,7 @@ class TopNavbar extends React.Component {
             { ' ' + formatPhoneNumber(this.state.phone_number) }
           </NavItem>
           {
-            this.props.signedIn()
+            this.state.user
             ? (<LinkContainer to='/'>
                  <NavItem onClick={this.props.signOut}>Sign out</NavItem>
                </LinkContainer>)

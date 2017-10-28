@@ -1,11 +1,9 @@
 
 import React from 'react';
+import { Redirect, Route } from 'react-router-dom';
 import FormPanel from './FormPanel';
 import { Row, Col } from 'react-bootstrap/lib';
 import fire from '../util/fire';
-import AddItemView from '../admin/AddItemView';
-import SelectView from '../admin/SelectView';
-import Admin from '../admin/Admin';
 
 class SignInView extends React.Component {
   constructor(props) {
@@ -42,8 +40,7 @@ class SignInView extends React.Component {
       ...this.state,
       processing: true
     });
-    fire.auth().signInWithEmailAndPassword(userInfo.Email,
-      userInfo.Password)
+    fire.auth().signInWithEmailAndPassword(userInfo.Email, userInfo.Password)
       .then(this.acceptUser.bind(this))
       .catch(this.rejectUser.bind(this));
   }
@@ -51,12 +48,12 @@ class SignInView extends React.Component {
   render() {
     return (
       fire.auth().currentUser
-      ? (<Admin/>)
+      ? (<Redirect to='/home'/>)
       : (
         <Col sm={12}>
           <Col sm={0} md={4}/>
           <FormPanel
-            size='col-sm-12 col-md-4'
+            size={{sm: 12, md: 4, lg: 4}}
             fields={[
               { title: 'Email', type: 'email', optional: false, value: ""},
               { title: 'Password', type: 'password', optional: false, value: ""}

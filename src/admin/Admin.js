@@ -15,7 +15,7 @@ class Admin extends React.Component {
 
   render() {
     return (
-      <Col sm={12}>
+      <Col className='major-content' sm={12}>
         <Col sm={12} md={5} lg={5}>
           <AddItemView size={{sm: 12, md:12, lg: 12}}/>
           <AddCategoryView size={{sm: 12, md:12, lg: 12}}/>

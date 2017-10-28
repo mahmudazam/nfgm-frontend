@@ -6,27 +6,30 @@ import { Tab, Nav, NavItem, Col, Row } from 'react-bootstrap/lib/';
 import Home from '../tabs/home/Home';
 import Products from '../tabs/products/Products';
 import Contact from '../tabs/contact/Contact';
+import Admin from '../admin/Admin';
 import { Route } from 'react-router-dom';
 import { LinkContainer } from 'react-router-bootstrap/lib';
+import fire from '../util/fire';
 
 class TabBar extends React.Component {
     constructor(props) {
         super(props);
+        this.state = {
+            user: null,
+        }
+    }
+
+    componentDidMount() {
+        fire.auth().onAuthStateChanged(((user) => {
+            this.setState({
+                user
+            });
+        }).bind(this));
     }
 
     renderProducts() {
-      let buyButton = {
-        label: 'Buy',
-        bsStyle: 'primary',
-        onClick: () => {}
-      }
-      let descriptionButton = {
-        label: 'Description',
-        bsStyle: 'default',
-        onClick: () => {}
-      }
-      return (<Products itemButtons={[buyButton, descriptionButton]}
-          categoryButtons={[]}/>);
+      return (<Products itemButtons={[]}
+                        categoryButtons={[]}/>);
     }
 
     render() {
@@ -46,12 +49,22 @@ class TabBar extends React.Component {
                     <LinkContainer to='/contact'>
                       <NavItem>Contact</NavItem>
                     </LinkContainer>
+                    { this.state.user
+                        ? (<LinkContainer to='/admin'>
+                            <NavItem>Admin</NavItem>
+                          </LinkContainer>)
+                        : null
+                    }
                   </Nav>
                 </Col>
                 <Col sm={12}>
                   <Route path='/home' component={Home}/>
                   <Route path='/products' component={this.renderProducts}/>
                   <Route path='/contact' component={Contact}/>
+                  { this.state.user
+                      ? (<Route path='/admin' component={Admin}/>)
+                      : null
+                  }
                 </Col>
               </Row>
     	      </div>

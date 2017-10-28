@@ -36,12 +36,12 @@ class HomeCarousel extends React.Component {
     // Get the reference to the database index of the image folder:
     let carouselQuery = fire.database().ref('assets/carousel').orderByKey();
     // Add every URL available in the index:
-    carouselQuery.on('value', snapshot => {
+    carouselQuery.on('value', ((snapshot) => {
       this.setState({
         ...this.state,
         imageURLs: snapshot.val()
       });
-    })
+    }).bind(this))
   }
 
   /**
