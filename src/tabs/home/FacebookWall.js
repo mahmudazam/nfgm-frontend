@@ -8,11 +8,11 @@ class FacebookWall extends React.Component {
     }
 
     componentDidMount() {
-      document.addEventListener('fb-init', e => FB.XFBML.parse());
     }
 
     render() {
-        return(
+        return null;
+        /*return(
             <div className="col-sm-12 col-md-12">
               <Panel header="Facebook" className="facebook">
                 <div className='col-sm-12 col-md-6'>
@@ -28,7 +28,7 @@ class FacebookWall extends React.Component {
               </Panel>
             </div>
         )
-    }
+    }*/
 };
 
 export default FacebookWall

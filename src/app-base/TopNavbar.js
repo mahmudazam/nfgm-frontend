@@ -27,29 +27,34 @@ class TopNavbar extends React.Component {
 
   render() {
     return (
-      <Navbar id="top-navbar">
+      <Navbar collapseOnSelect style={{borderRadius: "0px"}}>
         <Navbar.Header>
           <Navbar.Brand>
             <LinkContainer to='/'className="navbar-brand" >
               <div>Natural Fresh Grocery & Meat</div>
             </LinkContainer>
           </Navbar.Brand>
+          <Navbar.Toggle/>
         </Navbar.Header>
-        <Nav className="pull-right">
-          <NavItem eventKey={1} href={ "tel:" + this.state.phone_number}>
-            <Glyphicon glyph="earphone"/>
-            { ' ' + formatPhoneNumber(this.state.phone_number) }
-          </NavItem>
-          {
-            this.state.user
-            ? (<LinkContainer to='/'>
-                 <NavItem onClick={this.props.signOut}>Sign out</NavItem>
-               </LinkContainer>)
-            : (<LinkContainer to='/signin'>
-                 <NavItem>Sign in</NavItem>
-               </LinkContainer>)
-          }
-        </Nav>
+        <Navbar.Collapse>
+          <Nav pullRight>
+            <NavItem eventKey={1} href={ "tel:" + this.state.phone_number}>
+              <Glyphicon glyph="earphone"/>
+              { ' ' + formatPhoneNumber(this.state.phone_number) }
+            </NavItem>
+            {
+              this.state.user
+              ? (<LinkContainer to='/'>
+                   <NavItem eventKey={2} onClick={this.props.signOut}>
+                     Sign out
+                   </NavItem>
+                 </LinkContainer>)
+              : (<LinkContainer to='/signin'>
+                   <NavItem eventKey={2}>Sign in</NavItem>
+                 </LinkContainer>)
+            }
+          </Nav>
+        </Navbar.Collapse>
       </Navbar>
     );
   }
