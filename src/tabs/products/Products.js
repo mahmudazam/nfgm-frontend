@@ -10,7 +10,7 @@ class Products extends React.Component {
     super(props);
     this.state = {
       activeKey: "",
-      categoryList: []
+      categoryList: null
     };
   }
 
@@ -50,6 +50,11 @@ class Products extends React.Component {
     } else {
       return (
         <div className='major-content col-sm-12'>
+          {this.state.categoryList === null
+          || this.state.categoryList === undefined
+          || this.state.categoryList.length === 0
+          ? <Panel>No categories of items</Panel>
+          :
           <PanelGroup
                 activeKey={this.state.activeKey}
                 onSelect={this.handleSelect.bind(this)}
@@ -68,7 +73,7 @@ class Products extends React.Component {
                 </Panel>
               )
             }
-          </PanelGroup>
+          </PanelGroup>}
         </div>
       )
     }

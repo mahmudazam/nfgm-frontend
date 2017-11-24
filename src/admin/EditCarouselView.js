@@ -67,7 +67,9 @@ class EditCarouselView extends React.Component {
         md={this.props.size.md}
         lg={this.props.size.lg}>
         <Panel header="Edit Carousel">
-            {Object.keys(this.state.images).map((image) =>
+            { this.state.images !== undefined && this.state.images !== null
+                && Object.keys(this.state.images).length !== 0
+              ? Object.keys(this.state.images).map((image) =>
                 <Thumbnail
                         key={image}
                         src={this.state.images[image].asset_url}
@@ -81,7 +83,9 @@ class EditCarouselView extends React.Component {
                     }
                     <p>Upload Time: {this.state.images[image].upload_time}</p>
                     <p>
-                        <Button onClick={() => {}} bsStyle="primary">Edit</Button>&nbsp;
+                        <Button onClick={() => {}} bsStyle="primary">
+                          Edit
+                        </Button>&nbsp; {/* Separator */}
                         <Button
                             onClick={ () => {
                                 this.setState({
@@ -95,7 +99,9 @@ class EditCarouselView extends React.Component {
                         </Button>
                     </p>
                 </Thumbnail>
-            )};
+            )
+            : <div>No images in carousel</div>
+            }
         </Panel>
 
         <Modal
