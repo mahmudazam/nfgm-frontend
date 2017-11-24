@@ -64,7 +64,7 @@ class AddCategoryView extends React.Component {
       );
     } else {
       return (
-  			<FormPanel
+        <FormPanel
           title='Add a new category'
           size={this.props.size}
           fields={[

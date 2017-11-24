@@ -35,8 +35,8 @@ class TabBar extends React.Component {
     render() {
         return (
           <div className="col-lg-12">
-        	  <div className="col-lg-1"></div>
-    	      <div className="col-lg-10">
+            <div className="col-lg-1"></div>
+            <div className="col-lg-10">
               <Row>
                 <Col sm={12}>
                   <Nav className="tabs" bsStyle="pills">
@@ -67,9 +67,9 @@ class TabBar extends React.Component {
                   }
                 </Col>
               </Row>
-    	      </div>
-    	      <div className="col-lg-1"></div>
-    	    </div>
+            </div>
+            <div className="col-lg-1"></div>
+          </div>
         );
     }
 }

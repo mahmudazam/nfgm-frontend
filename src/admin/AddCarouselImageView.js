@@ -78,7 +78,7 @@ class AddCarouselImageView extends React.Component {
       );
     } else {
       return (
-  		<FormPanel
+      <FormPanel
           title='Add a new carousel image'
           size={this.props.size}
           fields={

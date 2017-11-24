@@ -36,7 +36,7 @@ class FileUploadComponent extends React.Component {
   render() {
     let imagePreviewUrl = this.props.image.imagePreviewUrl;
     return (
-			<div className={this.props.className}>
+      <div className={this.props.className}>
         <Panel header={this.props.image.value}>
           {
             imagePreviewUrl
@@ -50,7 +50,7 @@ class FileUploadComponent extends React.Component {
             style={{ display: 'none' }}/>
           Browse
         </label>
-		  </div>
+      </div>
     );
   }
 }

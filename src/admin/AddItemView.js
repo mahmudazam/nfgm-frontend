@@ -117,7 +117,7 @@ class AddItemView extends React.Component {
       );
     } else {
       return (
-  			<FormPanel
+        <FormPanel
           title='Add a new item'
           size={this.props.size}
           fields={

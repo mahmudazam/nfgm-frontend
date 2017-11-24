@@ -44,7 +44,7 @@ class App extends React.Component {
 
   render() {
     return (
-  		<div>
+      <div>
         <TopNavbar signOut={this.signOut.bind(this)}/>
         <Route exact path='/' component={HomeRedirect}/>
         <Route exact path='/signin' component={this.getSignInView.bind(this)}/>
@@ -52,7 +52,7 @@ class App extends React.Component {
         <Route path='/products' component={TabBar}/>
         <Route path='/contact' component={TabBar}/>
         <Route path='/admin' component={TabBar}/>
-  	  </div>
+      </div>
     );
   }
 }
