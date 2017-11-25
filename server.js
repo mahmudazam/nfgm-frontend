@@ -89,6 +89,7 @@ app.post('/add_item', function(req, res) {
     }
     if(fields) {
       if(POST_KEY === fields.post_key[0]) {
+        fields.post_key[0] = undefined;
         firebase_auth.signIn(DB_EMAIL, DB_PASS).then(() => {
           asset_handler.pushItem(simplifyFields(fields), files.image[0], './www/')
             .then(() => {
@@ -120,6 +121,7 @@ app.post('/add_category', function(req, res) {
     }
     if(fields) {
       if(POST_KEY === fields.post_key[0]) {
+        fields.post_key[0] = undefined;
         firebase_auth.signIn(DB_EMAIL, DB_PASS).then(() => {
           asset_handler.pushCategory(fields.name[0])
             .then(() => {
@@ -151,6 +153,7 @@ app.post('/delete_item', function(req, res) {
     }
     if(fields) {
       if(POST_KEY === fields.post_key[0]) {
+        fields.post_key[0] = undefined;
         firebase_auth.signIn(DB_EMAIL, DB_PASS).then(() => {
           asset_handler.deleteItem(simplifyFields(fields), './www/')
             .then(() => {
@@ -182,6 +185,7 @@ app.post('/add_carousel_image', function(req, res) {
     }
     if(fields) {
       if(POST_KEY === fields.post_key[0]) {
+        fields.post_key[0] = undefined;
         firebase_auth.signIn(DB_EMAIL, DB_PASS).then(() => {
           asset_handler.pushCarouselImage(
               simplifyFields(fields), files.image[0], './www/')
@@ -214,6 +218,7 @@ app.post('/delete_category', function(req,res) {
       }
       if(fields) {
         if(POST_KEY === fields.post_key[0]) {
+          fields.post_key[0] = undefined;
           firebase_auth.signIn(DB_EMAIL, DB_PASS).then(() => {
             asset_handler.deleteCategory(fields.name[0], './www/')
               .then(() => {
@@ -245,6 +250,7 @@ app.post('/delete_carousel_image', function(req,res) {
       }
       if(fields) {
         if(POST_KEY === fields.post_key[0]) {
+          fields.post_key[0] = undefined;
           firebase_auth.signIn(DB_EMAIL, DB_PASS).then(() => {
             asset_handler.deleteCarouselImage(fields.image[0], './www/')
               .then(() => {
