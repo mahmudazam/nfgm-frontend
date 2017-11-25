@@ -27,7 +27,7 @@ class TopNavbar extends React.Component {
 
   render() {
     return (
-      <Navbar collapseOnSelect style={{borderRadius: "0px"}}>
+      <Navbar style={{borderRadius: "0px"}}>
         <Navbar.Header>
           <Navbar.Brand>
             <LinkContainer to='/'className="navbar-brand" >
@@ -42,15 +42,21 @@ class TopNavbar extends React.Component {
               <Glyphicon glyph="earphone"/>
               { ' ' + formatPhoneNumber(this.state.phone_number) }
             </NavItem>
+            <NavItem eventKey={2}
+                href={"https://www.facebook.com/naturalfreshgroceryandmeat"}
+                target={"_blank"}>
+              <i className="fa fa-facebook-square"></i>
+              acebook
+            </NavItem>
             {
               this.state.user
               ? (<LinkContainer to='/'>
-                   <NavItem eventKey={2} onClick={this.props.signOut}>
+                   <NavItem eventKey={3} onClick={this.props.signOut}>
                      Sign out
                    </NavItem>
                  </LinkContainer>)
               : (<LinkContainer to='/signin'>
-                   <NavItem eventKey={2}>Sign in</NavItem>
+                   <NavItem eventKey={3}>Sign in</NavItem>
                  </LinkContainer>)
             }
           </Nav>
