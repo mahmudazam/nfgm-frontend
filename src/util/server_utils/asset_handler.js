@@ -5,7 +5,7 @@
 // Node Standard Modules:
 const path = require('path'); // normalize, basename
 // Firebase database control:
-const fire = require('./fire').default; // database, auth
+const fire = require('../fire').default; // database, auth
 const fileIO = require('./fileIO'); // copyFile, deleteFile
 
 /**

@@ -1,5 +1,5 @@
 
-const fire = require('./fire').default;
+const fire = require('../fire').default;
 
 function signIn(email, password) {
   return fire.auth().signInWithEmailAndPassword(email, password);
