@@ -3,3 +3,7 @@ src/exim-food-firebase-adminsdk-nsw0f-*
 /assets/
 www/assets/items/*
 www/assets/carousel/*
+
+# Exceptions:
+!www/assets/*/.gitkeep
+
