@@ -1,5 +1,4 @@
 
-const email = require('./email');
 const multiparty = require('multiparty');
 const asset_handler = require('./asset_handler');
 const firebase_auth = require('./firebase_auth');

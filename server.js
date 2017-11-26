@@ -6,34 +6,15 @@ const fs = require('fs');
 const https = require('https');
 const http = require('http');
 const bodyParser = require('body-parser');
-const email = require('./src/util/server_utils/email');
 const app = express();
 const path = require('path');
 const multiparty = require('multiparty');
 const db_edit_post_handler =
   require('./src/util/server_utils/db_edit_post_handler');
+const email_post_handler =
+  require('./src/util/server_utils/email_post_handler');
 
 const compiler = webpack(webpackConfig);
-
-// Default Email Objects:
-var defaultEmailToCustomer = function (fName) {
-  return ({
-    subject: "Your message to Natural Fresh Meat & Grocery",
-    body: "Hi " + fName
-      + ",\nThank you for contacting Natural Fresh Grocery & Meat.\n"
-      + "We will get back to you as soon as possible."
-  });
-}
-
-const emailToStorePersonnel = function(emailObj) {
-  return ({
-    subject: "Website Email from " + emailObj.fName + " " + emailObj.lName,
-    body: "Email Address of Customer: " +  emailObj.eMail + "\n" +
-          "Email Body: " + emailObj.message
-  });
-}
-
-const storePersonnelEmail = [ 'tafique05@yahoo.com' , 'eximfoodinc@gmail.com' ];
 
 // Express configurations:
 app.use(webpackDevMiddleware(compiler, {
@@ -54,6 +35,9 @@ app.use(express.static(__dirname + '/www'));
 
 // Configure post request handlers for database edits:
 db_edit_post_handler.configure(app); // refer to db_edit_post_handler.js
+
+// Configure post request handler for email:
+email_post_handler.configure(app);
 
 // Handle GET requests:
 app.get('*', function(req, res) {
