@@ -2,6 +2,7 @@
 const multiparty = require('multiparty');
 const asset_handler = require('./asset_handler');
 const firebase_auth = require('./firebase_auth');
+const post_keygen = require('./post_keygen');
 var express_rate_limit = require('express-rate-limit');
 
 // Mapping of post handlers:
@@ -68,9 +69,9 @@ function simplifyFields(fields) {
 }
 
 // Database Edits:
-const POST_KEY = process.env.NFGM_POST_KEY;
 const DB_EMAIL = process.env.NFGM_ADDRESS;
 const DB_PASS = process.env.NFGM_DB_PASS;
+const POST_KEY = post_keygen.keygen(DB_EMAIL, DB_PASS);
 
 function dbEdit(post, editFunction, app) {
   app.post(post, limiter, function(req, res) {
