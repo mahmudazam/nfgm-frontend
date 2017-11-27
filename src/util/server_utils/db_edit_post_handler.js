@@ -2,6 +2,7 @@
 const multiparty = require('multiparty');
 const asset_handler = require('./asset_handler');
 const firebase_auth = require('./firebase_auth');
+var express_rate_limit = require('express-rate-limit');
 
 // Mapping of post handlers:
 const postHandlers = [
@@ -31,13 +32,21 @@ const postHandlers = [
   }
 ];
 
+// Rate limiter:
+var limiter = new express_rate_limit({
+  windowMs: 30 * 60 * 1000, // block for 30 minutes after max number of requests
+  max: 50, // a maximum of 50 requests
+  delayAfter: 1, // start delay after the first request
+  delayMs: 10, // delay 10 ms each time
+  message: "Too many edits in a short time: please try again later"
+});
+
 function configure(expressAppInstance) {
   let app = expressAppInstance;
   let i = 0;
   for(i = 0; i < postHandlers.length; i++) {
     dbEdit(postHandlers[i].relUrl, postHandlers[i].handler, app);
   }
-
 }
 
 const db_edit_post_handler = {
@@ -64,7 +73,7 @@ const DB_EMAIL = process.env.NFGM_ADDRESS;
 const DB_PASS = process.env.NFGM_DB_PASS;
 
 function dbEdit(post, editFunction, app) {
-  app.post(post, function(req, res) {
+  app.post(post, limiter, function(req, res) {
     let form = new multiparty.Form();
     form.parse(req, (err, fields, files) => {
       if(err) {

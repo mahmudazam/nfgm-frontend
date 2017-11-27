@@ -1,3 +1,5 @@
+
+// External modules:
 const express = require('express');
 const webpackDevMiddleware = require('webpack-dev-middleware');
 const webpack = require('webpack');
@@ -8,13 +10,13 @@ const http = require('http');
 const bodyParser = require('body-parser');
 const app = express();
 const path = require('path');
-const multiparty = require('multiparty');
+const compiler = webpack(webpackConfig);
+
+// Post request handlers:
 const db_edit_post_handler =
   require('./src/util/server_utils/db_edit_post_handler');
 const email_post_handler =
   require('./src/util/server_utils/email_post_handler');
-
-const compiler = webpack(webpackConfig);
 
 // Express configurations:
 app.use(webpackDevMiddleware(compiler, {
@@ -26,11 +28,9 @@ app.use(webpackDevMiddleware(compiler, {
   },
   historyApiFallback: true,
 }));
-
 app.use(bodyParser.urlencoded({extended: false}));
 app.use(bodyParser.json());
 app.use(bodyParser.json({limit : '3mb'}));
-
 app.use(express.static(__dirname + '/www'));
 
 // Configure post request handlers for database edits:
@@ -42,7 +42,7 @@ email_post_handler.configure(app);
 // Handle GET requests:
 app.get('*', function(req, res) {
   res.sendFile(path.join(__dirname, '/www/index.html'))
-})
+});
 
 if("HTTPS" === process.argv[2]) {
   https_server = https.createServer({
@@ -54,7 +54,8 @@ if("HTTPS" === process.argv[2]) {
   https_server.listen(443);
 
   http_server = http.createServer(function(req, res) {
-    res.writeHead(301, {"Location" : "https://" + req.headers['host'] + req.url })
+    res.writeHead(301,
+      {"Location" : "https://" + req.headers['host'] + req.url })
     res.end();
   });
 
@@ -66,3 +67,4 @@ if("HTTPS" === process.argv[2]) {
     console.log('NFGM listening at http://%s:%s', host, port);
   })
 }
+
