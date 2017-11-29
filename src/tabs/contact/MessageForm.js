@@ -3,6 +3,7 @@ import { ButtonToolbar, Button , Col , Row , Panel , FormGroup , ControlLabel , 
   from 'react-bootstrap/lib';
 import fire from '../../util/fire';
 import { postFormData } from '../../util/HTTPSReq';
+import Recaptcha from 'react-recaptcha';
 
 const emptyState = {
   processing: false,
@@ -12,22 +13,14 @@ const emptyState = {
     lName: "",
     eMail: "",
     message: ""
-  }
+  },
+  validated: false
 }
 
 class MessageForm extends React.Component {
     constructor(props) {
         super(props);
-        this.state = {
-          processing: false,
-          status : "",
-          values: {
-            fName: "",
-            lName: "",
-            eMail: "",
-            message: ""
-          }
-        };
+        this.state = this.defaultState();
     }
 
     defaultState() {
@@ -41,11 +34,16 @@ class MessageForm extends React.Component {
         if(!(snapshot.fName
               && snapshot.lName
               && snapshot.eMail
-              && snapshot.message)) {
-          this.setState({...this.state, status: "Please fill all fields"});
+              && snapshot.message
+              && this.state.validated)) {
+          this.setState({
+            ...this.state,
+            status: "Please fill all fields and check the box"
+          });
           return;
         }
         // Show loading if request has not been completed:
+        this.recInst.reset();
         this.setState({ ...this.state, processing: true});
         postFormData(snapshot, '/customer_email',
           ((xhr) => {
@@ -61,6 +59,20 @@ class MessageForm extends React.Component {
       let nodeValue = event.target.value;
       this.state.values[nodeId] = nodeValue;
       this.setState(this.state);
+    }
+
+    recVerify(response) {
+      console.log(response);
+      if(response !== null
+          && response !== undefined
+          && response !== "")
+        this.setState({...this.state, validated: true});
+
+    }
+
+    recExpired() {
+      console.log("Recaptcha expired");
+      this.setState({...this.state, validated: false});
     }
 
     render() {
@@ -115,10 +127,20 @@ class MessageForm extends React.Component {
                     <FormControl.Feedback />
                     <HelpBlock>{this.state.status}</HelpBlock>
                   </FormGroup>
+                  <Recaptcha
+                    sitekey='6LdkuDoUAAAAAAnc6NuZA80jIL5zRF82b-MbXTp7'
+                    render="explicit"
+                    ref={((e) => this.recInst = e).bind(this) }
+                    verifyCallback={this.recVerify.bind(this)}
+                    onloadCallback={() => { console.log("Recapthca loaded"); }}
+                    expiredCallback={this.recExpired.bind(this)} />
                   <ButtonToolbar>
                     <Button type="submit">Send</Button>
-                    <Button onClick={() =>
-                        this.setState(this.defaultState())}>
+                    <Button onClick={(() => {
+                        console.log(this.recInst);
+                        this.recInst.reset();
+                        this.setState(this.defaultState());
+                    }).bind(this)}>
                       Reset
                     </Button>
                   </ButtonToolbar>
