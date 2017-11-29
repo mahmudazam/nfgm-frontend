@@ -2,6 +2,7 @@
 const email = require('./email');
 const multiparty = require('multiparty');
 const util = require('util');
+const request = require('request');
 var express_rate_limit = require("express-rate-limit");
 
 // Default Email Objects:
@@ -26,8 +27,8 @@ const emailToStorePersonnel = function(emailObj) {
 
 const emailToString = function(emailObj) {
   return util.format(
-    "First name: %s\nLast name: %s\nEmail Address: %s\nMessage: %s\n",
-    emailObj.fName, emailObj.lName, emailObj.eMail, emailObj.message
+    "First name: %s\nLast name: %s\nEmail Address: %s\nMessage: %s\nRecaptcha: %s\n",
+    emailObj.fName, emailObj.lName, emailObj.eMail, emailObj.message, emailObj.response
   );
 }
 
@@ -40,22 +41,54 @@ var limiter = new express_rate_limit({
   message: "Too many emails being sent: please try again later"
 });
 
+const capValURI = "https://www.google.com/recaptcha/api/siteverify"
+
+function captchaObjectFromFields(fields) {
+  return {
+    secret: process.env.NFGM_RECAPTCHA_SECRET,
+    response: fields.response,
+    remoteip: fields.remoteip
+  };
+}
+
+function validateCaptchaOpt(fields) {
+  return {
+    uri: capValURI,
+    method: 'POST',
+    body: captchaObjectFromFields(fields),
+    json: true
+  };
+}
+
+function validateCaptchaURI(fields) {
+  return capValURI + "?secret=" + process.env.NFGM_RECAPTCHA_SECRET
+    + "&response=" + fields.response + "&remoteip=" + fields.remoteip;
+}
+
 function configure(app) {
   app.post('/customer_email', limiter, function(req, res) {
     let form = new multiparty.Form();
+    let clientIP = req.headers['x-forwarded-for']
+                   || req.connection.remoteAddress;
     form.parse(req, (err, fields, files) => {
-      try {
-        console.log(">> Email request recieved: " + emailToString(fields));
-        // Respond to customer with a default email:
-        // email.sendEmail([fields.eMail], defaultEmailToCustomer(fields.fName));
-        // Forward email to store personnel :
-        // email.sendEmail(storePersonnelEmail, emailToStorePersonnel(fields));
-        // Respond to browser :
-        res.send("SUCCESS");
-      } catch(error) {
-        console.log(">> Error processing email request");
-        res.send("ERROR");
-      }
+      fields.remoteip = clientIP;
+      let uri = validateCaptchaURI(fields);
+      console.log(uri);
+      request(uri, (error, response, body) => {
+        if(error) {
+          console.log(error);
+          res.send("ERROR");
+        } else {
+          console.log(response.statusCode);
+          console.log(body);
+          // Respond to customer with a default email:
+          // email.sendEmail([fields.eMail], defaultEmailToCustomer(fields.fName));
+          // Forward email to store personnel :
+          // email.sendEmail(storePersonnelEmail, emailToStorePersonnel(fields));
+          // Respond to browser :
+          res.send("SUCCESS");
+        }
+      });
     });
   });
 }

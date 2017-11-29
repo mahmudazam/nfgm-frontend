@@ -12,9 +12,9 @@ const emptyState = {
     fName: "",
     lName: "",
     eMail: "",
-    message: ""
-  },
-  validated: false
+    message: "",
+    response: ""
+  }
 }
 
 class MessageForm extends React.Component {
@@ -35,7 +35,7 @@ class MessageForm extends React.Component {
               && snapshot.lName
               && snapshot.eMail
               && snapshot.message
-              && this.state.validated)) {
+              && snapshot.response !== "")) {
           this.setState({
             ...this.state,
             status: "Please fill all fields and check the box"
@@ -50,6 +50,13 @@ class MessageForm extends React.Component {
             this.setState({
               ...this.defaultState(),
               status: "Message sent. Thank you"
+            });
+          }).bind(this),
+          ((xhr) => {
+            this.setState({
+              ...this.state,
+              processing: false,
+              status: "Message could not be send, please call us"
             });
           }).bind(this));
     }
@@ -66,13 +73,15 @@ class MessageForm extends React.Component {
       if(response !== null
           && response !== undefined
           && response !== "")
-        this.setState({...this.state, validated: true});
-
+        this.setState({
+          ...this.state,
+          values: {...this.state.values, response: response}
+        });
     }
 
     recExpired() {
       console.log("Recaptcha expired");
-      this.setState({...this.state, validated: false});
+      this.setState({...this.state, values: {...this.state.values, response: "" }});
     }
 
     render() {
@@ -132,7 +141,7 @@ class MessageForm extends React.Component {
                     render="explicit"
                     ref={((e) => this.recInst = e).bind(this) }
                     verifyCallback={this.recVerify.bind(this)}
-                    onloadCallback={() => { console.log("Recapthca loaded"); }}
+                    onloadCallback={() => {}}
                     expiredCallback={this.recExpired.bind(this)} />
                   <ButtonToolbar>
                     <Button type="submit">Send</Button>
