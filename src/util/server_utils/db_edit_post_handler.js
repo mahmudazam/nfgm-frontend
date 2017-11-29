@@ -71,7 +71,7 @@ function simplifyFields(fields) {
 // Database Edits:
 const DB_EMAIL = process.env.NFGM_ADDRESS;
 const DB_PASS = process.env.NFGM_DB_PASS;
-const POST_KEY = post_keygen.keygen(DB_EMAIL, DB_PASS);
+var POST_KEY = post_keygen.keygen(DB_EMAIL, DB_PASS);
 
 function dbEdit(post, editFunction, app) {
   app.post(post, limiter, function(req, res) {
@@ -84,12 +84,13 @@ function dbEdit(post, editFunction, app) {
         if(POST_KEY === fields.post_key[0]) {
           fields.post_key[0] = undefined;
           firebase_auth.signIn(DB_EMAIL, DB_PASS).then(() => {
-            editFunction(fields, files, res);
+            return editFunction(fields, files, res);
+          }).then(() => {
+            POST_KEY = post_keygen.keygen(DB_EMAIL, DB_PASS);
+          }).catch((error) => {
+            console.log(error);
+            res.send("Permission denied");
           })
-            .catch((error) => {
-              console.log(error);
-              res.send("Permission denied");
-            })
         } else {
           console.log(fields);
           res.send("Permission denied");
@@ -101,7 +102,7 @@ function dbEdit(post, editFunction, app) {
 
 function addItemPost(fields, files, res) {
   fields.uploading = undefined;
-  asset_handler.pushItem(simplifyFields(fields), files.image[0], './www/')
+  return asset_handler.pushItem(simplifyFields(fields), files.image[0], './www/')
     .then(() => {
       return firebase_auth.signOut();
     })
@@ -114,7 +115,7 @@ function addItemPost(fields, files, res) {
 }
 
 function deleteItemPost(fields, files, res) {
-  asset_handler.deleteItem(simplifyFields(fields), './www/')
+  return asset_handler.deleteItem(simplifyFields(fields), './www/')
     .then(() => {
       return firebase_auth.signOut();
     })
@@ -127,7 +128,7 @@ function deleteItemPost(fields, files, res) {
 }
 
 function addCategoryPost(fields, files, res) {
-  asset_handler.pushCategory(fields.name[0])
+  return asset_handler.pushCategory(fields.name[0])
     .then(() => {
       return firebase_auth.signOut();
     })
@@ -140,7 +141,7 @@ function addCategoryPost(fields, files, res) {
 }
 
 function deleteCategoryPost(fields, files, res) {
-  asset_handler.deleteCategory(fields.name[0], './www/')
+  return asset_handler.deleteCategory(fields.name[0], './www/')
     .then(() => {
         return firebase_auth.signOut();
     })
@@ -154,7 +155,7 @@ function deleteCategoryPost(fields, files, res) {
 
 function addCarouselImagePost(fields, files, res) {
   fields.uploading = undefined;
-  asset_handler.pushCarouselImage(
+  return asset_handler.pushCarouselImage(
       simplifyFields(fields), files.image[0], './www/')
     .then(() => {
       return firebase_auth.signOut();
@@ -168,7 +169,7 @@ function addCarouselImagePost(fields, files, res) {
 }
 
 function deleteCarouselImagePost(fields, files, res) {
-  asset_handler.deleteCarouselImage(fields.image[0], './www/')
+  return asset_handler.deleteCarouselImage(fields.image[0], './www/')
     .then(() => {
         return firebase_auth.signOut();
     })
