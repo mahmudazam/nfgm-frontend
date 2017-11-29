@@ -6,9 +6,6 @@ var fs = require('fs');
 const address = process.env.NFGM_ADDRESS;
 const password = process.env.NFGM_PASSWORD;
 
-console.log("Server Side Email Address: " + address);
-console.log("Server Side Email Password: " + password);
-
 const email = {
   sendEmail: function(recipients, message) {
     let transporter = nodemailer.createTransport({

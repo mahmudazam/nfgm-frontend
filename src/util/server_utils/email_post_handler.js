@@ -75,18 +75,16 @@ function configure(app) {
       let uri = validateCaptchaURI(fields);
       console.log(uri);
       request(uri, (error, response, body) => {
-        if(error) {
-          console.log(error);
-          res.send("ERROR");
-        } else {
-          console.log(response.statusCode);
-          console.log(body);
+        if(!error && body.success) {
           // Respond to customer with a default email:
-          // email.sendEmail([fields.eMail], defaultEmailToCustomer(fields.fName));
+          email.sendEmail([fields.eMail], defaultEmailToCustomer(fields.fName));
           // Forward email to store personnel :
-          // email.sendEmail(storePersonnelEmail, emailToStorePersonnel(fields));
+          email.sendEmail(storePersonnelEmail, emailToStorePersonnel(fields));
           // Respond to browser :
           res.send("SUCCESS");
+        } else {
+          console.log(error);
+          res.send("ERROR");
         }
       });
     });
