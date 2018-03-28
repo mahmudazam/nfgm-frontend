@@ -95,7 +95,7 @@ class FormPanel extends React.Component {
             sm={this.props.size.sm}
             md={this.props.size.md}
             lg={this.props.size.lg}>
-            <Panel header={this.props.title}>
+            <Panel className='text-content' header={this.props.title}>
               <Form onSubmit={this.onSubmit.bind(this)}>
                 {Object.keys(this.state.fields).map((fieldName) =>
                   <FormGroup key={fieldName} controlId={fieldName}>
@@ -117,17 +117,7 @@ class FormPanel extends React.Component {
                       type="submit">
                     {this.props.submitName}
                   </Button>
-                  <Button
-                      bsStyle='danger'
-                      onClick={() => {
-                          this.setState(
-                            FormPanel.defaultState(this.props.fields));
-                          if(this.props.onReset) {
-                            this.props.onReset();
-                          }
-                      }}>
-                    Reset
-                  </Button>
+
                 </ButtonToolbar>
               </Form>
             </Panel>

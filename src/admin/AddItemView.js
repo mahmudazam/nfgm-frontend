@@ -65,7 +65,7 @@ class AddItemView extends React.Component {
           return result;
         }, []))
     };
-    if(newItem.categories.length <= 0) {
+    if(newItem.categories == "[]") {
       window.alert("Please select at least one category");
       return;
     }
@@ -123,8 +123,8 @@ class AddItemView extends React.Component {
           fields={
             [
               { title:'Item Name', type: 'text', optional: false, value: "" },
-              { title:'Price', type: 'text', optional: false, value: "" },
-              { title:'Unit', type: 'text', optional: false, value: "" },
+              { title:'Price', type: 'text', optional: true, value: "" },
+              { title:'Unit', type: 'text', optional: true, value: "" },
               { title:'Description', type: 'text', optional: false, value: "" },
               { title:'Sale Information', type: 'text', optional: true, value: "" }
             ]
