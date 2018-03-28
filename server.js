@@ -18,6 +18,10 @@ const db_edit_post_handler =
 const email_post_handler =
   require('./src/util/server_utils/email_post_handler');
 
+const KEY_FILE_PATH = process.env['NFGM_CERT_DIR'] + "privkey.pem";
+const CERT_FILE_PATH = process.env['NFGM_CERT_DIR'] + "fullchain.pem";
+
+
 // Express configurations:
 app.use(webpackDevMiddleware(compiler, {
   hot: true,
@@ -45,10 +49,11 @@ app.get('*', function(req, res) {
 });
 
 if("HTTPS" === process.argv[2]) {
+  console.log(KEY_FILE_PATH);
+  console.log(CERT_FILE_PATH);
   https_server = https.createServer({
-    key: fs.readFileSync('src/ssl/key.pem'),
-    cert: fs.readFileSync('src/ssl/cert.pem'),
-    passphrase: 'crypto111'
+    key: fs.readFileSync(KEY_FILE_PATH),
+    cert: fs.readFileSync(CERT_FILE_PATH),
   }, app);
 
   https_server.listen(443);
