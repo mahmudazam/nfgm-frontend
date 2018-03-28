@@ -50,10 +50,10 @@ class SignInView extends React.Component {
       fire.auth().currentUser
       ? (<Redirect to='/home'/>)
       : (
-        <Col sm={12}>
-          <Col sm={0} md={4}/>
+        <Col className='text-content' sm={12}>
+          <Col sm={3} md={4}/>
           <FormPanel
-            size={{sm: 12, md: 4, lg: 4}}
+            size={{sm: 6, md: 4, lg: 4}}
             fields={[
               { title: 'Email', type: 'email', optional: false, value: ""},
               { title: 'Password', type: 'password', optional: false, value: ""}
@@ -61,7 +61,7 @@ class SignInView extends React.Component {
             submitName='Sign in'
             onSubmit={this.signInUser.bind(this)}
           />
-          <Col sm={0} md={4}/>
+          <Col sm={3} md={4}/>
         </Col>
       )
     );
