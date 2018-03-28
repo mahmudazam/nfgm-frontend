@@ -1,74 +1,81 @@
 
 @media screen and (max-width: 767px) {
-  body {
-    font-size: 3.4em;
-    font-weight: 700;
+  .text-content {
+    font-size: 255%;
+    font-weight: 600;
+  }
+  .navbar-brand {
+    font-size: 300%;
   }
 }
 
 @media screen and (min-width: 768px) {
-  body {
-    font-size: 2.5em;
-    font-weight: 700;
+  .text-content {
+    font-size: 235%;
+    font-weight: 600;
+  }
+  .navbar-brand {
+    font-size: 300%;
   }
 }
 
 @media screen and (min-width: 992px) {
-  body {
-    font-size: 1.5em;
-    font-weight: 700;
+  .text-content {
+    font-size: 170%;
+    font-weight: 400;
+  }
+  .navbar-brand {
+    font-size: 300%;
   }
 }
 
 @media screen and (min-width: 1200px) {
-  body {
-    font-size: 1.2em;
+  .text-content {
+    font-size: 170%;
+    font-weight: 500;
+  }
+  .navbar-brand {
+    font-size: 240%;
   }
 }
 
-body {
-    font-family: sans-serif;
-    background-image: url("../assets/img/background.jpg");
-    background-attachment: fixed;
-}
-
 #top-navbar {
-    border-radius: 0;
-    padding-top: 1.2%;
-    height: 10%;
-    font-size: 120%;
+  border-radius: 0px;
+  padding: 1%;
 }
 
-.navbar-brand{
-    font-size: 180%;
-    font-weight: 500;
-    font-family: sans-serif;
+.navbar-brand {
+  cursor: pointer;
+  font-weight: 900;
 }
 
-#top-right-nav {
-    margin-right: -10%;
+body {
+  font-size: 2.0em
+  font-family: sans-serif;
+  background-image: url("../assets/img/background.jpg");
+  background-attachment: fixed;
 }
 
 .resize-y{
-    resize: vertical;
+  resize: vertical;
 }
 
 .tabs {
-    background-color: #DFDFDE;
-    font-size: 100%;
-    border-radius: 6px 6px 6px 6px;
-    box-shadow: 5px 7px 18px 2px rgba(0,0,0,0.75);
+  background-color: #DFDFDE;
+  font-size: 100%;
+  border-radius: 6px 6px 6px 6px;
+  box-shadow: 5px 7px 18px 2px rgba(0,0,0,0.75);
 }
 
 .major-content {
-    margin-top: 2%;
+  margin-top: 2%;
 }
 
 .run{
-    height: 50px;
+  height: 50px;
 }
 
 .walk{
-    height: 32px;
+  height: 32px;
 }
 

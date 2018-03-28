@@ -34,7 +34,7 @@ class TabBar extends React.Component {
 
     render() {
         return (
-          <div className="col-lg-12">
+          <div className="col-lg-12 text-content">
             <div className="col-lg-1"></div>
             <div className="col-lg-10">
               <Row>

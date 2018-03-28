@@ -27,7 +27,7 @@ class TopNavbar extends React.Component {
 
   render() {
     return (
-      <Navbar style={{borderRadius: "0px"}}>
+      <Navbar id='top-navbar'>
         <Navbar.Header>
           <Navbar.Brand>
             <LinkContainer to='/'className="navbar-brand" >
@@ -37,7 +37,7 @@ class TopNavbar extends React.Component {
           <Navbar.Toggle/>
         </Navbar.Header>
         <Navbar.Collapse>
-          <Nav pullRight>
+          <Nav className='text-content' pullRight>
             <NavItem eventKey={1} href={ "tel:" + this.state.phone_number}>
               <Glyphicon glyph="earphone"/>
               { ' ' + formatPhoneNumber(this.state.phone_number) }
