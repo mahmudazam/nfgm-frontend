@@ -51,13 +51,15 @@ class MessageForm extends React.Component {
               ...this.defaultState(),
               status: "Message sent. Thank you"
             });
+            window.alert(this.state.status)
           }).bind(this),
           ((xhr) => {
             this.setState({
               ...this.state,
               processing: false,
-              status: "Message could not be send, please call us"
+              status: "Message could not be sent, please call us."
             });
+            window.alert(this.state.status)
           }).bind(this));
     }
 

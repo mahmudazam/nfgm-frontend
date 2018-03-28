@@ -73,9 +73,9 @@ function configure(app) {
     form.parse(req, (err, fields, files) => {
       fields.remoteip = clientIP;
       let uri = validateCaptchaURI(fields);
-      console.log(uri);
-      request(uri, (error, response, body) => {
-        if(!error && body.success) {
+      request(uri, (error, response, body_json) => {
+	body = JSON.parse(body_json);
+        if(!error && body["success"] == true) {
           // Respond to customer with a default email:
           email.sendEmail([fields.eMail], defaultEmailToCustomer(fields.fName));
           // Forward email to store personnel :
@@ -83,7 +83,12 @@ function configure(app) {
           // Respond to browser :
           res.send("SUCCESS");
         } else {
-          console.log(error);
+          console.error()
+          console.error("#####################")
+          console.error("EMAIL CAPTHA FAILURE:")
+          console.error("Success status: " + body["success"])
+          console.error("Error: " + !error);
+          console.error("#####################")
           res.send("ERROR");
         }
       });
