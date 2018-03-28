@@ -95,7 +95,7 @@ class FormPanel extends React.Component {
             sm={this.props.size.sm}
             md={this.props.size.md}
             lg={this.props.size.lg}>
-            <Panel className='text-content' header={this.props.title}>
+            <Panel header={this.props.title}>
               <Form onSubmit={this.onSubmit.bind(this)}>
                 {Object.keys(this.state.fields).map((fieldName) =>
                   <FormGroup key={fieldName} controlId={fieldName}>
