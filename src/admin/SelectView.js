@@ -1,14 +1,9 @@
 
 import React from 'react';
-import fire from '../util/fire';
-import { ButtonToolbar, Button, ControlLabel, Row, Panel }
+import { ButtonToolbar, Button, ControlLabel, Panel }
   from 'react-bootstrap/lib';
 
 class SelectView extends React.Component {
-  constructor() {
-    super();
-  }
-
   handleChangeBuilder(name, selected) {
     let handleChange = function() {
       this.props.categories[name] = selected;

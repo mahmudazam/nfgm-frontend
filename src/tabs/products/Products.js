@@ -1,7 +1,6 @@
 
 import React from 'react';
-import { Row, PanelGroup, Panel } from 'react-bootstrap/lib';
-import Item from './Item';
+import { PanelGroup, Panel } from 'react-bootstrap/lib';
 import fire from '../../util/fire';
 import Category from './Category';
 
@@ -17,7 +16,7 @@ class Products extends React.Component {
   componentWillMount() {
     fire.database().ref('/assets/categories/').orderByKey().on('value',
       ((snapshot) => {
-        if(null == snapshot.val() || undefined == snapshot.val()) {
+        if(null === snapshot.val() || undefined === snapshot.val()) {
             this.setState({
                 activeKey: "",
                 categoryList: []
@@ -29,7 +28,7 @@ class Products extends React.Component {
           activeKey: categoryList[0],
           categoryList: categoryList
         });
-      }).bind(this));
+      }));
   }
 
   handleSelect(activeKey) {
@@ -41,7 +40,7 @@ class Products extends React.Component {
       return (
         <div className='major-content col-sm-12'>
           <Panel>
-            <img src='./assets/img/loading.gif'/>
+            <img alt="ALT" src='./assets/img/loading.gif'/>
             <br/>
             <div>Loading...</div>
           </Panel>
@@ -56,6 +55,7 @@ class Products extends React.Component {
           ? <Panel>No categories of items</Panel>
           :
           <PanelGroup
+                id="EDIT_CATEGORIES_PANEL_GROUP"
                 activeKey={this.state.activeKey}
                 onSelect={this.handleSelect.bind(this)}
                 accordion>

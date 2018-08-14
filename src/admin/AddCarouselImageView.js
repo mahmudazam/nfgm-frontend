@@ -1,12 +1,10 @@
 
 import React from 'react';
 import fire from '../util/fire';
-import { Panel, ButtonToolbar, Button, ControlLabel, Form, Row, Col }
+import { Panel, Row, Col }
   from 'react-bootstrap/lib';
 import FileUploadComponent from './FileUploadComponent';
 import FormPanel from '../app-base/FormPanel';
-import SelectView from './SelectView';
-import querystring from 'querystring';
 import { postFormData } from '../util/HTTPSReq';
 
 class AddCarouselImageView extends React.Component {
@@ -70,7 +68,7 @@ class AddCarouselImageView extends React.Component {
           md={this.props.size.md}
           lg={this.props.size.lg}>
           <Panel>
-            <img src='./assets/img/loading.gif'/>
+            <img alt="ALT" src='./assets/img/loading.gif'/>
             <br/>
             <div>Uploading...</div>
           </Panel>
@@ -91,7 +89,7 @@ class AddCarouselImageView extends React.Component {
           onSubmit={this.pushImage.bind(this)}
           onReset={(() => {
             this.setState(this.defaultState());
-          }).bind(this)}
+          })}
         >
           <Row>
             <FileUploadComponent
@@ -101,7 +99,7 @@ class AddCarouselImageView extends React.Component {
                   ...this.state,
                   image: imageInfo
                 });
-              }).bind(this) }
+              })}
               className='col-sm-12'/>
           </Row>
         </FormPanel>

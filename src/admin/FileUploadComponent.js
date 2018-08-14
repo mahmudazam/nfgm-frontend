@@ -1,16 +1,11 @@
 
 import React from 'react';
-import { Panel, FormControl } from 'react-bootstrap/lib';
+import { Panel } from 'react-bootstrap/lib';
 
 class FileUploadComponent extends React.Component {
-  constructor(props) {
-    super(props);
-  }
-
   handleChange(event) {
     event.preventDefault();
     let newState = {};
-    let nodeId = event.target.id;
     let nodeValue = event.target.value;
     let nodeFile = null;
     if(event.target.files[0]) {
@@ -40,7 +35,7 @@ class FileUploadComponent extends React.Component {
         <Panel header={this.props.image.value}>
           {
             imagePreviewUrl
-            ? (<img src={imagePreviewUrl} className='image'/>)
+            ? (<img src={imagePreviewUrl} alt="ALT" className='image'/>)
             : ""
           }
         </Panel>

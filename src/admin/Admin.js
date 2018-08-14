@@ -1,7 +1,6 @@
 
 import React from 'react';
-import { Col, Row } from 'react-bootstrap';
-import fire from '../util/fire';
+import { Col } from 'react-bootstrap';
 import AddItemView from './AddItemView';
 import AddCategoryView from './AddCategoryView';
 import AddCarouselImageView from './AddCarouselImageView';
@@ -9,10 +8,6 @@ import EditProducts from './EditProducts';
 import EditCarouselView from './EditCarouselView';
 
 class Admin extends React.Component {
-  constructor(props) {
-    super(props);
-  }
-
   render() {
     return (
       <Col className='major-content' sm={12}>

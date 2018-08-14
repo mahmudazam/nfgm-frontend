@@ -1,7 +1,7 @@
 
 import React from 'react';
 import { ButtonToolbar, Button , Col , Row , Panel , FormGroup , ControlLabel ,
-        Form, FormControl , HelpBlock }
+        Form, FormControl }
   from 'react-bootstrap/lib';
 
 class FormPanel extends React.Component {
@@ -79,7 +79,7 @@ class FormPanel extends React.Component {
           lg={this.props.size.lg}>
           <Panel header={this.props.title}>
             <Row>
-              <img src="./assets/img/loading.gif"/>
+              <img alt="ALT" src="./assets/img/loading.gif"/>
             </Row>
             <Row>
               <h3 className="col-sm-4">

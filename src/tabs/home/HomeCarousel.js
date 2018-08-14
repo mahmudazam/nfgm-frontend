@@ -9,9 +9,6 @@ import React from 'react';
 // Bootstrap Carousel:
 import Carousel from 'react-bootstrap/lib/Carousel'
 
-// Bootstrap Well:
-import Well from 'react-bootstrap/lib/Well'
-
 // Firebase database control:
 import fire from '../../util/fire'
 
@@ -32,22 +29,22 @@ class HomeCarousel extends React.Component {
   /**
   * Loads the URL array with URLs stored in Firebase database:
   */
-  componentWillMount(){
+  componentWillMount() {
     // Get the reference to the database index of the image folder:
     let carouselQuery = fire.database().ref('assets/carousel').orderByKey();
     // Add every URL available in the index:
     carouselQuery.on('value', ((snapshot) => {
-      if(null == snapshot.val() || undefined == snapshot.val()) {
+      if(null == snapshot.val() || undefined === snapshot.val()) {
           this.setState({
-              imageURLs: {}
+              imageURLs: {},
           });
           return;
       }
       this.setState({
         ...this.state,
-        imageURLs: snapshot.val()
+        imageURLs: snapshot.val(),
       });
-    }).bind(this))
+    }))
   }
 
   /**

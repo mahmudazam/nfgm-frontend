@@ -1,6 +1,6 @@
 
 import React from 'react';
-import { Navbar, Nav, NavItem, NavDropdown, MenuItem} from 'react-bootstrap';
+import { Navbar, Nav, NavItem } from 'react-bootstrap';
 import Glyphicon from 'react-bootstrap/lib/Glyphicon';
 import { formatPhoneNumber } from '../util/string_format';
 import { LinkContainer } from 'react-router-bootstrap/lib';

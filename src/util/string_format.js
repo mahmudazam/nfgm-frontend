@@ -1,6 +1,5 @@
 
 export function formatPhoneNumber(num) {
-  let start = 0;
   if(num.charAt(0) === '+') {
     num = num.substring(0 , 2) // +a
           + ' (' + num.substring(2 , 5) + ') ' // _(bbb)_

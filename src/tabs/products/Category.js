@@ -1,6 +1,6 @@
 
 import React from 'react';
-import { Button, Row, PanelGroup, Panel } from 'react-bootstrap/lib';
+import { Button, Row } from 'react-bootstrap/lib';
 import Item from './Item';
 import fire from '../../util/fire';
 
@@ -30,7 +30,7 @@ class Category extends React.Component {
           let items = Object.keys(snapshot.val());
           let itemList = {};
           items.map((itemName) => {
-            fire.database().ref('/assets/items/' + itemName).orderByKey()
+            return fire.database().ref('/assets/items/' + itemName).orderByKey()
               .once('value').then(((snapshot) => {
                 if(null == snapshot.val()) return;
                 itemList[snapshot.key] = snapshot.val();
@@ -39,10 +39,10 @@ class Category extends React.Component {
                   loading: false,
                   itemList: itemList
                 });
-              }).bind(this));
+              }));
           });
       }
-    }).bind(this));
+    }));
   }
 
   render() {
@@ -76,7 +76,7 @@ class Category extends React.Component {
                     bsStyle={buttonInfo.bsStyle}
                     onClick={(() => {
                         buttonInfo.onClick(this.props.categoryName);
-                    }).bind(this)}
+                    })}
                 >{buttonInfo.label}</Button>
             )
         }

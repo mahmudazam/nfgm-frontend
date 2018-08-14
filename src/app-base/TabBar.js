@@ -2,31 +2,15 @@
  * Created by tayabsoomro on 2017-07-07.
  */
 import React from 'react';
-import { Tab, Nav, NavItem, Col, Row } from 'react-bootstrap/lib/';
+import { Nav, NavItem, Col, Row } from 'react-bootstrap/lib/';
 import Home from '../tabs/home/Home';
 import Products from '../tabs/products/Products';
 import Contact from '../tabs/contact/Contact';
 import Admin from '../admin/Admin';
 import { Route } from 'react-router-dom';
 import { LinkContainer } from 'react-router-bootstrap/lib';
-import fire from '../util/fire';
 
 class TabBar extends React.Component {
-    constructor(props) {
-        super(props);
-        this.state = {
-            user: null,
-        }
-    }
-
-    componentDidMount() {
-        fire.auth().onAuthStateChanged(((user) => {
-            this.setState({
-                user
-            });
-        }).bind(this));
-    }
-
     renderProducts() {
       return (<Products itemButtons={[]}
                         categoryButtons={[]}/>);
@@ -49,7 +33,7 @@ class TabBar extends React.Component {
                     <LinkContainer to='/contact'>
                       <NavItem>Contact</NavItem>
                     </LinkContainer>
-                    { this.state.user
+                    { this.props.user()
                         ? (<LinkContainer to='/admin'>
                             <NavItem>Admin</NavItem>
                           </LinkContainer>)
@@ -61,7 +45,7 @@ class TabBar extends React.Component {
                   <Route path='/home' component={Home}/>
                   <Route path='/products' component={this.renderProducts}/>
                   <Route path='/contact' component={Contact}/>
-                  { this.state.user
+                  { this.props.user()
                       ? (<Route path='/admin' component={Admin}/>)
                       : null
                   }

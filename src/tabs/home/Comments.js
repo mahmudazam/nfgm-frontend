@@ -3,10 +3,6 @@ import React from 'react';
 import Panel from 'react-bootstrap/lib/Panel';
 
 class Comments extends React.Component {
-    constructor() {
-        super();
-    }
-
     render() {
         return(
           <div className="col-lg-12">

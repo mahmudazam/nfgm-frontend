@@ -1,5 +1,4 @@
 import https from 'https';
-import querystring from 'querystring';
 
   export const options = {
       hostname: 'localhost',
@@ -71,7 +70,7 @@ import querystring from 'querystring';
   export function postFormData(data, url, success, error) {
     let formData = new FormData();
     Object.keys(data).map(function(dataKey) {
-      formData.append(dataKey, data[dataKey]);
+      return formData.append(dataKey, data[dataKey]);
     });
     let xhr = new XMLHttpRequest();
     xhr.open('post', url, true);

@@ -1,4 +1,4 @@
-/* global google */
+/*global google*/
 import {
   default as React,
   Component,
@@ -63,7 +63,7 @@ const PopUpInfoWindowExampleGoogleMap = withGoogleMap(props => (
               <div className='text-content'>
                 <div>Natural Fresh Grocery & Meat:</div>
                 <div>4-606 22nd St West, Saskatoon, SK S7M 5W1</div>
-                <a target="_blank" href="https://www.google.ca/maps/place/Natural+Fresh+Meat/@52.1300124,-106.680819,17z/data=!3m1!4b1!4m5!3m4!1s0x5304f726767579f7:0x80a086221c7d8431!8m2!3d52.1300124!4d-106.6786303">
+                <a target="_blank" rel="noopener noreferrer" href="https://www.google.ca/maps/place/Natural+Fresh+Meat/@52.1300124,-106.680819,17z/data=!3m1!4b1!4m5!3m4!1s0x5304f726767579f7:0x80a086221c7d8431!8m2!3d52.1300124!4d-106.6786303">
                   Show in Google Maps
                 </a>
               </div>

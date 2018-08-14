@@ -1,6 +1,5 @@
 
 import React from 'react';
-import Products from '../tabs/products/Products';
 import { Button, ButtonToolbar, Col, Modal, Panel, Thumbnail }
   from 'react-bootstrap/lib';
 import { postFormData } from '../util/HTTPSReq';
@@ -19,7 +18,7 @@ class EditCarouselView extends React.Component {
   componentWillMount() {
     fire.database().ref('/assets/carousel/').orderByKey().on('value',
         ((snapshot) => {
-            if(null == snapshot.val() || undefined == snapshot.val()) {
+            if(null === snapshot.val() || undefined === snapshot.val()) {
                 this.setState({
                     images: {},
                     selectedImage: null,
@@ -31,7 +30,7 @@ class EditCarouselView extends React.Component {
                 ...this.state,
                 images: snapshot.val()
             });
-        }).bind(this)
+        })
     );
   }
 

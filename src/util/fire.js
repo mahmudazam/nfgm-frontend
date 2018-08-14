@@ -1,7 +1,3 @@
-"use strict";
-
-var path = require('path');
-
 // Firebase App:
 
 Object.defineProperty(exports, "__esModule", {

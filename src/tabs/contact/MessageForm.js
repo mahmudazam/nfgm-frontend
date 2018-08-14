@@ -1,7 +1,6 @@
 import React from 'react';
-import { ButtonToolbar, Button , Col , Row , Panel , FormGroup , ControlLabel , FormControl , HelpBlock }
+import { ButtonToolbar, Button , Row , Panel , FormGroup , ControlLabel , FormControl , HelpBlock }
   from 'react-bootstrap/lib';
-import fire from '../../util/fire';
 import { postFormData } from '../../util/HTTPSReq';
 import Recaptcha from 'react-recaptcha';
 
@@ -52,7 +51,7 @@ class MessageForm extends React.Component {
               status: "Message sent. Thank you"
             });
             window.alert(this.state.status)
-          }).bind(this),
+          }),
           ((xhr) => {
             this.setState({
               ...this.state,
@@ -60,7 +59,7 @@ class MessageForm extends React.Component {
               status: "Message could not be sent, please call us."
             });
             window.alert(this.state.status)
-          }).bind(this));
+          }));
     }
 
     handleChange(event) {
@@ -92,7 +91,7 @@ class MessageForm extends React.Component {
           <div className={this.props.size}>
             <Panel header="Send us a Message">
               <Row>
-                <img src="./assets/img/loading.gif"/>
+                <img alt="ALT" src="./assets/img/loading.gif"/>
               </Row>
               <Row>
                 <h3 className="col-sm-4">
@@ -141,7 +140,7 @@ class MessageForm extends React.Component {
                   <Recaptcha
                     sitekey='6LdkuDoUAAAAAAnc6NuZA80jIL5zRF82b-MbXTp7'
                     render="explicit"
-                    ref={((e) => this.recInst = e).bind(this) }
+                    ref={((e) => this.recInst = e)}
                     verifyCallback={this.recVerify.bind(this)}
                     onloadCallback={() => {}}
                     expiredCallback={this.recExpired.bind(this)} />
@@ -151,7 +150,7 @@ class MessageForm extends React.Component {
                         console.log(this.recInst);
                         this.recInst.reset();
                         this.setState(this.defaultState());
-                    }).bind(this)}>
+                    })}>
                       Reset
                     </Button>
                   </ButtonToolbar>

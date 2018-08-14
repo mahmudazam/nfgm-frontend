@@ -1,8 +1,8 @@
 
 import React from 'react';
-import { Redirect, Route } from 'react-router-dom';
+import { Redirect } from 'react-router-dom';
 import FormPanel from './FormPanel';
-import { Row, Col } from 'react-bootstrap/lib';
+import { Col } from 'react-bootstrap/lib';
 import fire from '../util/fire';
 
 class SignInView extends React.Component {

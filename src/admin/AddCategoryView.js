@@ -1,7 +1,7 @@
 
 import React from 'react';
 import fire from '../util/fire';
-import { Panel, ButtonToolbar, Button, ControlLabel, Form, Row, Col }
+import { Panel, Row, Col }
   from 'react-bootstrap/lib';
 import FormPanel from '../app-base/FormPanel';
 import { postFormData } from '../util/HTTPSReq';
@@ -52,7 +52,7 @@ class AddCategoryView extends React.Component {
           lg={this.props.size.lg}>
           <Panel header={this.props.title}>
             <Row>
-              <img src="./assets/img/loading.gif"/>
+              <img alt="ALT" src="./assets/img/loading.gif"/>
             </Row>
             <Row>
               <h3 className="col-sm-4">
@@ -74,7 +74,7 @@ class AddCategoryView extends React.Component {
           onSubmit={this.pushCategory.bind(this)}
           onReset={(() => {
             this.setState(AddCategoryView.defaultState());
-          }).bind(this)}
+          })}
         />
       );
     }

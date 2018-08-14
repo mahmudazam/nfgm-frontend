@@ -1,9 +1,9 @@
 import React from 'react';
-import TopNavbar from './TopNavbar';
-import TabBar from './TabBar';
-import SignInView from './SignInView';
+import TopNavbar from './app-base/TopNavbar';
+import TabBar from './app-base/TabBar';
+import SignInView from './app-base/SignInView';
 import { Redirect, Route } from 'react-router-dom';
-import fire from '../util/fire';
+import fire from './util/fire';
 
 const HomeRedirect = () => (<Redirect to='/home'/>);
 
@@ -38,22 +38,33 @@ class App extends React.Component {
   signOut() {
     fire.auth().signOut().then((() => {
       window.alert("Signed out");
-      this.forceUpdate();
-    }).bind(this));
+      this.setState({
+        ...this.state,
+        signedIn: false
+      });
+    }));
+  }
+
+  getTabBar() {
+    return (
+      <TabBar user={(() => this.state.signedIn)} />
+    );
   }
 
   render() {
     return (
       <div>
-        <TopNavbar signOut={this.signOut.bind(this)}/>
+        <TopNavbar signOut={this.signOut.bind(this)}
+                   user={() => { return this.state.signedIn; }} />
         <Route exact path='/' component={HomeRedirect}/>
         <Route exact path='/signin' component={this.getSignInView.bind(this)}/>
-        <Route path='/home' component={TabBar}/>
-        <Route path='/products' component={TabBar}/>
-        <Route path='/contact' component={TabBar}/>
-        <Route path='/admin' component={TabBar}/>
+        <Route path='/home' component={this.getTabBar.bind(this)}/>
+        <Route path='/products' component={this.getTabBar.bind(this)}/>
+        <Route path='/contact' component={this.getTabBar.bind(this)}/>
+        <Route path='/admin' component={this.getTabBar.bind(this)}/>
       </div>
     );
   }
 }
+
 export default App;

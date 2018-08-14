@@ -1,12 +1,11 @@
 
 import React from 'react';
 import fire from '../util/fire';
-import { Panel, ButtonToolbar, Button, ControlLabel, Form, Row, Col }
+import { Panel, ControlLabel, Row, Col }
   from 'react-bootstrap/lib';
 import FileUploadComponent from './FileUploadComponent';
 import FormPanel from '../app-base/FormPanel';
 import SelectView from './SelectView';
-import querystring from 'querystring';
 import { postFormData } from '../util/HTTPSReq';
 
 class AddItemView extends React.Component {
@@ -30,7 +29,7 @@ class AddItemView extends React.Component {
   loadCategoriesAndRender() {
     let catRef = fire.database().ref('assets/categories').orderByKey();
     catRef.on('value', ((snapshot) => {
-      if(null == snapshot.val() || undefined == snapshot.val()) {
+      if(null === snapshot.val() || undefined === snapshot.val()) {
           this.setState(AddItemView.defaultState());
           return;
       }
@@ -41,7 +40,7 @@ class AddItemView extends React.Component {
           return result;
         }), {})
       })
-    }).bind(this));
+    }));
   }
 
   componentWillMount() {
@@ -65,7 +64,7 @@ class AddItemView extends React.Component {
           return result;
         }, []))
     };
-    if(newItem.categories == "[]") {
+    if(newItem.categories === "[]") {
       window.alert("Please select at least one category");
       return;
     }
@@ -109,7 +108,7 @@ class AddItemView extends React.Component {
           md={this.props.size.md}
           lg={this.props.size.lg}>
           <Panel>
-            <img src='./assets/img/loading.gif'/>
+            <img alt="ALT" src='./assets/img/loading.gif'/>
             <br/>
             <div>Uploading...</div>
           </Panel>
@@ -133,7 +132,7 @@ class AddItemView extends React.Component {
           onSubmit={this.pushItem.bind(this)}
           onReset={(() => {
             this.loadCategoriesAndRender();
-          }).bind(this)}
+          })}
         >
           <ControlLabel>Select Categories</ControlLabel>
           <Row>
@@ -151,7 +150,7 @@ class AddItemView extends React.Component {
                   ...this.state,
                   image: imageInfo
                 });
-              }).bind(this) }
+              })}
               className='col-sm-12'/>
           </Row>
         </FormPanel>

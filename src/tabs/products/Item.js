@@ -8,10 +8,6 @@ class Item extends React.Component {
     this.item = this.props.itemInfo;
   }
 
-  createItemInfo(item) {
-    let itemInfo = {};
-  }
-
   render() {
     return (
       <Thumbnail
@@ -33,7 +29,7 @@ class Item extends React.Component {
                 onClick={
                   (() => {
                     button.onClick(this.item);
-                  }).bind(this)
+                  })
                 }>
                 {button.label}
               </Button>
