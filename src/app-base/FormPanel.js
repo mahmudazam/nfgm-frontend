@@ -79,14 +79,16 @@ class FormPanel extends React.Component {
           lg={this.props.size.lg}>
           <Panel>
             <Panel.Heading>{this.props.title}</Panel.Heading>
-            <Row>
-              <img alt="ALT" src="./assets/img/loading.gif"/>
-            </Row>
-            <Row>
-              <h3 className="col-sm-4">
-                Processing your request, please wait
-              </h3>
-            </Row>
+            <Panel.Body>
+              <Row>
+                <img alt="ALT" src="./assets/img/loading.gif"/>
+              </Row>
+              <Row>
+                <h3 className="col-sm-4">
+                  Processing your request, please wait
+                </h3>
+              </Row>
+            </Panel.Body>
           </Panel>
         </Col>
       );
@@ -98,30 +100,31 @@ class FormPanel extends React.Component {
             lg={this.props.size.lg}>
             <Panel>
               <Panel.Heading>{this.props.title}</Panel.Heading>
-              <Form onSubmit={this.onSubmit.bind(this)}>
-                {Object.keys(this.state.fields).map((fieldName) =>
-                  <FormGroup key={fieldName} controlId={fieldName}>
-                    <ControlLabel>{
-                      this.state.fields[fieldName].optional
-                      ? fieldName + "(optional)"
-                      : fieldName
-                    }</ControlLabel>
-                    <FormControl type={this.state.fields[fieldName].type}
-                      value={this.state.fields[fieldName].value}
-                      onChange={this.handleChange.bind(this)}
-                    />
-                  </FormGroup>
-                )}
-                {this.props.children}
-                <ButtonToolbar>
-                  <Button
-                      bsStyle='primary'
-                      type="submit">
-                    {this.props.submitName}
-                  </Button>
-
-                </ButtonToolbar>
-              </Form>
+              <Panel.Body>
+                <Form onSubmit={this.onSubmit.bind(this)}>
+                  {Object.keys(this.state.fields).map((fieldName) =>
+                    <FormGroup key={fieldName} controlId={fieldName}>
+                      <ControlLabel>{
+                        this.state.fields[fieldName].optional
+                        ? fieldName + "(optional)"
+                        : fieldName
+                      }</ControlLabel>
+                      <FormControl type={this.state.fields[fieldName].type}
+                        value={this.state.fields[fieldName].value}
+                        onChange={this.handleChange.bind(this)}
+                      />
+                    </FormGroup>
+                  )}
+                  {this.props.children}
+                  <ButtonToolbar>
+                    <Button
+                        bsStyle='primary'
+                        type="submit">
+                      {this.props.submitName}
+                    </Button>
+                  </ButtonToolbar>
+                </Form>
+              </Panel.Body>
             </Panel>
           </Col>
       )

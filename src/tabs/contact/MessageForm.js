@@ -91,14 +91,16 @@ class MessageForm extends React.Component {
           <div className={this.props.size}>
             <Panel>
               <Panel.Heading>Send us a Message</Panel.Heading>
-              <Row>
-                <img alt="ALT" src="./assets/img/loading.gif"/>
-              </Row>
-              <Row>
-                <h3 className="col-sm-4">
-                  Processing your request, please wait
-                </h3>
-              </Row>
+              <Panel.Body>
+                <Row>
+                  <img alt="ALT" src="./assets/img/loading.gif"/>
+                </Row>
+                <Row>
+                  <h3 className="col-sm-4">
+                    Processing your request, please wait
+                  </h3>
+                </Row>
+              </Panel.Body>
             </Panel>
           </div>
         );
@@ -107,56 +109,58 @@ class MessageForm extends React.Component {
             <div className={this.props.size}>
               <Panel>
                 <Panel.Heading>Send us a Message</Panel.Heading>
-                <form onSubmit={this.sendMessage.bind(this)}>
-                  <FormGroup controlId="fName">
-                    <ControlLabel>First Name</ControlLabel>
-                    <FormControl type="text"
-                      value={this.state.values.fName}
-                      onChange={this.handleChange.bind(this)}
-                    />
-                  </FormGroup>
-                  <FormGroup controlId="lName">
-                    <ControlLabel>Last Name</ControlLabel>
-                    <FormControl type="text"
-                      value={this.state.values.lName}
-                      onChange={this.handleChange.bind(this)}
-                    />
-                  </FormGroup>
-                  <FormGroup controlId="eMail">
-                    <ControlLabel>Email Address</ControlLabel>
-                    <FormControl type="text"
-                      value={this.state.values.eMail}
-                      onChange={this.handleChange.bind(this)}
-                    />
-                  </FormGroup>
-                  <FormGroup controlId="message">
-                    <ControlLabel>Message</ControlLabel>
-                    <FormControl componentClass="textarea" className="resize-y" rows="10"
-                      placeholder="Type your message here"
-                      value={this.state.values.message}
-                      onChange={this.handleChange.bind(this)}
-                    />
-                    <FormControl.Feedback />
-                    <HelpBlock>{this.state.status}</HelpBlock>
-                  </FormGroup>
-                  <Recaptcha
-                    sitekey='6LdkuDoUAAAAAAnc6NuZA80jIL5zRF82b-MbXTp7'
-                    render="explicit"
-                    ref={((e) => this.recInst = e)}
-                    verifyCallback={this.recVerify.bind(this)}
-                    onloadCallback={() => {}}
-                    expiredCallback={this.recExpired.bind(this)} />
-                  <ButtonToolbar>
-                    <Button type="submit">Send</Button>
-                    <Button onClick={(() => {
-                        console.log(this.recInst);
-                        this.recInst.reset();
-                        this.setState(this.defaultState());
-                    })}>
-                      Reset
-                    </Button>
-                  </ButtonToolbar>
-                </form>
+                <Panel.Body>
+                  <form onSubmit={this.sendMessage.bind(this)}>
+                    <FormGroup controlId="fName">
+                      <ControlLabel>First Name</ControlLabel>
+                      <FormControl type="text"
+                        value={this.state.values.fName}
+                        onChange={this.handleChange.bind(this)}
+                      />
+                    </FormGroup>
+                    <FormGroup controlId="lName">
+                      <ControlLabel>Last Name</ControlLabel>
+                      <FormControl type="text"
+                        value={this.state.values.lName}
+                        onChange={this.handleChange.bind(this)}
+                      />
+                    </FormGroup>
+                    <FormGroup controlId="eMail">
+                      <ControlLabel>Email Address</ControlLabel>
+                      <FormControl type="text"
+                        value={this.state.values.eMail}
+                        onChange={this.handleChange.bind(this)}
+                      />
+                    </FormGroup>
+                    <FormGroup controlId="message">
+                      <ControlLabel>Message</ControlLabel>
+                      <FormControl componentClass="textarea" className="resize-y" rows="10"
+                        placeholder="Type your message here"
+                        value={this.state.values.message}
+                        onChange={this.handleChange.bind(this)}
+                      />
+                      <FormControl.Feedback />
+                      <HelpBlock>{this.state.status}</HelpBlock>
+                    </FormGroup>
+                    <Recaptcha
+                      sitekey='6LdkuDoUAAAAAAnc6NuZA80jIL5zRF82b-MbXTp7'
+                      render="explicit"
+                      ref={((e) => this.recInst = e)}
+                      verifyCallback={this.recVerify.bind(this)}
+                      onloadCallback={() => {}}
+                      expiredCallback={this.recExpired.bind(this)} />
+                    <ButtonToolbar>
+                      <Button type="submit">Send</Button>
+                      <Button onClick={(() => {
+                          console.log(this.recInst);
+                          this.recInst.reset();
+                          this.setState(this.defaultState());
+                      })}>
+                        Reset
+                      </Button>
+                    </ButtonToolbar>
+                  </form>
+                </Panel.Body>
               </Panel>
             </div>
         )

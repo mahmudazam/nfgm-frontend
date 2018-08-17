@@ -67,6 +67,7 @@ class EditCarouselView extends React.Component {
         lg={this.props.size.lg}>
         <Panel>
           <Panel.Heading>Edit Carousel</Panel.Heading>
+          <Panel.Body>
             { this.state.images !== undefined && this.state.images !== null
                 && Object.keys(this.state.images).length !== 0
               ? Object.keys(this.state.images).map((image) =>
@@ -98,10 +99,10 @@ class EditCarouselView extends React.Component {
                             Delete
                         </Button>
                     </p>
-                </Thumbnail>
-            )
-            : <div>No images in carousel</div>
+                </Thumbnail>)
+              : <div>No images in carousel</div>
             }
+          </Panel.Body>
         </Panel>
 
         <Modal

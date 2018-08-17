@@ -17,42 +17,45 @@ class SelectView extends React.Component {
       <div className={this.props.className}>
         <ControlLabel>Cateogories Available</ControlLabel>
         <Panel>
-          <ButtonToolbar>
-            {
-              Object.keys(this.props.categories).map((name) =>
-                !this.props.categories[name]
-                ? (
-                  <Button
-                    bsStyle='primary'
-                    key={name}
-                    onClick={(this.handleChangeBuilder(name, true)).bind(this)}>
-                    {name}
-                  </Button>
-                  )
-                : null)
-            }
-          </ButtonToolbar>
+          <Panel.Body>
+            <ButtonToolbar>
+              {
+                Object.keys(this.props.categories).map((name) =>
+                  !this.props.categories[name]
+                  ? (
+                    <Button bsStyle='primary' key={name}
+                        onClick={(this.handleChangeBuilder(name, true))
+                            .bind(this)}>
+                      {name}
+                    </Button>
+                    )
+                  : null)
+              }
+            </ButtonToolbar>
+          </Panel.Body>
         </Panel>
         <ControlLabel>Categories Selected</ControlLabel>
         <Panel>
-          <ButtonToolbar>
-            {
-              Object.keys(this.props.categories).map((name) =>
-                this.props.categories[name]
-                ? (
-                  <Button
-                    bsStyle='success'
-                    key={name}
-                    onClick={(this.handleChangeBuilder(name, false)).bind(this)}>
-                    {name}
-                  </Button>
-                  )
-                : null)
-            }
-          </ButtonToolbar>
+          <Panel.Body>
+            <ButtonToolbar>
+              {
+                Object.keys(this.props.categories).map((name) =>
+                  this.props.categories[name]
+                  ? (
+                    <Button bsStyle='success' key={name}
+                        onClick={(this.handleChangeBuilder(name, false))
+                            .bind(this)}>
+                      {name}
+                    </Button>
+                    )
+                  : null)
+              }
+            </ButtonToolbar>
+          </Panel.Body>
         </Panel>
       </div>
     );
   }
 }
+
 export default SelectView;

@@ -40,9 +40,11 @@ class Products extends React.Component {
       return (
         <div className='major-content col-sm-12'>
           <Panel>
-            <img alt="ALT" src='./assets/img/loading.gif'/>
-            <br/>
-            <div>Loading...</div>
+            <Panel.Body>
+              <img alt="ALT" src='./assets/img/loading.gif'/>
+              <br/>
+              <div>Loading...</div>
+            </Panel.Body>
           </Panel>
         </div>
       );
@@ -65,11 +67,12 @@ class Products extends React.Component {
                     key={category}
                     header={category}
                     eventKey={category}>
-                  <Category
-                    categoryName={category}
-                    itemButtons={this.props.itemButtons}
-                    categoryButtons={this.props.categoryButtons}
-                  />
+                  <Panel.Body>
+                    <Category
+                      categoryName={category}
+                      itemButtons={this.props.itemButtons}
+                      categoryButtons={this.props.categoryButtons} />
+                  </Panel.Body>
                 </Panel>
               )
             }

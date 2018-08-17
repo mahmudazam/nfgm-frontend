@@ -68,9 +68,11 @@ class AddCarouselImageView extends React.Component {
           md={this.props.size.md}
           lg={this.props.size.lg}>
           <Panel>
-            <img alt="ALT" src='./assets/img/loading.gif'/>
-            <br/>
-            <div>Uploading...</div>
+            <Panel.Body>
+              <img alt="ALT" src='./assets/img/loading.gif'/>
+              <br/>
+              <div>Uploading...</div>
+            </Panel.Body>
           </Panel>
         </Col>
       );

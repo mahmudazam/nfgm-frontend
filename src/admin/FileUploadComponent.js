@@ -34,11 +34,13 @@ class FileUploadComponent extends React.Component {
       <div className={this.props.className}>
         <Panel>
           <Panel.Heading>{this.props.image.value}</Panel.Heading>
-          {
-            imagePreviewUrl
-            ? (<img src={imagePreviewUrl} alt="ALT" className='image'/>)
-            : ""
-          }
+          <Panel.Body>
+            {
+              imagePreviewUrl
+              ? (<img src={imagePreviewUrl} alt="ALT" className='image'/>)
+              : ""
+            }
+          </Panel.Body>
         </Panel>
         <label className='file-upload-button'>
           <input id='file' type='file'

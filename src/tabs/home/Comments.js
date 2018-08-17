@@ -10,7 +10,12 @@ class Comments extends React.Component {
             <div className="col-sm-10">
               <Panel>
                 <Panel.Heading>Comments</Panel.Heading>
-                <div className="fb-comments col-lg-12" data-href="https://exim-food.firebaseapp.com" data-numposts="5"></div>
+                <Panel.Body>
+                  <div className="fb-comments col-lg-12"
+                       data-href="https://exim-food.firebaseapp.com"
+                       data-numposts="5">
+                  </div>
+                </Panel.Body>
               </Panel>
             </div>
             <div className="col-sm-1"/>
