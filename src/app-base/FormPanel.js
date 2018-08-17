@@ -77,7 +77,8 @@ class FormPanel extends React.Component {
           sm={this.props.size.sm}
           md={this.props.size.md}
           lg={this.props.size.lg}>
-          <Panel header={this.props.title}>
+          <Panel>
+            <Panel.Heading>{this.props.title}</Panel.Heading>
             <Row>
               <img alt="ALT" src="./assets/img/loading.gif"/>
             </Row>
@@ -95,7 +96,8 @@ class FormPanel extends React.Component {
             sm={this.props.size.sm}
             md={this.props.size.md}
             lg={this.props.size.lg}>
-            <Panel header={this.props.title}>
+            <Panel>
+              <Panel.Heading>{this.props.title}</Panel.Heading>
               <Form onSubmit={this.onSubmit.bind(this)}>
                 {Object.keys(this.state.fields).map((fieldName) =>
                   <FormGroup key={fieldName} controlId={fieldName}>

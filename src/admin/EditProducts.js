@@ -101,7 +101,8 @@ class EditProducts extends React.Component {
         sm={this.props.size.sm}
         md={this.props.size.md}
         lg={this.props.size.lg}>
-        <Panel header="Edit products">
+        <Panel>
+          <Panel.Heading>Edit Products</Panel.Heading>
           <Products
             itemButtons={[ editButton, deleteButton ]}
             categoryButtons={[ deleteCategoryButton ]}/>

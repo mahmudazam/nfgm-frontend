@@ -89,7 +89,8 @@ class MessageForm extends React.Component {
       if(this.state.processing) {
         return (
           <div className={this.props.size}>
-            <Panel header="Send us a Message">
+            <Panel>
+              <Panel.Heading>Send us a Message</Panel.Heading>
               <Row>
                 <img alt="ALT" src="./assets/img/loading.gif"/>
               </Row>
@@ -104,7 +105,8 @@ class MessageForm extends React.Component {
       } else {
         return(
             <div className={this.props.size}>
-              <Panel header="Send us a Message">
+              <Panel>
+                <Panel.Heading>Send us a Message</Panel.Heading>
                 <form onSubmit={this.sendMessage.bind(this)}>
                   <FormGroup controlId="fName">
                     <ControlLabel>First Name</ControlLabel>

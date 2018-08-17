@@ -32,7 +32,8 @@ class FileUploadComponent extends React.Component {
     let imagePreviewUrl = this.props.image.imagePreviewUrl;
     return (
       <div className={this.props.className}>
-        <Panel header={this.props.image.value}>
+        <Panel>
+          <Panel.Heading>{this.props.image.value}</Panel.Heading>
           {
             imagePreviewUrl
             ? (<img src={imagePreviewUrl} alt="ALT" className='image'/>)

@@ -50,7 +50,8 @@ class AddCategoryView extends React.Component {
           sm={this.props.size.sm}
           md={this.props.size.md}
           lg={this.props.size.lg}>
-          <Panel header={this.props.title}>
+          <Panel>
+            <Panel.Heading>{this.props.title}</Panel.Heading>
             <Row>
               <img alt="ALT" src="./assets/img/loading.gif"/>
             </Row>

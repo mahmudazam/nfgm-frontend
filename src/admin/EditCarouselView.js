@@ -65,7 +65,8 @@ class EditCarouselView extends React.Component {
         sm={this.props.size.sm}
         md={this.props.size.md}
         lg={this.props.size.lg}>
-        <Panel header="Edit Carousel">
+        <Panel>
+          <Panel.Heading>Edit Carousel</Panel.Heading>
             { this.state.images !== undefined && this.state.images !== null
                 && Object.keys(this.state.images).length !== 0
               ? Object.keys(this.state.images).map((image) =>
