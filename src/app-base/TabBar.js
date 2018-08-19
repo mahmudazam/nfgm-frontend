@@ -10,7 +10,19 @@ import Admin from '../admin/Admin';
 import { Route } from 'react-router-dom';
 import { LinkContainer } from 'react-router-bootstrap/lib';
 
+const OPEN_ST_COLORS = {
+  open: 'text-success',
+  closed: 'text-danger',
+  closingSoon: 'text-warning'
+};
+
 class TabBar extends React.Component {
+    constructor(props) {
+      super(props);
+      this.state = {
+        openStatus: "open"
+      }
+    }
     renderProducts() {
       return (<Products itemButtons={[]}
                         categoryButtons={[]}/>);
@@ -20,7 +32,7 @@ class TabBar extends React.Component {
         return (
           <Row>
             <Col md={12} className="container">
-              <Navbar style={{ marginBottom: '0'}}>
+              <Navbar style={{ marginBottom: '0'}} id="OurNAV" className="navbar navbar-inverse navbar-fixed-top custom">
                 <Navbar.Header>
                   <Navbar.Brand>
                     <a href="#home">Natural Fresh Grocery & Meat</a>
@@ -41,6 +53,9 @@ class TabBar extends React.Component {
                       <NavItem>Admin</NavItem>
                     </LinkContainer>
                   }
+                  <NavItem className="storeTiming">
+                    Now <strong><span className={OPEN_ST_COLORS[this.state.openStatus]}>{this.state.openStatus}</span></strong>
+                  </NavItem>
                 </Nav>
               </Navbar>
             </Col>

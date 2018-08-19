@@ -7,7 +7,6 @@ class Home extends React.Component {
         return(
             <div className="major-content">
                 <HomeCarousel/>
-                <div className="col-lg-12 run"></div>
                 <HomeLocation/>
             </div>
         )

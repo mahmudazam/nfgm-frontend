@@ -1,5 +1,5 @@
 import React from 'react';
-import Panel from 'react-bootstrap/lib/Panel';
+import {Panel,Row,Col, Well} from 'react-bootstrap';
 import AddressMap from './AddressMap';
 import fire from '../../util/fire';
 
@@ -25,29 +25,17 @@ class HomeLocation extends React.Component {
 
   render() {
     return(
-      <div className="col-lg-12">
-        <div className="col-lg-6 sameheight">
-          <Panel>
-            <Panel.Heading>Hours</Panel.Heading>
-            <Panel.Body>
-              {this.state.hours.map((day) =>
-                <p key={day.name}>{day.name} : {day.hours}</p>
-              )}
-              <div className="run"></div>
-              <div className="walk"></div>
-            </Panel.Body>
-          </Panel>
-        </div>
+      <Row>
+        <div className="run"></div>
+        <Col md={6} style={{paddingLeft: "55px"}}>
+          <h3>Come visit us</h3>
+        </Col>
+        <Col md={6} style={{paddingLeft: "0px"}}>
+          <div style={{"width": "100%"}}><iframe width="100%" height="600" src="https://maps.google.com/maps?width=100%&amp;height=600&amp;hl=en&amp;q=4-606%2022nd%20St%20West%20%20Saskatoon%20%20SK%20S7M%205W1+(Natural%20Fresh%20Grocery%20%26%20Meat)&amp;ie=UTF8&amp;t=&amp;z=17&amp;iwloc=B&amp;output=embed" frameborder="0" scrolling="no" marginheight="0" marginwidth="0"><a href="https://www.maps.ie/create-google-map/">Google map generator</a></iframe></div><br />
 
-        <div className="col-lg-6 sameheight">
-          <Panel id="home-map-panel">
-            <Panel.Heading>Location</Panel.Heading>
-            <Panel.Body>
-              <AddressMap id="home-map" className="col-lg-12"/>
-            </Panel.Body>
-          </Panel>
-        </div>
-      </div>
+        </Col>
+
+      </Row>
     );
   }
 };

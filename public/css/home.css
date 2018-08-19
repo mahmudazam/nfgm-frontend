@@ -4,8 +4,9 @@
 
 .myCarousel{
     background-color: black;
-    height: 40%;
     overflow: hidden;
+    height: 80vh;
+    width: 100%;
 }
 
 .carousel-img{
@@ -13,8 +14,6 @@
     margin-left: auto;
     margin-top: auto;
     margin-bottom: auto;
-    height: 100%;
-    background-size: cover;
 }
 
 .facebook {

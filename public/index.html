@@ -28,12 +28,19 @@
     <link rel="stylesheet" href="css/contact.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
     <script src='https://www.google.com/recaptcha/api.js' asynch defer></script>
+    <script src="https://code.jquery.com/jquery-1.9.1.min.js"></script>
     <title>Natural Fresh Grocery and Meat</title>
   </head>
   <body>
     <noscript>
       You need to enable JavaScript to run this app.
     </noscript>
+    <script>
+      $(window).scroll(function(){
+        $('#OurNAV').toggleClass("scrolled", $(this).scrollTop() > 50)
+      });
+    </script>
     <div id="root"></div>
+
   </body>
 </html>
