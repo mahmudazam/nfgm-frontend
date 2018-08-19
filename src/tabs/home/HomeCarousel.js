@@ -6,8 +6,8 @@ Imports :
 // React.js:
 import React from 'react';
 
-// Bootstrap Carousel:
-import Carousel from 'react-bootstrap/lib/Carousel'
+import {Row, Carousel} from 'react-bootstrap'
+
 
 // Firebase database control:
 import fire from '../../util/fire'
@@ -52,22 +52,22 @@ class HomeCarousel extends React.Component {
   */
   render() {
     return(
-      <div className="col-lg-12 carouselWrapper">
-      <Carousel className="myCarousel">
-      {
-        // Map the array of URLs to Carousel items with img tags
-        // containing the URLs as src:
-        Object.keys(this.state.imageURLs).map((imageName) =>
-          <Carousel.Item key={imageName}>
-            <img
-              className="carousel-img"
-              alt="500x300"
-              src={this.state.imageURLs[imageName].asset_url} />
-          </Carousel.Item>
-      )
-    }
-    </Carousel>
-    </div>
+      <Row>
+        <Carousel className="myCarousel">
+        {
+          // Map the array of URLs to Carousel items with img tags
+          // containing the URLs as src:
+          Object.keys(this.state.imageURLs).map((imageName) =>
+            <Carousel.Item key={imageName}>
+              <img
+                className="carousel-img"
+                alt="500x300"
+                src={this.state.imageURLs[imageName].asset_url} />
+            </Carousel.Item>
+          )
+        }
+        </Carousel>
+      </Row>
   )
 }
 };

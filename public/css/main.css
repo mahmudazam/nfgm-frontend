@@ -1,4 +1,4 @@
-
+/*
 @media screen and (max-width: 767px) {
   .text-content {
     font-size: 255%;
@@ -8,8 +8,7 @@
     font-size: 300%;
   }
 }
-
-@media screen and (min-width: 768px) {
+ @media screen and (min-width: 768px) {
   .text-content {
     font-size: 235%;
     font-weight: 600;
@@ -37,7 +36,7 @@
   .navbar-brand {
     font-size: 240%;
   }
-}
+} */
 
 #top-navbar {
   border-radius: 0px;
@@ -50,9 +49,7 @@
 }
 
 body {
-  font-size: 2.0em
   font-family: sans-serif;
-  background-image: url("../assets/img/background.jpg");
   background-attachment: fixed;
 }
 
@@ -67,9 +64,6 @@ body {
   box-shadow: 5px 7px 18px 2px rgba(0,0,0,0.75);
 }
 
-.major-content {
-  margin-top: 2%;
-}
 
 .run{
   height: 50px;
@@ -78,4 +72,3 @@ body {
 .walk{
   height: 32px;
 }
-

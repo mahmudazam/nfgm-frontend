@@ -1,5 +1,4 @@
 import React from 'react';
-import TopNavbar from './app-base/TopNavbar';
 import TabBar from './app-base/TabBar';
 import SignInView from './app-base/SignInView';
 import { Redirect, Route } from 'react-router-dom';
@@ -54,8 +53,8 @@ class App extends React.Component {
   render() {
     return (
       <div>
-        <TopNavbar signOut={this.signOut.bind(this)}
-                   user={() => { return this.state.signedIn; }} />
+        {/*<TopNavbar signOut={this.signOut.bind(this)}
+                   user={() => { return this.state.signedIn; }} />*/}
         <Route exact path='/' component={HomeRedirect}/>
         <Route exact path='/signin' component={this.getSignInView.bind(this)}/>
         <Route path='/home' component={this.getTabBar.bind(this)}/>

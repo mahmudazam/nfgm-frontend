@@ -14,7 +14,7 @@
     margin-top: auto;
     margin-bottom: auto;
     height: 100%;
-    width: 70%;
+    background-size: cover;
 }
 
 .facebook {
@@ -24,4 +24,3 @@
 #home-map-panel {
   background-color: black;
 }
-
