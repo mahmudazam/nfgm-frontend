@@ -1,6 +1,6 @@
 
 import React from 'react';
-import { PanelGroup, Panel } from 'react-bootstrap/lib';
+import { Panel, Row, Col } from 'react-bootstrap/lib';
 import fire from '../../util/fire';
 import Category from './Category';
 
@@ -38,19 +38,40 @@ class Products extends React.Component {
   render() {
     if(null === this.state.categoryList) {
       return (
-        <div className='major-content col-sm-12'>
-          <Panel>
-            <Panel.Body>
+        <Row style={{ border: "1px solid black", backgroundColor: "#1f6357", height: "100vh"}}>
+          <Col md={12}>
+            <Col md={4}></Col>
+            <Col style={{ marginTop: "40vh", textAlign: "center" }}md={4}>
               <img alt="ALT" src='./assets/img/loading.gif'/>
               <br/>
-              <div>Loading...</div>
-            </Panel.Body>
-          </Panel>
-        </div>
+              <div style={{ color: "white" }}>Loading...</div>
+            </Col>
+            <Col md={4}></Col>
+          </Col>
+        </Row>
       );
     } else {
       return (
-        <div className='major-content col-sm-12'>
+        <Row style={{ border: "1px solid black", backgroundColor: "#5d823b", height: "100%"}}>
+          <div className="run"></div>
+          <Col md={12}>
+            {this.state.categoryList === null
+            || this.state.categoryList === undefined
+            || this.state.categoryList.length === 0
+            ? <Panel>No categories of items</Panel>
+            : this.state.categoryList.map(category =>
+              <div style={{ paddingLeft: "15px", paddingRight: "15px"}}>
+                <div className="container-fluid"><h2 style={{color: "white"}}>{category}</h2></div>
+                <Category key={category}
+                          categoryName={category}
+                          itemButtons={this.props.itemButtons}
+                          categoryButtons={this.props.categoryButtons} />
+                <hr className="cat-sep" />
+              </div>
+            )}
+          </Col>
+        </Row>
+        /*<div className='major-content col-sm-12'>
           {this.state.categoryList === null
           || this.state.categoryList === undefined
           || this.state.categoryList.length === 0
@@ -77,7 +98,7 @@ class Products extends React.Component {
               )
             }
           </PanelGroup>}
-        </div>
+        </div>*/
       )
     }
   }

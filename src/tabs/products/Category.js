@@ -47,7 +47,7 @@ class Category extends React.Component {
 
   render() {
     return (
-      <div>
+      <div style={{paddingLeft: "35px"}}>
         {
           this.state.loading
           ? (<div>Loading...</div>)
