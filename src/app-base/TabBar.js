@@ -2,7 +2,7 @@
  * Created by tayabsoomro on 2017-07-07.
  */
 import React from 'react';
-import { Nav, NavItem, Navbar, MenuItem, NavDropdown, Col, Row } from 'react-bootstrap/lib/';
+import { Nav, NavItem, Navbar, Col, Row } from 'react-bootstrap/lib/';
 import Home from '../tabs/home/Home';
 import Products from '../tabs/products/Products';
 import Contact from '../tabs/contact/Contact';
@@ -53,7 +53,7 @@ class TabBar extends React.Component {
                       <NavItem>Admin</NavItem>
                     </LinkContainer>
                   }
-                  <NavItem className="storeTiming">
+                  <NavItem className="storeTiming" disabled>
                     Now <strong><span className={OPEN_ST_COLORS[this.state.openStatus]}>{this.state.openStatus}</span></strong>
                   </NavItem>
                 </Nav>

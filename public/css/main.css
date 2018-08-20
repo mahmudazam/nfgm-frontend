@@ -51,13 +51,15 @@
 }
 
 body {
-  font-family: sans-serif;
+  font-family: 'Quicksand', sans-serif;
   background-attachment: fixed;
 }
 
 .resize-y{
   resize: vertical;
 }
+
+hr.cat-sep { border: 0; height: 1px; background-image: linear-gradient(to right, rgba(255, 255, 255, 0), rgba(255, 255, 255, 0.75), rgba(255, 255, 255, 0)); }
 
 .tabs {
   background-color: #DFDFDE;
@@ -75,21 +77,21 @@ body {
   height: 32px;
 }
 
-.storeTiming > a{
+.storeTiming {
   color: #222 !important;
   opacity: 1;
-  padding-bottom: 15px;
-  padding-top: 15px;
+  background-color: black !important;
 }
 
-.scrolled .storeTiming > a{
-  background-color: black;
-}
 
 #OurNAV {
   background:transparent !important;
   border-bottom: 0;
   box-shadow: none;
+  transition: 0.5s;
+  -moz-transition: 0.5s;
+  -webkit-transition: 0.5s;
+  -o-transition: 0.5s;
 }
 
 
@@ -104,4 +106,8 @@ body {
 
 #OurNAV.scrolled {
   background-color: #1f6357 !important;
+  -moz-transition: 0.5s;
+  -webkit-transition: 0.5s;
+  -o-transition: 0.5s;
+  transition: 0.5s;
 }
