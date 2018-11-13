@@ -1,5 +1,5 @@
 import React from 'react';
-import { ButtonToolbar, Button , Row , Panel , FormGroup , ControlLabel , FormControl , HelpBlock }
+import { ButtonToolbar, Button , Row , FormGroup , ControlLabel , FormControl , HelpBlock }
   from 'react-bootstrap/lib';
 import { postFormData } from '../../util/HTTPSReq';
 import Recaptcha from 'react-recaptcha';
@@ -15,6 +15,12 @@ const emptyState = {
     response: ""
   }
 }
+
+
+const Field = (props) =>
+    <ControlLabel style={{ color: "white" }}>
+      {props.children}
+    </ControlLabel>
 
 class MessageForm extends React.Component {
     constructor(props) {
@@ -89,9 +95,9 @@ class MessageForm extends React.Component {
       if(this.state.processing) {
         return (
           <div className={this.props.size}>
-            <Panel>
-              <Panel.Heading>Send us a Message</Panel.Heading>
-              <Panel.Body>
+            <div>
+              <div>Send us a Message</div>
+              <div>
                 <Row>
                   <img alt="ALT" src="./assets/img/loading.gif"/>
                 </Row>
@@ -100,40 +106,41 @@ class MessageForm extends React.Component {
                     Processing your request, please wait
                   </h3>
                 </Row>
-              </Panel.Body>
-            </Panel>
+              </div>
+            </div>
           </div>
         );
       } else {
         return(
             <div className={this.props.size}>
-              <Panel>
-                <Panel.Heading>Send us a Message</Panel.Heading>
-                <Panel.Body>
+              <div>
+                <div style={headingStyle}>Send us a Message</div>
+                <hr style={{ color: "white" }} />
+                <div>
                   <form onSubmit={this.sendMessage.bind(this)}>
                     <FormGroup controlId="fName">
-                      <ControlLabel>First Name</ControlLabel>
+                      <Field>First Name</Field>
                       <FormControl type="text"
                         value={this.state.values.fName}
                         onChange={this.handleChange.bind(this)}
                       />
                     </FormGroup>
                     <FormGroup controlId="lName">
-                      <ControlLabel>Last Name</ControlLabel>
+                      <Field>Last Name</Field>
                       <FormControl type="text"
                         value={this.state.values.lName}
                         onChange={this.handleChange.bind(this)}
                       />
                     </FormGroup>
                     <FormGroup controlId="eMail">
-                      <ControlLabel>Email Address</ControlLabel>
+                      <Field>Email Address</Field>
                       <FormControl type="text"
                         value={this.state.values.eMail}
                         onChange={this.handleChange.bind(this)}
                       />
                     </FormGroup>
                     <FormGroup controlId="message">
-                      <ControlLabel>Message</ControlLabel>
+                      <Field>Message</Field>
                       <FormControl componentClass="textarea" className="resize-y" rows="10"
                         placeholder="Type your message here"
                         value={this.state.values.message}
@@ -150,8 +157,12 @@ class MessageForm extends React.Component {
                       onloadCallback={() => {}}
                       expiredCallback={this.recExpired.bind(this)} />
                     <ButtonToolbar>
-                      <Button type="submit">Send</Button>
-                      <Button onClick={(() => {
+                      <Button bsStyle="primary" type="submit">
+                        Send
+                      </Button>
+                      <Button
+                        bsStyle="danger"
+                        onClick={(() => {
                           console.log(this.recInst);
                           this.recInst.reset();
                           this.setState(this.defaultState());
@@ -160,12 +171,17 @@ class MessageForm extends React.Component {
                       </Button>
                     </ButtonToolbar>
                   </form>
-                </Panel.Body>
-              </Panel>
+                </div>
+              </div>
             </div>
         )
       }
     }
+};
+
+const headingStyle = {
+  fontSize: "2em",
+  color: "white"
 };
 
 export default MessageForm;
