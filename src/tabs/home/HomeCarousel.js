@@ -52,7 +52,7 @@ class HomeCarousel extends React.Component {
   */
   render() {
     return(
-      <Row>
+      <Row style={{ width: "100vw" }}>
         <Carousel className="myCarousel">
         {
           // Map the array of URLs to Carousel items with img tags

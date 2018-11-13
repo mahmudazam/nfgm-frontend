@@ -6,6 +6,10 @@ import fire from './util/fire';
 
 const HomeRedirect = () => (<Redirect to='/home'/>);
 
+const appStyle = {
+    background: "#5d823b"
+};
+
 class App extends React.Component {
 
   constructor(props) {
@@ -52,7 +56,7 @@ class App extends React.Component {
 
   render() {
     return (
-      <div>
+      <div style={appStyle}>
         {/*<TopNavbar signOut={this.signOut.bind(this)}
                    user={() => { return this.state.signedIn; }} />*/}
         <Route exact path='/' component={HomeRedirect}/>

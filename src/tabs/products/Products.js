@@ -38,7 +38,7 @@ class Products extends React.Component {
   render() {
     if(null === this.state.categoryList) {
       return (
-        <Row style={{ border: "1px solid black", backgroundColor: "#1f6357", height: "100vh"}}>
+        <Row style={{ border: "1px solid black" }}>
           <Col md={12}>
             <Col md={4}></Col>
             <Col style={{ marginTop: "40vh", textAlign: "center" }}md={4}>

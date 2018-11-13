@@ -8,9 +8,8 @@ const MAPS = "https://www.google.com/maps/place/"
            + "0xd827c56e8c3a401d!8m2!3d52.1301161!4d-106.6787696";
 
 const contactStyle = {
-  background: "#5d823b",
-  height: "100vh",
-  paddingTop: "15vh"
+  paddingTop: "15vh",
+  height: "100vh"
 };
 
 class Contact extends React.Component {
