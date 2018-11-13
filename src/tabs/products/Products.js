@@ -52,7 +52,7 @@ class Products extends React.Component {
       );
     } else {
       return (
-        <Row style={{ border: "1px solid black", backgroundColor: "#5d823b", height: "100%"}}>
+        <Row style={{ border: "1px solid black", backgroundColor: "#5d823b", height: "100vh"}}>
           <div className="run"></div>
           <Col md={12}>
             {this.state.categoryList === null
